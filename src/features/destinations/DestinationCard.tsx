@@ -9,6 +9,7 @@ import {
 import type { DestinationRecord } from '../../lib/dataClient';
 import { ActivitiesSection } from '../activities/ActivitiesSection';
 import { BudgetSection } from '../budget/BudgetSection';
+import { DestinationImage } from './DestinationImage';
 
 interface DestinationCardProps {
   destination: DestinationRecord;
@@ -34,6 +35,7 @@ export function DestinationCard({ destination: d, tripId, vote }: DestinationCar
       </div>
       {d.blurb && <p className="dest-card__blurb">{d.blurb}</p>}
       {d.why && <p className="dest-card__why tv-muted">{d.why}</p>}
+      <DestinationImage tripId={tripId} destination={d} />
       {vote}
       <button
         type="button"

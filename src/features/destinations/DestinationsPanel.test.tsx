@@ -7,6 +7,7 @@ vi.mock('../activities/ActivitiesSection', () => ({
   ActivitiesSection: () => <div data-testid="activities" />,
 }));
 vi.mock('../budget/BudgetSection', () => ({ BudgetSection: () => <div data-testid="budget" /> }));
+vi.mock('./DestinationImage', () => ({ DestinationImage: () => <div data-testid="dest-image" /> }));
 
 import { DestinationsPanel } from './DestinationsPanel';
 import type { DestinationRecord } from '../../lib/dataClient';

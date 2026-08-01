@@ -1,6 +1,7 @@
 import { type ClientSchema, a, defineData } from '@aws-amplify/backend';
 import { suggestDestinations } from '../destinationgen/resource';
 import { suggestActivities } from '../activitygen/resource';
+import { generateDestinationImage } from '../imagegen/resource';
 
 /**
  * TRAVEL data schema.
@@ -77,6 +78,7 @@ const schema = a.schema({
       blurb: a.string(),
       why: a.string(),
       source: a.enum(['MANUAL', 'AI']),
+      imagePath: a.string(), // S3 key under media/destinations/, resolved via getUrl()
       interests: a.hasMany('Interest', 'destinationId'),
       activities: a.hasMany('Activity', 'destinationId'),
     })
@@ -208,6 +210,21 @@ const schema = a.schema({
     .returns(a.customType({ suggestions: a.string().required() }))
     .authorization((allow) => [allow.guest(), allow.authenticated()])
     .handler(a.handler.function(suggestActivities)),
+
+  // Guest-callable: generate a representative image for a destination. The
+  // resolver generates via Bedrock, resizes to WebP, stores it in S3, persists
+  // the key on the Destination row, and returns { imagePath }. The client then
+  // resolves the key to a URL via getUrl().
+  generateDestinationImage: a
+    .mutation()
+    .arguments({
+      destinationId: a.id().required(),
+      name: a.string().required(),
+      blurb: a.string(),
+    })
+    .returns(a.customType({ imagePath: a.string().required() }))
+    .authorization((allow) => [allow.guest(), allow.authenticated()])
+    .handler(a.handler.function(generateDestinationImage)),
 });
 
 export type Schema = ClientSchema<typeof schema>;

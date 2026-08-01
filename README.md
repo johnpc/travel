@@ -42,7 +42,7 @@ stay useful for this trip and the next.
 | Light/dark theme (follows OS + in-app override)           |   ✅   |
 | Brainstorm destinations (AI-suggested + user-added)       |   ✅   |
 | Activity ideas per destination (AI + GetYourGuide links)  |   ✅   |
-| Generated destination imagery (persistent)                |   ⬜   |
+| Generated destination imagery (AI, persistent)            |   ✅   |
 | Per-person interest levels (voting)                       |   ✅   |
 | Date availability (shared month calendar)                 |   ✅   |
 | Budget estimate per destination (per-person / per-couple) |   ✅   |
@@ -65,7 +65,8 @@ stay useful for this trip and the next.
 - **AI suggestions** (destinations and per-destination activities) are generated with **Amazon
   Bedrock** (Claude, tool-forced structured output) and kept as permanent brainstorm artifacts.
   Activities also link out to a **GetYourGuide** search for real, current experiences. Destination
-  imagery (generated visuals) is the next slice.
+  **imagery** is generated on demand with Bedrock (Stability), resized to WebP, and stored in S3 —
+  a persistent view of what you'd actually see there.
 
 ## Install
 
