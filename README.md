@@ -43,7 +43,7 @@ stay useful for this trip and the next.
 | Brainstorm destinations (AI-suggested + user-added)    |   ✅   |
 | Activity ideas per destination                         |   ⬜   |
 | Generated destination imagery (persistent)             |   ⬜   |
-| Per-person interest levels (voting)                    |   ⬜   |
+| Per-person interest levels (voting)                    |   ✅   |
 | Date availability per candidate trip                   |   ⬜   |
 | Budget / price feasibility by dates                    |   ⬜   |
 

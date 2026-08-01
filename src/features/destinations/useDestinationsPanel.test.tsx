@@ -5,6 +5,7 @@ const h = vi.hoisted(() => ({
   useDestinations: vi.fn(),
   useAddDestination: vi.fn(),
   useSuggestDestinations: vi.fn(),
+  useInterest: vi.fn(),
   addMutate: vi.fn(),
   suggestMutateAsync: vi.fn(),
 }));
@@ -13,8 +14,20 @@ vi.mock('./destinationApi', () => ({
   useAddDestination: h.useAddDestination,
 }));
 vi.mock('./suggestApi', () => ({ useSuggestDestinations: h.useSuggestDestinations }));
+vi.mock('../interest/useInterest', () => ({ useInterest: h.useInterest }));
 
 import { useDestinationsPanel } from './useDestinationsPanel';
+
+const emptyInterest = {
+  isLoading: false,
+  isError: false,
+  refetch: vi.fn(),
+  tallies: {},
+  levelFor: () => null,
+  cast: vi.fn(),
+  isVoting: false,
+  canVote: false,
+};
 
 describe('useDestinationsPanel', () => {
   beforeEach(() => {
@@ -30,23 +43,24 @@ describe('useDestinationsPanel', () => {
       mutateAsync: h.suggestMutateAsync,
       isPending: false,
     });
+    h.useInterest.mockReturnValue(emptyInterest);
   });
 
   it('adds a manual destination with MANUAL source', () => {
-    const { result } = renderHook(() => useDestinationsPanel('t1', 'Trip'));
+    const { result } = renderHook(() => useDestinationsPanel('t1', 'Trip', 'Alex'));
     act(() => result.current.addManual('Lisbon'));
     expect(h.addMutate).toHaveBeenCalledWith({ name: 'Lisbon', source: 'MANUAL' });
   });
 
   it('ignores a blank manual add', () => {
-    const { result } = renderHook(() => useDestinationsPanel('t1', 'Trip'));
+    const { result } = renderHook(() => useDestinationsPanel('t1', 'Trip', 'Alex'));
     act(() => result.current.addManual('   '));
     expect(h.addMutate).not.toHaveBeenCalled();
   });
 
   it('suggest excludes names already on the board', async () => {
     h.suggestMutateAsync.mockResolvedValue([{ name: 'Oslo', blurb: 'b', why: 'w' }]);
-    const { result } = renderHook(() => useDestinationsPanel('t1', 'Trip'));
+    const { result } = renderHook(() => useDestinationsPanel('t1', 'Trip', 'Alex'));
     await act(async () => {
       await result.current.runSuggest();
     });
@@ -59,7 +73,7 @@ describe('useDestinationsPanel', () => {
       { name: 'Oslo', blurb: 'b', why: 'w' },
       { name: 'Cairo', blurb: 'b2', why: 'w2' },
     ]);
-    const { result } = renderHook(() => useDestinationsPanel('t1', 'Trip'));
+    const { result } = renderHook(() => useDestinationsPanel('t1', 'Trip', 'Alex'));
     await act(async () => {
       await result.current.runSuggest();
     });

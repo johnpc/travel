@@ -4,6 +4,7 @@ import { TRIP_FIXTURES } from './fixtures/trips';
 
 /** Wipe every child then Trip (children first) so re-seeding is clean. */
 export async function clearAll(): Promise<void> {
+  await clearOneModel(client.models.Interest);
   await clearOneModel(client.models.Member);
   await clearOneModel(client.models.Destination);
   await clearOneModel(client.models.Trip);
@@ -24,16 +25,31 @@ export async function seedTripData(): Promise<void> {
         client.models.Member.create({ tripId: trip.id, name }, EDITOR_WRITE),
       ),
     );
+    // Create destinations, keeping a name→id map so votes can reference them.
+    const destIdByName: Record<string, string> = {};
+    for (const d of fixture.destinations) {
+      const { data: dest } = await client.models.Destination.create(
+        { tripId: trip.id, name: d.name, blurb: d.blurb, why: d.why, source: d.source },
+        EDITOR_WRITE,
+      );
+      if (dest) destIdByName[d.name] = dest.id;
+    }
     await Promise.all(
-      fixture.destinations.map((d) =>
-        client.models.Destination.create(
-          { tripId: trip.id, name: d.name, blurb: d.blurb, why: d.why, source: d.source },
+      fixture.votes.map((v) =>
+        client.models.Interest.create(
+          {
+            id: `${trip.id}:${destIdByName[v.destination]}:${v.memberName}`,
+            tripId: trip.id,
+            destinationId: destIdByName[v.destination],
+            memberName: v.memberName,
+            level: v.level,
+          },
           EDITOR_WRITE,
         ),
       ),
     );
     console.log(
-      `Seeded trip ${fixture.slug} with ${fixture.members.length} members, ${fixture.destinations.length} destinations.`,
+      `Seeded trip ${fixture.slug}: ${fixture.members.length} members, ${fixture.destinations.length} destinations, ${fixture.votes.length} votes.`,
     );
   }
 }

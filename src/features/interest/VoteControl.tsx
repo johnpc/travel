@@ -1,0 +1,44 @@
+import type { InterestLevel } from '../../lib/dataClient';
+import type { Tally } from './tally';
+import './interest.css';
+
+interface VoteControlProps {
+  tally: Tally;
+  myLevel: InterestLevel | null;
+  canVote: boolean;
+  isVoting: boolean;
+  onVote: (level: InterestLevel) => void;
+}
+
+const OPTIONS: { level: InterestLevel; label: string; emoji: string }[] = [
+  { level: 'YES', label: 'In', emoji: '🙌' },
+  { level: 'MAYBE', label: 'Maybe', emoji: '🤔' },
+  { level: 'NO', label: 'Pass', emoji: '🙅' },
+];
+
+/** Per-destination vote row: a Yes/Maybe/No control (highlighting this member's
+ * pick) plus the group tally. Disabled until the visitor picks a name. */
+export function VoteControl({ tally, myLevel, canVote, isVoting, onVote }: VoteControlProps) {
+  return (
+    <div className="vote" data-testid="vote-control">
+      <div className="vote__buttons" role="group" aria-label="Your interest">
+        {OPTIONS.map((o) => (
+          <button
+            key={o.level}
+            type="button"
+            className={myLevel === o.level ? 'vote__btn vote__btn--on' : 'vote__btn'}
+            aria-pressed={myLevel === o.level}
+            disabled={!canVote || isVoting}
+            data-testid={`vote-${o.level}`}
+            onClick={() => onVote(o.level)}
+          >
+            <span aria-hidden="true">{o.emoji}</span> {o.label}
+          </button>
+        ))}
+      </div>
+      <span className="vote__tally tv-muted" data-testid="vote-tally">
+        {tally.yes} in · {tally.maybe} maybe · {tally.no} pass
+      </span>
+    </div>
+  );
+}

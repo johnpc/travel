@@ -2,18 +2,21 @@ import { LoadState } from '../shell/LoadState';
 import { AddDestination } from './AddDestination';
 import { DestinationList } from './DestinationList';
 import { Suggestions } from './Suggestions';
+import { VoteControl } from '../interest/VoteControl';
 import { useDestinationsPanel } from './useDestinationsPanel';
 import './destinations.css';
 
 interface DestinationsPanelProps {
   tripId: string | undefined;
   tripTitle: string;
+  /** The current member (name-only identity); enables voting when set. */
+  me: string | null;
 }
 
 /** The destinations brainstorm section of a trip: add places by hand, get AI
- * suggestions, and see the shared board everyone's building. */
-export function DestinationsPanel({ tripId, tripTitle }: DestinationsPanelProps) {
-  const p = useDestinationsPanel(tripId, tripTitle);
+ * suggestions, see the shared board (sorted by group interest), and vote. */
+export function DestinationsPanel({ tripId, tripTitle, me }: DestinationsPanelProps) {
+  const p = useDestinationsPanel(tripId, tripTitle, me);
   return (
     <section className="destinations" data-testid="destinations">
       <p className="tv-kicker">Destinations</p>
@@ -32,7 +35,18 @@ export function DestinationsPanel({ tripId, tripTitle }: DestinationsPanelProps)
         emptyTitle="No destinations yet"
         emptyMessage="Add a place above, or let AI suggest a few to get the ideas flowing."
       >
-        <DestinationList destinations={p.destinations} />
+        <DestinationList
+          destinations={p.destinations}
+          renderVote={(d) => (
+            <VoteControl
+              tally={p.interest.tallies[d.id] ?? { yes: 0, maybe: 0, no: 0, score: 0 }}
+              myLevel={p.interest.levelFor(d.id)}
+              canVote={p.interest.canVote}
+              isVoting={p.interest.isVoting}
+              onVote={(level) => p.interest.cast(d.id, level)}
+            />
+          )}
+        />
       </LoadState>
     </section>
   );
