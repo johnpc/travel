@@ -1,0 +1,37 @@
+.roster {
+  margin-top: 1.5rem;
+}
+
+.roster__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.4rem 0 0.8rem;
+}
+
+.roster__chip {
+  cursor: pointer;
+}
+
+.roster__chip--me {
+  --background: var(--tv-accent);
+  --color: var(--tv-accent-contrast);
+}
+
+.roster__you {
+  font-size: 0.95rem;
+}
+
+.roster__form {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+  background: var(--tv-surface);
+  border: 1px solid var(--tv-border);
+  border-radius: var(--tv-radius);
+  padding: 1rem;
+}
+
+.roster__form ion-input {
+  flex: 1;
+}

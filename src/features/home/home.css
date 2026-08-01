@@ -1,0 +1,32 @@
+.home {
+  max-width: 32rem;
+  margin: 0 auto;
+  padding-top: 8vh;
+}
+
+.home__title {
+  font-size: 1.9rem;
+  margin: 0.2rem 0 0.6rem;
+}
+
+.home__lede {
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 0 0 1.6rem;
+}
+
+.home__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: var(--tv-surface);
+  border: 1px solid var(--tv-border);
+  border-radius: var(--tv-radius);
+  padding: 1.25rem;
+  box-shadow: var(--tv-shadow);
+}
+
+.home__preview {
+  font-size: 0.85rem;
+  font-family: var(--tv-font-serif);
+}

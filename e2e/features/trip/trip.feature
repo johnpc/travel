@@ -1,0 +1,30 @@
+Feature: Plan a trip by URL (guest, no account)
+  As one of a group of friends
+  I want to open a trip at its own URL and see who's planning it
+  So that we can collaborate without anyone signing up
+
+  # Honest e2e: asserts on the real seeded trip + roster rendered from the
+  # shared sandbox, not just navigation. The seed creates "Greece 2027" with
+  # Alex, Sam, Priya, Jordan.
+
+  Scenario: Opening a seeded trip shows its title and roster
+    When a visitor opens the trip "greece-2027"
+    Then the trip title "Greece 2027" is shown
+    And "Alex" is listed on the roster
+    And "Priya" is listed on the roster
+
+  Scenario: Opening a brand-new slug creates the trip on first visit
+    When a visitor opens a fresh trip with a random slug
+    Then the trip title matching that slug is shown
+    And the roster join form is offered
+
+  Scenario: A visitor joins the roster by name
+    When a visitor opens the trip "greece-2027"
+    And the visitor joins as "Robin"
+    Then "Robin" is listed on the roster
+    And the app shows they are planning as "Robin"
+
+  # A failed trip read must offer a retry, not hang or blank.
+  Scenario: A failed trip read shows a retry, not a blank screen
+    When a visitor opens the trip "greece-2027" with the network failing
+    Then the trip shows a retry, not a blank screen

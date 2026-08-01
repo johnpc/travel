@@ -1,0 +1,9 @@
+.trip {
+  max-width: 36rem;
+  margin: 0 auto;
+}
+
+.trip__title {
+  font-size: 1.8rem;
+  margin: 0.2rem 0 0.5rem;
+}

@@ -1,0 +1,168 @@
+/**
+ * TRAVEL design tokens. Consume these `--tv-*` variables and role classes
+ * everywhere — never hardcoded hex/px in feature CSS. Supports system light/dark
+ * AND an explicit in-app override: dark tokens apply under BOTH
+ * `prefers-color-scheme: dark` (when no explicit choice) and `[data-theme='dark']`
+ * on <html>; `[data-theme='light']` forces light even in a dark OS. A warm
+ * travel palette — teal accent, sandy neutrals.
+ */
+
+:root {
+  --tv-font-sans: 'Inter', system-ui, sans-serif;
+  --tv-font-serif: 'Newsreader', Georgia, serif;
+
+  /* Teal accent doubles as the fill under WHITE button text, so it clears WCAG
+     AA 4.5:1 for white. #0f7b78 (4.86:1) reads as sea/lagoon. */
+  --tv-accent: #0f7b78;
+  /* accent-strong is used for TEXT (links, headings) on light backgrounds —
+     also clears 4.5:1, a touch darker for hierarchy. */
+  --tv-accent-strong: #0c6360;
+  --tv-accent-contrast: #ffffff;
+  --tv-accent-soft: #e2f2f1;
+  --tv-accent-gradient: linear-gradient(135deg, #2bb3a3 0%, #0f7b78 100%);
+  /* Warm secondary — a terracotta/sunset for highlights, interest badges. */
+  --tv-warm: #c65d3b;
+  --tv-warm-soft: #fbe9e2;
+  --tv-positive: #2e9e6b;
+  --tv-negative: #d9534f;
+
+  --tv-bg: #f7f4ee;
+  --tv-surface: #ffffff;
+  --tv-border: #e7e1d6;
+  /* Loading skeletons: a base fill + a brighter sheen that sweeps across it. */
+  --tv-skeleton-base: #ece7dd;
+  --tv-skeleton-sheen: #f6f2ea;
+  --tv-text: #211d18;
+  --tv-text-muted: #6a6258; /* 5.0:1 on --tv-bg for WCAG AA */
+
+  --tv-radius: 16px;
+  --tv-radius-sm: 10px;
+  --tv-gap: 16px;
+  /* Keyboard focus ring — a visible, high-contrast outline for :focus-visible. */
+  --tv-focus-ring: 3px solid var(--tv-accent-strong);
+  --tv-focus-offset: 2px;
+  --tv-shadow: 0 1px 2px rgba(33, 29, 24, 0.04), 0 4px 16px rgba(33, 29, 24, 0.06);
+  --tv-shadow-hover: 0 2px 6px rgba(33, 29, 24, 0.08), 0 10px 28px rgba(33, 29, 24, 0.1);
+
+  /* Ionic theming hooks */
+  --ion-background-color: var(--tv-bg);
+  --ion-text-color: var(--tv-text);
+  --ion-font-family: var(--tv-font-sans);
+  --ion-toolbar-background: var(--tv-surface);
+  --ion-toolbar-color: var(--tv-text);
+}
+
+/* Dark palette — shared by the OS preference (no explicit choice) and the
+   explicit [data-theme='dark'] override. Kept in one block so they never drift. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --tv-accent: #2bb3a3;
+    --tv-accent-strong: #4cc9ba;
+    --tv-accent-soft: #10302e;
+    --tv-warm-soft: #3a201a;
+    --tv-bg: #16130f;
+    --tv-surface: #201c17;
+    --tv-border: #332d25;
+    --tv-skeleton-base: #29241d;
+    --tv-skeleton-sheen: #352f26;
+    --tv-text: #f3efe8;
+    --tv-text-muted: #a89e90;
+    --tv-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.35);
+    --tv-shadow-hover: 0 2px 6px rgba(0, 0, 0, 0.4), 0 10px 28px rgba(0, 0, 0, 0.45);
+  }
+}
+
+:root[data-theme='dark'] {
+  --tv-accent: #2bb3a3;
+  --tv-accent-strong: #4cc9ba;
+  --tv-accent-soft: #10302e;
+  --tv-warm-soft: #3a201a;
+  --tv-bg: #16130f;
+  --tv-surface: #201c17;
+  --tv-border: #332d25;
+  --tv-skeleton-base: #29241d;
+  --tv-skeleton-sheen: #352f26;
+  --tv-text: #f3efe8;
+  --tv-text-muted: #a89e90;
+  --tv-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.35);
+  --tv-shadow-hover: 0 2px 6px rgba(0, 0, 0, 0.4), 0 10px 28px rgba(0, 0, 0, 0.45);
+}
+
+body {
+  font-family: var(--tv-font-sans);
+}
+
+/* Accessibility: a clear keyboard-focus ring for anything interactive. Only
+ * :focus-visible (keyboard/AT), so mouse/touch taps don't show a ring. */
+a:focus-visible,
+button:focus-visible,
+[tabindex]:focus-visible,
+[role='button']:focus-visible,
+ion-button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: var(--tv-focus-ring);
+  outline-offset: var(--tv-focus-offset);
+  border-radius: var(--tv-radius-sm);
+}
+
+/* Respect the OS "reduce motion" setting. Near-instant (0.01ms) rather than 0
+ * so onTransitionEnd still fires. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Safe-area: keep the top toolbar clear of the notch / Dynamic Island / status
+ * bar. max() prevents double-padding when Ionic already applied the inset.
+ * Needs viewport-fit=cover (set in index.html). */
+ion-header ion-toolbar:first-of-type {
+  padding-top: max(var(--ion-safe-area-top, 0px), env(safe-area-inset-top, 0px));
+}
+
+/* Role classes */
+.tv-heading {
+  font-family: var(--tv-font-sans);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--tv-text);
+}
+
+.tv-kicker {
+  font-family: var(--tv-font-sans);
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tv-accent-strong);
+}
+
+.tv-muted {
+  color: var(--tv-text-muted);
+}
+
+.tv-serif {
+  font-family: var(--tv-font-serif);
+  font-weight: 600;
+}
+
+/* Visually hidden but available to screen readers — for live-region
+ * announcements that shouldn't show on screen. */
+.tv-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
