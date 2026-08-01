@@ -118,6 +118,8 @@ jobs:
         area:
           - name: trip
             paths: .features-gen/e2e/features/trip
+          - name: destinations
+            paths: .features-gen/e2e/features/destinations
     steps:
       - uses: actions/checkout@v7
 

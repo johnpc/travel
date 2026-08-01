@@ -38,3 +38,4 @@ export function unwrap<T>(result: { data: T; errors?: readonly { message: string
 
 export type TripRecord = Schema['Trip']['type'];
 export type MemberRecord = Schema['Member']['type'];
+export type DestinationRecord = Schema['Destination']['type'];

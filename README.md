@@ -40,7 +40,7 @@ stay useful for this trip and the next.
 | Open/create a trip by URL — no account                 |   ✅   |
 | Name-only roster (pick your name, recognized anywhere) |   ✅   |
 | Light/dark theme (follows OS + in-app override)        |   ✅   |
-| Brainstorm destinations (AI-suggested + user-added)    |   ⬜   |
+| Brainstorm destinations (AI-suggested + user-added)    |   ✅   |
 | Activity ideas per destination                         |   ⬜   |
 | Generated destination imagery (persistent)             |   ⬜   |
 | Per-person interest levels (voting)                    |   ⬜   |

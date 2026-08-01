@@ -54,6 +54,10 @@ export default defineConfig({
         // (sign in, mutate, exit) with no unit-testable surface — their logic
         // lives in tested helpers. Run manually.
         'amplify/seed/seed.ts',
+        // Lambda handler entrypoints: thin glue (build request → invoke Bedrock →
+        // parse) that only runs in the Lambda runtime. All logic lives in the
+        // tested pure helpers under */shared/. Mirrors spork.
+        'amplify/**/handler.ts',
       ],
       thresholds: {
         statements: 80,

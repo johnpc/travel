@@ -11,6 +11,7 @@ import { LoadState } from '../shell/LoadState';
 import { useTripPage } from './useTripPage';
 import { useJoinTrip } from './useJoinTrip';
 import { Roster } from './Roster';
+import { DestinationsPanel } from '../destinations/DestinationsPanel';
 import './trip.css';
 
 /** A single trip at travel.jpc.io/<slug>. Opens or creates the trip, shows its
@@ -44,6 +45,7 @@ export function TripPage() {
               onPick={join.pick}
               isJoining={join.isJoining}
             />
+            <DestinationsPanel tripId={trip?.id} tripTitle={trip?.title ?? ''} />
           </div>
         </LoadState>
       </IonContent>
