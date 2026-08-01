@@ -184,6 +184,7 @@ npx ampx sandbox       # personal cloud backend sandbox
 - **Repo:** `johnpc/travel`. Web: `travel.jpc.io/<trip-slug>`.
 - **iOS/Android bundle id:** `com.johncorser.travel`. Region `us-west-2`, AWS profile `personal`.
 - **Sandbox stack:** `amplify-travel-xss-sandbox-d4c65224d6` (wired into `package.json` `e2e-config`).
+- **Prod Amplify app:** `d2kfuntlyvy3iy` (serves travel.jpc.io; wired into `scripts/prod-config.mjs`).
 - **CI:** `.github/workflows/ci.yml` (quality + seed + Gherkin acceptance matrix) blocks PRs.
   `ios-deploy.yml` / `android-deploy.yml` publish after CI on `main`. Secrets: `AWS_ACCESS_KEY_ID`,
   `AWS_SECRET_ACCESS_KEY`, `TEST_USERNAME`, `TEST_PASSWORD`, `ASC_KEY_ID`, `ASC_ISSUER_ID`,

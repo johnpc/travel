@@ -21,9 +21,8 @@ import { promisify } from 'node:util';
 const run = promisify(execFile);
 
 // The prod Amplify app that serves travel.jpc.io (hosting + backend).
-// Set once the prod Amplify Hosting app is provisioned; until then CI uses the
-// sandbox stack via `e2e-config`. Verify against `aws amplify list-apps`.
-const APP_ID = '<PROD_APP_ID>';
+// Verify against `aws amplify list-apps`.
+const APP_ID = 'd2kfuntlyvy3iy';
 const BRANCH = 'main';
 const REGION = 'us-west-2';
 const PROFILE = 'personal';
