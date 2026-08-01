@@ -130,6 +130,8 @@ jobs:
             paths: .features-gen/e2e/features/budget
           - name: imagery
             paths: .features-gen/e2e/features/imagery
+          - name: plan
+            paths: .features-gen/e2e/features/plan
     steps:
       - uses: actions/checkout@v7
 

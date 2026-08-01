@@ -13,6 +13,8 @@ vi.mock('../destinations/DestinationsPanel', () => ({
 vi.mock('../availability/AvailabilityPanel', () => ({
   AvailabilityPanel: () => <div data-testid="availability-panel" />,
 }));
+vi.mock('../plan/TripPlan', () => ({ TripPlan: () => <div data-testid="trip-plan" /> }));
+vi.mock('../plan/ShareButton', () => ({ ShareButton: () => <div data-testid="share-trip" /> }));
 
 import { TripPage } from './TripPage';
 

@@ -13,6 +13,8 @@ import { useJoinTrip } from './useJoinTrip';
 import { Roster } from './Roster';
 import { DestinationsPanel } from '../destinations/DestinationsPanel';
 import { AvailabilityPanel } from '../availability/AvailabilityPanel';
+import { TripPlan } from '../plan/TripPlan';
+import { ShareButton } from '../plan/ShareButton';
 import './trip.css';
 
 // Open the calendar on the current month. Computed here (not in tested logic) so
@@ -34,6 +36,7 @@ export function TripPage() {
             <IonBackButton defaultHref="/" />
           </IonButtons>
           <IonTitle>{trip?.title ?? 'Trip'}</IonTitle>
+          <IonButtons slot="end">{trip && <ShareButton slug={slug} />}</IonButtons>
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
@@ -44,6 +47,7 @@ export function TripPage() {
               {trip?.title}
             </h1>
             {trip?.description && <p className="tv-muted">{trip.description}</p>}
+            <TripPlan tripId={trip?.id} />
             <Roster
               members={members}
               me={join.me}
