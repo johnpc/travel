@@ -1,9 +1,30 @@
 .trip {
-  max-width: 36rem;
+  max-width: 68rem;
   margin: 0 auto;
 }
 
 .trip__title {
   font-size: 1.8rem;
   margin: 0.2rem 0 0.5rem;
+}
+
+/* Single column on mobile; on wide screens the destinations board takes the
+   main column and the roster + calendar sit in a side rail, so the desktop
+   space is used instead of stranding a phone-width strip in the middle. */
+.trip__cols {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 900px) {
+  .trip__cols {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    align-items: start;
+  }
+  /* The side rail sticks as you scroll the longer destinations board. */
+  .trip__rail {
+    position: sticky;
+    top: 1rem;
+  }
 }

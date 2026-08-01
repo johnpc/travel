@@ -48,15 +48,21 @@ export function TripPage() {
             </h1>
             {trip?.description && <p className="tv-muted">{trip.description}</p>}
             <TripPlan tripId={trip?.id} />
-            <Roster
-              members={members}
-              me={join.me}
-              onJoin={join.join}
-              onPick={join.pick}
-              isJoining={join.isJoining}
-            />
-            <DestinationsPanel tripId={trip?.id} tripTitle={trip?.title ?? ''} me={join.me} />
-            <AvailabilityPanel tripId={trip?.id} me={join.me} start={START_MONTH} />
+            <div className="trip__cols">
+              <div className="trip__main">
+                <DestinationsPanel tripId={trip?.id} tripTitle={trip?.title ?? ''} me={join.me} />
+              </div>
+              <aside className="trip__rail">
+                <Roster
+                  members={members}
+                  me={join.me}
+                  onJoin={join.join}
+                  onPick={join.pick}
+                  isJoining={join.isJoining}
+                />
+                <AvailabilityPanel tripId={trip?.id} me={join.me} start={START_MONTH} />
+              </aside>
+            </div>
           </div>
         </LoadState>
       </IonContent>
