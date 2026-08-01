@@ -18,6 +18,7 @@ import { suggestDestinations } from '../destinationgen/resource';
  * - Member:      one person on a trip's roster (name-only identity).
  * - Destination: a candidate place on a trip's brainstorm (manual or AI-added).
  * - Interest:    one member's interest level in one destination (the votes).
+ * - Availability: one member's free/busy status on one calendar day.
  */
 const schema = a.schema({
   // The trip itself — the shared document at travel.jpc.io/<slug>. `slug` is the
@@ -98,6 +99,27 @@ const schema = a.schema({
       level: a.enum(['YES', 'MAYBE', 'NO']),
     })
     .secondaryIndexes((index) => [index('destinationId'), index('tripId')])
+    .authorization((allow) => [
+      allow.guest().to(['read', 'create', 'update', 'delete']),
+      allow.authenticated('identityPool').to(['read', 'create', 'update', 'delete']),
+      allow.authenticated().to(['read', 'create', 'update', 'delete']),
+      allow.group('editors').to(['create', 'update', 'delete']),
+    ]),
+
+  // One member's availability on one calendar day for a trip. Keyed by a
+  // deterministic id (`<tripId>:<date>:<memberName>`) so re-marking a day UPSERTS
+  // instead of duplicating. `date` is a YYYY-MM-DD day stamp; `status` is the
+  // member's availability that day. Read all of a trip's marks by tripId and
+  // aggregate per day client-side to find the dates that work for everyone.
+  // Guest CRUD, name-only identity, like the rest.
+  Availability: a
+    .model({
+      tripId: a.id().required(),
+      memberName: a.string().required(),
+      date: a.string().required(),
+      status: a.enum(['FREE', 'MAYBE', 'BUSY']),
+    })
+    .secondaryIndexes((index) => [index('tripId')])
     .authorization((allow) => [
       allow.guest().to(['read', 'create', 'update', 'delete']),
       allow.authenticated('identityPool').to(['read', 'create', 'update', 'delete']),
