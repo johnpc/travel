@@ -4,7 +4,7 @@
  * and clearing DELETES. Read all of a trip's marks in one query, aggregate
  * client-side (availTally.ts). Guest CRUD.
  */
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import {
   dataClient,
   unwrap,
@@ -12,6 +12,7 @@ import {
   type AvailabilityStatus,
 } from '../../lib/dataClient';
 import { useLiveQuery } from '../../lib/useLiveQuery';
+import { upsertMark } from './upsertMark';
 
 /** Stable row id for one member's mark on one day. */
 export function markId(tripId: string, date: string, memberName: string): string {
@@ -47,27 +48,29 @@ interface MarkArgs {
 
 /** Upsert (or, when status is null, clear) this member's mark on a day. */
 export function useMarkDay(tripId: string | undefined) {
-  const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ date, memberName, status }: MarkArgs): Promise<void> => {
       if (!tripId) throw new Error('No trip to mark availability in');
-      const id = markId(tripId, date, memberName);
-      if (status === null) {
-        await dataClient.models.Availability.delete({ id });
-        return;
-      }
-      const created = await dataClient.models.Availability.create({
-        id,
-        tripId,
-        date,
-        memberName,
-        status,
-      });
-      if (created.errors?.length)
-        unwrap(await dataClient.models.Availability.update({ id, status }));
+      await upsertMark(tripId, date, memberName, status);
     },
-    onSuccess: () => {
-      if (tripId) qc.invalidateQueries({ queryKey: availabilityKeys.byTrip(tripId) });
+  });
+}
+
+/** Mark a whole span of days at once (tap start → tap end). One write per day;
+ * the live subscription reflects them as they land. */
+export function useMarkRange(tripId: string | undefined) {
+  return useMutation({
+    mutationFn: async ({
+      dates,
+      memberName,
+      status,
+    }: {
+      dates: string[];
+      memberName: string;
+      status: AvailabilityStatus;
+    }): Promise<void> => {
+      if (!tripId) throw new Error('No trip to mark availability in');
+      for (const date of dates) await upsertMark(tripId, date, memberName, status);
     },
   });
 }

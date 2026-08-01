@@ -1,34 +1,36 @@
 import { useState } from 'react';
-import { useAvailability, useMarkDay } from './availabilityApi';
+import { useAvailability, useMarkDay, useMarkRange } from './availabilityApi';
 import { tallyByDay, myStatus, nextStatus } from './availTally';
 import { monthGrid, shiftMonth } from './calendar';
+import { candidateWindows, busiestMonth, type CandidateWindow } from './candidateWindows';
+import { useRangeSelect } from './useRangeSelect';
 import type { AvailabilityStatus } from '../../lib/dataClient';
 
-interface StartMonth {
+interface Month {
   year: number;
   month: number; // 1-12
 }
 
 /**
- * Availability panel orchestration: reads a trip's day-marks, builds the current
- * month grid, aggregates per-day tallies, and toggles this member's mark on a
- * day (FREE → BUSY → MAYBE → clear). `start` is the month to open on (injected so
- * it's deterministic/testable). Marking needs the `me` identity.
+ * Availability panel orchestration. Surfaces the best candidate windows up front
+ * (so friends' dates are never buried), opens on the busiest month by default,
+ * lets you jump to a window, mark a whole span FREE by tapping start→end (range
+ * mode), or fine-tune a single day (FREE→BUSY→MAYBE→clear). Needs `me` to mark.
  */
-export function useAvailabilityPanel(
-  tripId: string | undefined,
-  me: string | null,
-  start: StartMonth,
-) {
+export function useAvailabilityPanel(tripId: string | undefined, me: string | null, today: Month) {
   const query = useAvailability(tripId);
   const marks = query.data ?? [];
   const markDay = useMarkDay(tripId);
-  const [view, setView] = useState<StartMonth>(start);
+  const markRange = useMarkRange(tripId);
+  const [override, setOverride] = useState<Month | null>(null);
+  const view = override ?? busiestMonth(marks, today);
+
+  const range = useRangeSelect((dates) => {
+    if (me) markRange.mutate({ dates, memberName: me, status: 'FREE' });
+  });
 
   const toggle = (date: string) => {
-    if (!me) return;
-    const current = myStatus(marks, date, me);
-    markDay.mutate({ date, memberName: me, status: nextStatus(current) });
+    if (me) markDay.mutate({ date, memberName: me, status: nextStatus(myStatus(marks, date, me)) });
   };
 
   return {
@@ -36,10 +38,15 @@ export function useAvailabilityPanel(
     month: view.month,
     weeks: monthGrid(view.year, view.month),
     tallies: tallyByDay(marks),
+    windows: candidateWindows(marks).slice(0, 5) as CandidateWindow[],
     statusFor: (date: string): AvailabilityStatus | null => myStatus(marks, date, me),
+    inRange: range.inRange,
+    rangeStart: range.start,
+    pickRange: range.pick,
     toggle,
-    prevMonth: () => setView(shiftMonth(view.year, view.month, -1)),
-    nextMonth: () => setView(shiftMonth(view.year, view.month, 1)),
+    jumpTo: (w: CandidateWindow) => setOverride({ year: +w.start.slice(0, 4), month: +w.start.slice(5, 7) }), // prettier-ignore
+    prevMonth: () => setOverride(shiftMonth(view.year, view.month, -1)),
+    nextMonth: () => setOverride(shiftMonth(view.year, view.month, 1)),
     isLoading: query.isLoading,
     isError: query.isError,
     refetch: () => query.refetch(),

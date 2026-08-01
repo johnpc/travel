@@ -20,3 +20,11 @@ Feature: Mark when you're free so the group can pick dates
     When a visitor opens the trip "greece-2027"
     And the visitor goes to next month
     Then the calendar shows a different month than it opened on
+
+  Scenario: Marking a range free surfaces a candidate window to jump to
+    When a visitor opens the trip "greece-2027"
+    And the visitor joins as "Blake"
+    And the visitor marks a free range in the current month
+    Then a candidate date window is listed
+    When the visitor jumps to the first candidate window
+    Then the calendar shows that window's month

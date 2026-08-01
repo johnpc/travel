@@ -97,3 +97,67 @@
   font-weight: 700;
   color: var(--tv-positive);
 }
+
+/* Candidate windows — the ranked "best dates" list above the calendar. */
+.cwins {
+  list-style: none;
+  margin: 0 0 0.75rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.cwins__item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.85rem;
+  border: 1px solid var(--tv-border);
+  border-radius: var(--tv-radius-sm);
+  background: var(--tv-accent-soft);
+  color: var(--tv-text);
+  cursor: pointer;
+  text-align: left;
+}
+
+.cwins__range {
+  font-size: 0.98rem;
+}
+
+.cwins__meta {
+  flex: 1;
+  font-size: 0.82rem;
+}
+
+/* Tap-mode toggle. */
+.avail__modes {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 0.6rem;
+}
+
+.avail__mode {
+  flex: 1;
+  border: 1px solid var(--tv-border);
+  background: var(--tv-bg);
+  color: var(--tv-text);
+  border-radius: 999px;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.avail__mode--on {
+  background: var(--tv-accent);
+  border-color: var(--tv-accent);
+  color: var(--tv-accent-contrast);
+}
+
+/* Pending range-start day. */
+.cal__cell--pending {
+  outline: 2px dashed var(--tv-accent-strong);
+  outline-offset: -2px;
+}
