@@ -50,6 +50,25 @@
   --ion-font-family: var(--tv-font-sans);
   --ion-toolbar-background: var(--tv-surface);
   --ion-toolbar-color: var(--tv-text);
+
+  /* Brand the Ionic PRIMARY color so every IonButton / link / accent is teal,
+     not the default blue. These track --tv-accent, so they follow dark mode for
+     free. shade/tint are hand-picked darker/lighter teals; rgb is for Ionic's
+     rgba() usages (ripples, tints). */
+  --ion-color-primary: var(--tv-accent);
+  --ion-color-primary-rgb: 15, 123, 120;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: var(--tv-accent-strong);
+  --ion-color-primary-tint: #2bb3a3;
+
+  /* Secondary = warm terracotta, for accents that aren't the main action. */
+  --ion-color-secondary: var(--tv-warm);
+  --ion-color-secondary-rgb: 198, 93, 59;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #ae5234;
+  --ion-color-secondary-tint: #cc6d4f;
 }
 
 /* Dark palette — shared by the OS preference (no explicit choice) and the
@@ -58,6 +77,7 @@
   :root:not([data-theme='light']) {
     --tv-accent: #2bb3a3;
     --tv-accent-strong: #4cc9ba;
+    --ion-color-primary-rgb: 43, 179, 163;
     --tv-accent-soft: #10302e;
     --tv-warm-soft: #3a201a;
     --tv-bg: #16130f;
@@ -75,6 +95,7 @@
 :root[data-theme='dark'] {
   --tv-accent: #2bb3a3;
   --tv-accent-strong: #4cc9ba;
+  --ion-color-primary-rgb: 43, 179, 163;
   --tv-accent-soft: #10302e;
   --tv-warm-soft: #3a201a;
   --tv-bg: #16130f;
