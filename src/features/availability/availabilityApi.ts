@@ -4,13 +4,14 @@
  * and clearing DELETES. Read all of a trip's marks in one query, aggregate
  * client-side (availTally.ts). Guest CRUD.
  */
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   dataClient,
   unwrap,
   type AvailabilityRecord,
   type AvailabilityStatus,
 } from '../../lib/dataClient';
+import { useLiveQuery } from '../../lib/useLiveQuery';
 
 /** Stable row id for one member's mark on one day. */
 export function markId(tripId: string, date: string, memberName: string): string {
@@ -26,13 +27,16 @@ export const availabilityKeys = {
   byTrip: (tripId: string) => ['availability', tripId] as const,
 };
 
-/** Read a trip's marks. `enabled` defers until the trip id is known. */
+/** Live-read a trip's marks — collaborators' marks stream in (observeQuery).
+ * `enabled` defers until the trip id is known. Order irrelevant (aggregated by
+ * day); sort by id for stability. */
 export function useAvailability(tripId: string | undefined) {
-  return useQuery({
-    queryKey: availabilityKeys.byTrip(tripId ?? ''),
-    queryFn: () => fetchAvailability(tripId as string),
-    enabled: !!tripId,
-  });
+  return useLiveQuery(
+    dataClient.models.Availability,
+    { tripId: { eq: tripId } },
+    (a: AvailabilityRecord, b: AvailabilityRecord) => a.id.localeCompare(b.id),
+    !!tripId,
+  );
 }
 
 interface MarkArgs {

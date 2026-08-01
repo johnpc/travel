@@ -3,11 +3,25 @@ import type { ReactNode } from 'react';
 import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-const m = vi.hoisted(() => ({ list: vi.fn(), create: vi.fn() }));
+const m = vi.hoisted(() => ({ list: vi.fn(), create: vi.fn(), observeQuery: vi.fn() }));
 vi.mock('../../lib/dataClient', async (importActual) => {
   const actual = await importActual<typeof import('../../lib/dataClient')>();
-  return { ...actual, dataClient: { models: { Activity: { list: m.list, create: m.create } } } };
+  return {
+    ...actual,
+    dataClient: {
+      models: { Activity: { list: m.list, create: m.create, observeQuery: m.observeQuery } },
+    },
+  };
 });
+
+function liveWith(items: unknown[]) {
+  m.observeQuery.mockReturnValue({
+    subscribe: (h: { next: (msg: { items: unknown[]; isSynced: boolean }) => void }) => {
+      h.next({ items, isSynced: true });
+      return { unsubscribe: vi.fn() };
+    },
+  });
+}
 
 import { fetchActivities, useActivities, useAddActivity } from './activityApi';
 
@@ -40,12 +54,12 @@ describe('useActivities', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
-  it('does not fetch until enabled and an id are set', () => {
+  it('does not subscribe until enabled and an id are set', () => {
     renderHook(() => useActivities('d1', false), { wrapper });
-    expect(m.list).not.toHaveBeenCalled();
+    expect(m.observeQuery).not.toHaveBeenCalled();
   });
-  it('fetches when enabled', async () => {
-    m.list.mockResolvedValue({ data: [{ id: '1', title: 'Hike', createdAt: 'x' }] });
+  it('live-reads when enabled', async () => {
+    liveWith([{ id: '1', title: 'Hike', createdAt: 'x' }]);
     const { result } = renderHook(() => useActivities('d1', true), { wrapper });
     await waitFor(() => expect(result.current.data?.[0]?.title).toBe('Hike'));
   });
