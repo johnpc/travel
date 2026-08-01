@@ -9,12 +9,20 @@ export interface DestinationFixture {
   source: 'MANUAL' | 'AI';
 }
 
+export interface VoteFixture {
+  /** Destination name this vote is on (matched to the created row). */
+  destination: string;
+  memberName: string;
+  level: 'YES' | 'MAYBE' | 'NO';
+}
+
 export interface TripFixture {
   slug: string;
   title: string;
   description: string;
   members: string[];
   destinations: DestinationFixture[];
+  votes: VoteFixture[];
 }
 
 export const TRIP_FIXTURES: TripFixture[] = [
@@ -37,6 +45,13 @@ export const TRIP_FIXTURES: TripFixture[] = [
         source: 'MANUAL',
       },
     ],
+    votes: [
+      { destination: 'Santorini, Greece', memberName: 'Alex', level: 'YES' },
+      { destination: 'Santorini, Greece', memberName: 'Priya', level: 'YES' },
+      { destination: 'Santorini, Greece', memberName: 'Sam', level: 'MAYBE' },
+      { destination: 'Athens, Greece', memberName: 'Alex', level: 'MAYBE' },
+      { destination: 'Athens, Greece', memberName: 'Jordan', level: 'NO' },
+    ],
   },
   {
     slug: 'demo-trip',
@@ -44,5 +59,6 @@ export const TRIP_FIXTURES: TripFixture[] = [
     description: 'A sample trip to explore how Travel works.',
     members: ['Alex', 'Sam'],
     destinations: [],
+    votes: [],
   },
 ];

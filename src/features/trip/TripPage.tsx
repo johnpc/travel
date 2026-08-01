@@ -45,7 +45,7 @@ export function TripPage() {
               onPick={join.pick}
               isJoining={join.isJoining}
             />
-            <DestinationsPanel tripId={trip?.id} tripTitle={trip?.title ?? ''} />
+            <DestinationsPanel tripId={trip?.id} tripTitle={trip?.title ?? ''} me={join.me} />
           </div>
         </LoadState>
       </IonContent>

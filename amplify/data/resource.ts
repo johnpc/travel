@@ -17,6 +17,7 @@ import { suggestDestinations } from '../destinationgen/resource';
  * - Trip:        the collaborative document, addressed by a unique URL `slug`.
  * - Member:      one person on a trip's roster (name-only identity).
  * - Destination: a candidate place on a trip's brainstorm (manual or AI-added).
+ * - Interest:    one member's interest level in one destination (the votes).
  */
 const schema = a.schema({
   // The trip itself — the shared document at travel.jpc.io/<slug>. `slug` is the
@@ -72,8 +73,31 @@ const schema = a.schema({
       blurb: a.string(),
       why: a.string(),
       source: a.enum(['MANUAL', 'AI']),
+      interests: a.hasMany('Interest', 'destinationId'),
     })
     .secondaryIndexes((index) => [index('tripId')])
+    .authorization((allow) => [
+      allow.guest().to(['read', 'create', 'update', 'delete']),
+      allow.authenticated('identityPool').to(['read', 'create', 'update', 'delete']),
+      allow.authenticated().to(['read', 'create', 'update', 'delete']),
+      allow.group('editors').to(['create', 'update', 'delete']),
+    ]),
+
+  // One person's interest level in one destination — the group's votes. Keyed by
+  // a deterministic id (`<tripId>:<destinationId>:<memberName>`) so re-voting
+  // UPSERTS the same row instead of piling up duplicates. `level` is an ordinal
+  // enthusiasm scale. Read by destinationId (aggregate per card) or tripId (the
+  // whole board's votes in one query). memberName is the name-only identity.
+  // Guest CRUD like the rest.
+  Interest: a
+    .model({
+      tripId: a.id().required(),
+      destinationId: a.id().required(),
+      destination: a.belongsTo('Destination', 'destinationId'),
+      memberName: a.string().required(),
+      level: a.enum(['YES', 'MAYBE', 'NO']),
+    })
+    .secondaryIndexes((index) => [index('destinationId'), index('tripId')])
     .authorization((allow) => [
       allow.guest().to(['read', 'create', 'update', 'delete']),
       allow.authenticated('identityPool').to(['read', 'create', 'update', 'delete']),

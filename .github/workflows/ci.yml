@@ -120,6 +120,8 @@ jobs:
             paths: .features-gen/e2e/features/trip
           - name: destinations
             paths: .features-gen/e2e/features/destinations
+          - name: interest
+            paths: .features-gen/e2e/features/interest
     steps:
       - uses: actions/checkout@v7
 

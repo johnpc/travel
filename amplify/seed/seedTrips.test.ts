@@ -4,6 +4,7 @@ const m = vi.hoisted(() => ({
   tripCreate: vi.fn(),
   memberCreate: vi.fn(),
   destCreate: vi.fn(),
+  interestCreate: vi.fn(),
   clearOneModel: vi.fn(),
 }));
 vi.mock('./seedClient', () => ({
@@ -12,6 +13,7 @@ vi.mock('./seedClient', () => ({
       Trip: { create: m.tripCreate },
       Member: { create: m.memberCreate },
       Destination: { create: m.destCreate },
+      Interest: { create: m.interestCreate },
     },
   },
   clearOneModel: m.clearOneModel,
@@ -25,7 +27,8 @@ describe('seedTripData', () => {
     vi.clearAllMocks();
     m.tripCreate.mockResolvedValue({ data: { id: 'trip1' }, errors: null });
     m.memberCreate.mockResolvedValue({ errors: null });
-    m.destCreate.mockResolvedValue({ errors: null });
+    m.destCreate.mockResolvedValue({ data: { id: 'dest1' }, errors: null });
+    m.interestCreate.mockResolvedValue({ errors: null });
   });
 
   it('creates each fixture trip with its roster and destinations', async () => {
@@ -47,6 +50,12 @@ describe('seedTripData', () => {
       expect.objectContaining({ tripId: 'trip1', name: 'Santorini, Greece', source: 'AI' }),
       { authMode: 'userPool' },
     );
+    // greece-2027 seeds 5 votes (demo-trip 0), with deterministic ids.
+    expect(m.interestCreate).toHaveBeenCalledTimes(5);
+    expect(m.interestCreate).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 'trip1:dest1:Alex', memberName: 'Alex', level: 'YES' }),
+      { authMode: 'userPool' },
+    );
   });
 
   it('throws when a trip create returns errors', async () => {
@@ -60,9 +69,9 @@ describe('clearAll', () => {
     vi.clearAllMocks();
   });
 
-  it('clears children (members, destinations) then trips', async () => {
+  it('clears children (interests, members, destinations) then trips', async () => {
     m.clearOneModel.mockResolvedValue(0);
     await clearAll();
-    expect(m.clearOneModel).toHaveBeenCalledTimes(3);
+    expect(m.clearOneModel).toHaveBeenCalledTimes(4);
   });
 });

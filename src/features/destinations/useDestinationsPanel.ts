@@ -1,20 +1,29 @@
 import { useState } from 'react';
 import { useAddDestination, useDestinations } from './destinationApi';
 import { useSuggestDestinations, type Suggestion } from './suggestApi';
+import { useInterest, type InterestView } from '../interest/useInterest';
+import { sortByInterest } from './sortByInterest';
 import type { DestinationRecord } from '../../lib/dataClient';
 
 /**
  * Destinations panel orchestration: the trip's destination list + manual add +
- * AI suggest/accept. Keeps the view dumb. Accepting a suggestion adds it as an
- * AI-sourced Destination and removes it from the pending suggestion list; the
- * suggest call excludes names already on the board so it never repeats them.
+ * AI suggest/accept + interest votes. Keeps the view dumb. Destinations are
+ * sorted by group interest (most-wanted first). Accepting a suggestion adds it
+ * as AI-sourced and drops it from the pending list; suggest excludes names
+ * already on the board so it never repeats. Voting needs the `me` identity.
  */
-export function useDestinationsPanel(tripId: string | undefined, tripTitle: string) {
+export function useDestinationsPanel(
+  tripId: string | undefined,
+  tripTitle: string,
+  me: string | null,
+) {
   const listQuery = useDestinations(tripId);
-  const destinations: DestinationRecord[] = listQuery.data ?? [];
   const addDestination = useAddDestination(tripId);
   const suggest = useSuggestDestinations();
+  const interest: InterestView = useInterest(tripId, me);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+
+  const destinations: DestinationRecord[] = sortByInterest(listQuery.data ?? [], interest.tallies);
 
   const addManual = (name: string) => {
     if (name.trim()) addDestination.mutate({ name, source: 'MANUAL' });
@@ -33,13 +42,17 @@ export function useDestinationsPanel(tripId: string | undefined, tripTitle: stri
   return {
     destinations,
     isLoading: listQuery.isLoading,
-    isError: listQuery.isError,
-    refetch: () => listQuery.refetch(),
+    isError: listQuery.isError || interest.isError,
+    refetch: () => {
+      listQuery.refetch();
+      interest.refetch();
+    },
     isAdding: addDestination.isPending,
     addManual,
     suggestions,
     isSuggesting: suggest.isPending,
     runSuggest,
     accept,
+    interest,
   };
 }
