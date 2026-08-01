@@ -44,7 +44,7 @@ stay useful for this trip and the next.
 | Activity ideas per destination                         |   ⬜   |
 | Generated destination imagery (persistent)             |   ⬜   |
 | Per-person interest levels (voting)                    |   ✅   |
-| Date availability per candidate trip                   |   ⬜   |
+| Date availability (shared month calendar)              |   ✅   |
 | Budget / price feasibility by dates                    |   ⬜   |
 
 ## How it works

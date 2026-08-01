@@ -1,0 +1,99 @@
+.availability {
+  margin-top: 2rem;
+}
+
+.avail__hint {
+  font-size: 0.9rem;
+  margin: 0 0 0.5rem;
+}
+
+.cal__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.cal__title {
+  font-size: 1.1rem;
+}
+
+.cal {
+  background: var(--tv-surface);
+  border: 1px solid var(--tv-border);
+  border-radius: var(--tv-radius);
+  padding: 0.5rem;
+}
+
+.cal__row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.cal__row--head {
+  margin-bottom: 4px;
+}
+
+.cal__wd {
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 0;
+}
+
+.cal__cell {
+  position: relative;
+  aspect-ratio: 1;
+  border: 1px solid var(--tv-border);
+  border-radius: var(--tv-radius-sm);
+  background: var(--tv-bg);
+  color: var(--tv-text);
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cal__cell:disabled {
+  cursor: default;
+}
+
+.cal__cell--blank {
+  border: none;
+  background: transparent;
+  cursor: default;
+}
+
+/* My own mark — a colored ring/fill. */
+.cal__cell--free {
+  border-color: var(--tv-positive);
+  box-shadow: inset 0 0 0 2px var(--tv-positive);
+}
+.cal__cell--busy {
+  border-color: var(--tv-negative);
+  box-shadow: inset 0 0 0 2px var(--tv-negative);
+}
+.cal__cell--maybe {
+  border-color: var(--tv-warm);
+  box-shadow: inset 0 0 0 2px var(--tv-warm);
+}
+
+/* Days someone in the group is free get a soft tint so good dates pop. */
+.cal__cell--group-free {
+  background: var(--tv-accent-soft);
+}
+
+.cal__daynum {
+  line-height: 1;
+}
+
+.cal__free {
+  position: absolute;
+  bottom: 2px;
+  right: 3px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: var(--tv-positive);
+}

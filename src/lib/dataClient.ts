@@ -41,3 +41,5 @@ export type MemberRecord = Schema['Member']['type'];
 export type DestinationRecord = Schema['Destination']['type'];
 export type InterestRecord = Schema['Interest']['type'];
 export type InterestLevel = 'YES' | 'MAYBE' | 'NO';
+export type AvailabilityRecord = Schema['Availability']['type'];
+export type AvailabilityStatus = 'FREE' | 'MAYBE' | 'BUSY';
