@@ -1,0 +1,22 @@
+.plan {
+  margin: 0.5rem 0 1.5rem;
+  padding: 1rem 1.15rem;
+  border: 1px solid var(--tv-border);
+  border-radius: var(--tv-radius);
+  background: var(--tv-accent-soft);
+  box-shadow: var(--tv-shadow);
+}
+
+.plan__row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.3rem 0;
+  font-size: 0.95rem;
+}
+
+.plan__icon {
+  color: var(--tv-accent-strong);
+  font-size: 1.15rem;
+  flex-shrink: 0;
+}
