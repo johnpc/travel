@@ -5,6 +5,11 @@ import { MemoryRouter } from 'react-router-dom';
 const h = vi.hoisted(() => ({ useTripPage: vi.fn(), useJoinTrip: vi.fn() }));
 vi.mock('./useTripPage', () => ({ useTripPage: h.useTripPage }));
 vi.mock('./useJoinTrip', () => ({ useJoinTrip: h.useJoinTrip }));
+// DestinationsPanel is a separate unit with its own tests; stub it here so the
+// TripPage test doesn't drive its data hooks.
+vi.mock('../destinations/DestinationsPanel', () => ({
+  DestinationsPanel: () => <div data-testid="destinations-panel" />,
+}));
 
 import { TripPage } from './TripPage';
 

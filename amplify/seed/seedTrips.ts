@@ -2,9 +2,10 @@
 import { client, clearOneModel, EDITOR_WRITE } from './seedClient';
 import { TRIP_FIXTURES } from './fixtures/trips';
 
-/** Wipe every Member then Trip (children first) so re-seeding is clean. */
+/** Wipe every child then Trip (children first) so re-seeding is clean. */
 export async function clearAll(): Promise<void> {
   await clearOneModel(client.models.Member);
+  await clearOneModel(client.models.Destination);
   await clearOneModel(client.models.Trip);
 }
 
@@ -23,6 +24,16 @@ export async function seedTripData(): Promise<void> {
         client.models.Member.create({ tripId: trip.id, name }, EDITOR_WRITE),
       ),
     );
-    console.log(`Seeded trip ${fixture.slug} with ${fixture.members.length} members.`);
+    await Promise.all(
+      fixture.destinations.map((d) =>
+        client.models.Destination.create(
+          { tripId: trip.id, name: d.name, blurb: d.blurb, why: d.why, source: d.source },
+          EDITOR_WRITE,
+        ),
+      ),
+    );
+    console.log(
+      `Seeded trip ${fixture.slug} with ${fixture.members.length} members, ${fixture.destinations.length} destinations.`,
+    );
   }
 }
