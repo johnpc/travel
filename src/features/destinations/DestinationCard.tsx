@@ -1,17 +1,25 @@
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { IonIcon } from '@ionic/react';
-import { sparklesOutline, createOutline } from 'ionicons/icons';
+import {
+  sparklesOutline,
+  createOutline,
+  chevronDownOutline,
+  chevronUpOutline,
+} from 'ionicons/icons';
 import type { DestinationRecord } from '../../lib/dataClient';
+import { ActivitiesSection } from '../activities/ActivitiesSection';
 
 interface DestinationCardProps {
   destination: DestinationRecord;
+  tripId: string | undefined;
   /** Optional vote control rendered under the card (interest slice). */
   vote?: ReactNode;
 }
 
-/** One destination on the board: name + source badge, blurb, why, and an
- * optional vote control slot. */
-export function DestinationCard({ destination: d, vote }: DestinationCardProps) {
+/** One destination on the board: name + source badge, blurb, why, a vote
+ * control slot, and an expandable "things to do here" activities section. */
+export function DestinationCard({ destination: d, tripId, vote }: DestinationCardProps) {
+  const [open, setOpen] = useState(false);
   return (
     <li className="dest-card" data-testid="dest-item">
       <div className="dest-card__head">
@@ -26,6 +34,17 @@ export function DestinationCard({ destination: d, vote }: DestinationCardProps) 
       {d.blurb && <p className="dest-card__blurb">{d.blurb}</p>}
       {d.why && <p className="dest-card__why tv-muted">{d.why}</p>}
       {vote}
+      <button
+        type="button"
+        className="dest-card__toggle"
+        aria-expanded={open}
+        data-testid="dest-activities-toggle"
+        onClick={() => setOpen((v) => !v)}
+      >
+        <IonIcon icon={open ? chevronUpOutline : chevronDownOutline} aria-hidden="true" />
+        {open ? 'Hide things to do' : 'Things to do here'}
+      </button>
+      {open && <ActivitiesSection tripId={tripId} destinationId={d.id} destinationName={d.name} />}
     </li>
   );
 }

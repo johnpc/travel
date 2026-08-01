@@ -3,6 +3,9 @@ import { render, screen } from '@testing-library/react';
 
 const h = vi.hoisted(() => ({ useDestinationsPanel: vi.fn() }));
 vi.mock('./useDestinationsPanel', () => ({ useDestinationsPanel: h.useDestinationsPanel }));
+vi.mock('../activities/ActivitiesSection', () => ({
+  ActivitiesSection: () => <div data-testid="activities" />,
+}));
 
 import { DestinationsPanel } from './DestinationsPanel';
 import type { DestinationRecord } from '../../lib/dataClient';

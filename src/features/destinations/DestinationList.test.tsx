@@ -1,5 +1,10 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
+
+vi.mock('../activities/ActivitiesSection', () => ({
+  ActivitiesSection: () => <div data-testid="activities" />,
+}));
+
 import { DestinationList } from './DestinationList';
 import type { DestinationRecord } from '../../lib/dataClient';
 
@@ -10,7 +15,7 @@ const dests = [
 
 describe('DestinationList', () => {
   it('renders each destination with its blurb and why', () => {
-    render(<DestinationList destinations={dests} />);
+    render(<DestinationList destinations={dests} tripId="t1" />);
     expect(screen.getAllByTestId('dest-item')).toHaveLength(2);
     expect(screen.getByText('Santorini')).toBeInTheDocument();
     expect(screen.getByText('Blue domes.')).toBeInTheDocument();

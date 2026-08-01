@@ -1,5 +1,6 @@
 import { type ClientSchema, a, defineData } from '@aws-amplify/backend';
 import { suggestDestinations } from '../destinationgen/resource';
+import { suggestActivities } from '../activitygen/resource';
 
 /**
  * TRAVEL data schema.
@@ -19,6 +20,7 @@ import { suggestDestinations } from '../destinationgen/resource';
  * - Destination: a candidate place on a trip's brainstorm (manual or AI-added).
  * - Interest:    one member's interest level in one destination (the votes).
  * - Availability: one member's free/busy status on one calendar day.
+ * - Activity:    a thing to do at a destination (AI-suggested or hand-added).
  */
 const schema = a.schema({
   // The trip itself — the shared document at travel.jpc.io/<slug>. `slug` is the
@@ -75,6 +77,7 @@ const schema = a.schema({
       why: a.string(),
       source: a.enum(['MANUAL', 'AI']),
       interests: a.hasMany('Interest', 'destinationId'),
+      activities: a.hasMany('Activity', 'destinationId'),
     })
     .secondaryIndexes((index) => [index('tripId')])
     .authorization((allow) => [
@@ -99,6 +102,29 @@ const schema = a.schema({
       level: a.enum(['YES', 'MAYBE', 'NO']),
     })
     .secondaryIndexes((index) => [index('destinationId'), index('tripId')])
+    .authorization((allow) => [
+      allow.guest().to(['read', 'create', 'update', 'delete']),
+      allow.authenticated('identityPool').to(['read', 'create', 'update', 'delete']),
+      allow.authenticated().to(['read', 'create', 'update', 'delete']),
+      allow.group('editors').to(['create', 'update', 'delete']),
+    ]),
+
+  // A thing to do at a destination — an AI-suggested (or hand-added) activity
+  // idea, the kind of thing you'd find on GetYourGuide/Airbnb Experiences. Scoped
+  // to a destination; `category` groups them (e.g. Sightseeing, Food, Outdoors).
+  // A permanent brainstorm artifact like destinations. Guest CRUD, read by
+  // destinationId in one query.
+  Activity: a
+    .model({
+      tripId: a.id().required(),
+      destinationId: a.id().required(),
+      destination: a.belongsTo('Destination', 'destinationId'),
+      title: a.string().required(),
+      blurb: a.string(),
+      category: a.string(),
+      source: a.enum(['MANUAL', 'AI']),
+    })
+    .secondaryIndexes((index) => [index('destinationId')])
     .authorization((allow) => [
       allow.guest().to(['read', 'create', 'update', 'delete']),
       allow.authenticated('identityPool').to(['read', 'create', 'update', 'delete']),
@@ -144,6 +170,21 @@ const schema = a.schema({
     .returns(a.customType({ suggestions: a.string().required() }))
     .authorization((allow) => [allow.guest(), allow.authenticated()])
     .handler(a.handler.function(suggestDestinations)),
+
+  // Guest-callable AI suggestion of ACTIVITIES for a specific destination.
+  // Synchronous tool-forced Claude call; returns a JSON string of
+  // [{title, blurb, category}] the client parses and lets the user accept into
+  // Activity rows. Excludes titles already listed so it doesn't repeat.
+  suggestActivities: a
+    .mutation()
+    .arguments({
+      destinationName: a.string().required(),
+      count: a.integer(),
+      exclude: a.string().array(),
+    })
+    .returns(a.customType({ suggestions: a.string().required() }))
+    .authorization((allow) => [allow.guest(), allow.authenticated()])
+    .handler(a.handler.function(suggestActivities)),
 });
 
 export type Schema = ClientSchema<typeof schema>;

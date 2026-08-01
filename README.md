@@ -41,7 +41,7 @@ stay useful for this trip and the next.
 | Name-only roster (pick your name, recognized anywhere) |   ✅   |
 | Light/dark theme (follows OS + in-app override)        |   ✅   |
 | Brainstorm destinations (AI-suggested + user-added)    |   ✅   |
-| Activity ideas per destination                         |   ⬜   |
+| Activity ideas per destination (AI-suggested)          |   ✅   |
 | Generated destination imagery (persistent)             |   ⬜   |
 | Per-person interest levels (voting)                    |   ✅   |
 | Date availability (shared month calendar)              |   ✅   |
