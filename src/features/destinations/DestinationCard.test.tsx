@@ -1,5 +1,10 @@
-import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
+
+vi.mock('../activities/ActivitiesSection', () => ({
+  ActivitiesSection: () => <div data-testid="activities" />,
+}));
+
 import { DestinationCard } from './DestinationCard';
 import type { DestinationRecord } from '../../lib/dataClient';
 
@@ -9,7 +14,7 @@ describe('DestinationCard', () => {
   it('renders name, blurb, why and an optional vote slot', () => {
     render(
       <ul>
-        <DestinationCard destination={dest} vote={<div data-testid="vote-slot" />} />
+        <DestinationCard destination={dest} tripId="t1" vote={<div data-testid="vote-slot" />} />
       </ul>,
     );
     expect(screen.getByText('Santorini')).toBeInTheDocument();
@@ -18,12 +23,14 @@ describe('DestinationCard', () => {
     expect(screen.getByTestId('vote-slot')).toBeInTheDocument();
   });
 
-  it('renders without a vote slot', () => {
+  it('expands to reveal the activities section on toggle', () => {
     render(
       <ul>
-        <DestinationCard destination={dest} />
+        <DestinationCard destination={dest} tripId="t1" />
       </ul>,
     );
-    expect(screen.getByTestId('dest-item')).toBeInTheDocument();
+    expect(screen.queryByTestId('activities')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('dest-activities-toggle'));
+    expect(screen.getByTestId('activities')).toBeInTheDocument();
   });
 });

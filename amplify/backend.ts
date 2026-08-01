@@ -3,28 +3,33 @@ import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { auth } from './auth/resource';
 import { data } from './data/resource';
 import { suggestDestinations } from './destinationgen/resource';
+import { suggestActivities } from './activitygen/resource';
 
 /**
  * TRAVEL backend.
  *
  * Guest-first, account-free (see CLAUDE.md). Auth + data (Trip / Member /
- * Destination) plus the suggestDestinations resolver, which calls Bedrock
- * (Claude) to suggest destinations — granted InvokeModel under its own IAM role.
- * S3 storage for generated destination imagery arrives with its own slice.
+ * Destination / Interest / Availability / Activity) plus the AI suggestion
+ * resolvers (suggestDestinations, suggestActivities), which call Bedrock
+ * (Claude) under their own IAM roles. S3 storage for generated destination
+ * imagery arrives with its own slice.
  */
 const backend = defineBackend({
   auth,
   data,
   suggestDestinations,
+  suggestActivities,
 });
 
 // Bedrock InvokeModel on the Claude text models (tool-forced suggestions).
-backend.suggestDestinations.resources.lambda.addToRolePolicy(
+const bedrockGrant = () =>
   new PolicyStatement({
     actions: ['bedrock:InvokeModel'],
     resources: [
       'arn:aws:bedrock:*::foundation-model/anthropic.*',
       'arn:aws:bedrock:*:*:inference-profile/*anthropic.*',
     ],
-  }),
-);
+  });
+
+backend.suggestDestinations.resources.lambda.addToRolePolicy(bedrockGrant());
+backend.suggestActivities.resources.lambda.addToRolePolicy(bedrockGrant());

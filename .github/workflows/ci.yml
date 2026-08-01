@@ -124,6 +124,8 @@ jobs:
             paths: .features-gen/e2e/features/interest
           - name: availability
             paths: .features-gen/e2e/features/availability
+          - name: activities
+            paths: .features-gen/e2e/features/activities
     steps:
       - uses: actions/checkout@v7
 
