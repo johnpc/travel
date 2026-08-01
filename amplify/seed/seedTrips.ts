@@ -2,9 +2,13 @@
 import { client, clearOneModel, EDITOR_WRITE } from './seedClient';
 import { TRIP_FIXTURES } from './fixtures/trips';
 
-/** Wipe every child then Trip (children first) so re-seeding is clean. */
+/** Wipe every child then Trip (children first) so re-seeding is clean — this is
+ * what keeps the shared sandbox at a known state each run (no drift). */
 export async function clearAll(): Promise<void> {
   await clearOneModel(client.models.Interest);
+  await clearOneModel(client.models.Availability);
+  await clearOneModel(client.models.Activity);
+  await clearOneModel(client.models.BudgetEstimate);
   await clearOneModel(client.models.Member);
   await clearOneModel(client.models.Destination);
   await clearOneModel(client.models.Trip);
