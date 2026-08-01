@@ -2,8 +2,12 @@
  * Activity server state via react-query. Activities are things to do at a
  * destination — AI-suggested or hand-added. Read by destinationId; guest CRUD.
  */
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { dataClient, unwrap, type ActivityRecord } from '../../lib/dataClient';
+import { useLiveQuery } from '../../lib/useLiveQuery';
+
+const byNewest = (a: ActivityRecord, b: ActivityRecord) =>
+  (b.createdAt ?? '').localeCompare(a.createdAt ?? '');
 
 export interface NewActivity {
   title: string;
@@ -24,13 +28,15 @@ export const activityKeys = {
   byDestination: (destinationId: string) => ['activities', destinationId] as const,
 };
 
-/** Read a destination's activities. `enabled` defers until the id is known. */
+/** Live-read a destination's activities (observeQuery). `enabled` defers until
+ * expanded + the id is known. */
 export function useActivities(destinationId: string | undefined, enabled = true) {
-  return useQuery({
-    queryKey: activityKeys.byDestination(destinationId ?? ''),
-    queryFn: () => fetchActivities(destinationId as string),
-    enabled: !!destinationId && enabled,
-  });
+  return useLiveQuery(
+    dataClient.models.Activity,
+    { destinationId: { eq: destinationId } },
+    byNewest,
+    !!destinationId && enabled,
+  );
 }
 
 /** Add an activity to a destination, then refresh its list. */

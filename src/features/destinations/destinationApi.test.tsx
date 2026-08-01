@@ -3,11 +3,26 @@ import type { ReactNode } from 'react';
 import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-const m = vi.hoisted(() => ({ list: vi.fn(), create: vi.fn() }));
+const m = vi.hoisted(() => ({ list: vi.fn(), create: vi.fn(), observeQuery: vi.fn() }));
 vi.mock('../../lib/dataClient', async (importActual) => {
   const actual = await importActual<typeof import('../../lib/dataClient')>();
-  return { ...actual, dataClient: { models: { Destination: { list: m.list, create: m.create } } } };
+  return {
+    ...actual,
+    dataClient: {
+      models: { Destination: { list: m.list, create: m.create, observeQuery: m.observeQuery } },
+    },
+  };
 });
+
+/** Drive an observeQuery subscription by hand. */
+function liveWith(items: unknown[]) {
+  m.observeQuery.mockReturnValue({
+    subscribe: (h: { next: (msg: { items: unknown[]; isSynced: boolean }) => void }) => {
+      h.next({ items, isSynced: true });
+      return { unsubscribe: vi.fn() };
+    },
+  });
+}
 
 import { fetchDestinations, useDestinations, useAddDestination } from './destinationApi';
 
@@ -44,15 +59,19 @@ describe('useDestinations', () => {
     vi.clearAllMocks();
   });
 
-  it('does not fetch until a trip id is known', () => {
+  it('does not subscribe until a trip id is known', () => {
     renderHook(() => useDestinations(undefined), { wrapper });
-    expect(m.list).not.toHaveBeenCalled();
+    expect(m.observeQuery).not.toHaveBeenCalled();
   });
 
-  it('reads the list once a trip id is provided', async () => {
-    m.list.mockResolvedValue({ data: [{ id: '1', name: 'Rome', createdAt: 'x' }] });
+  it('live-reads the list (newest first) once a trip id is provided', async () => {
+    liveWith([
+      { id: '1', name: 'Old', createdAt: '2026-01-01' },
+      { id: '2', name: 'New', createdAt: '2026-02-01' },
+    ]);
     const { result } = renderHook(() => useDestinations('t1'), { wrapper });
-    await waitFor(() => expect(result.current.data?.[0]?.name).toBe('Rome'));
+    await waitFor(() => expect(result.current.data?.[0]?.name).toBe('New'));
+    expect(m.observeQuery).toHaveBeenCalledWith({ filter: { tripId: { eq: 't1' } } });
   });
 });
 

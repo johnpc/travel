@@ -3,8 +3,12 @@
  * Destinations are candidate places on a trip's brainstorm — added manually or
  * accepted from an AI suggestion. Guest CRUD, read by tripId.
  */
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { dataClient, unwrap, type DestinationRecord } from '../../lib/dataClient';
+import { useLiveQuery } from '../../lib/useLiveQuery';
+
+const byNewest = (a: DestinationRecord, b: DestinationRecord) =>
+  (b.createdAt ?? '').localeCompare(a.createdAt ?? '');
 
 export interface NewDestination {
   name: string;
@@ -25,13 +29,15 @@ export const destinationKeys = {
   byTrip: (tripId: string) => ['destinations', tripId] as const,
 };
 
-/** Read a trip's destinations. `enabled` defers until the trip id is known. */
+/** Live-read a trip's destinations — updates stream in as collaborators change
+ * them (observeQuery). `enabled` defers until the trip id is known. */
 export function useDestinations(tripId: string | undefined) {
-  return useQuery({
-    queryKey: destinationKeys.byTrip(tripId ?? ''),
-    queryFn: () => fetchDestinations(tripId as string),
-    enabled: !!tripId,
-  });
+  return useLiveQuery(
+    dataClient.models.Destination,
+    { tripId: { eq: tripId } },
+    byNewest,
+    !!tripId,
+  );
 }
 
 /** Add a destination to a trip, then refresh the list. */

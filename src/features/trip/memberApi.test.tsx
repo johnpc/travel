@@ -3,12 +3,14 @@ import type { ReactNode } from 'react';
 import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-const m = vi.hoisted(() => ({ list: vi.fn(), create: vi.fn() }));
+const m = vi.hoisted(() => ({ list: vi.fn(), create: vi.fn(), observeQuery: vi.fn() }));
 vi.mock('../../lib/dataClient', async (importActual) => {
   const actual = await importActual<typeof import('../../lib/dataClient')>();
   return {
     ...actual,
-    dataClient: { models: { Member: { list: m.list, create: m.create } } },
+    dataClient: {
+      models: { Member: { list: m.list, create: m.create, observeQuery: m.observeQuery } },
+    },
   };
 });
 
@@ -47,13 +49,18 @@ describe('useMembers', () => {
     vi.clearAllMocks();
   });
 
-  it('is disabled (no fetch) until a trip id is known', () => {
+  it('is disabled (no subscribe) until a trip id is known', () => {
     renderHook(() => useMembers(undefined), { wrapper });
-    expect(m.list).not.toHaveBeenCalled();
+    expect(m.observeQuery).not.toHaveBeenCalled();
   });
 
-  it('reads the roster once a trip id is provided', async () => {
-    m.list.mockResolvedValue({ data: [{ id: '1', name: 'Alex' }] });
+  it('live-reads the roster once a trip id is provided', async () => {
+    m.observeQuery.mockReturnValue({
+      subscribe: (h: { next: (msg: { items: unknown[]; isSynced: boolean }) => void }) => {
+        h.next({ items: [{ id: '1', name: 'Alex' }], isSynced: true });
+        return { unsubscribe: vi.fn() };
+      },
+    });
     const { result } = renderHook(() => useMembers('t1'), { wrapper });
     await waitFor(() => expect(result.current.data?.[0]?.name).toBe('Alex'));
   });

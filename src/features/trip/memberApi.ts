@@ -3,8 +3,11 @@
  * scoped to a trip (see CLAUDE.md). Guest CRUD, so anyone with the URL can add
  * themselves or others.
  */
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { dataClient, unwrap, type MemberRecord } from '../../lib/dataClient';
+import { useLiveQuery } from '../../lib/useLiveQuery';
+
+const byName = (a: MemberRecord, b: MemberRecord) => a.name.localeCompare(b.name);
 
 /** All members on a trip, ordered by name for a stable roster display. */
 export async function fetchMembers(tripId: string): Promise<MemberRecord[]> {
@@ -16,13 +19,10 @@ export const memberKeys = {
   byTrip: (tripId: string) => ['members', tripId] as const,
 };
 
-/** Read a trip's roster. `enabled` defers until the trip id is known. */
+/** Live-read a trip's roster (observeQuery) — new members appear in real time.
+ * `enabled` defers until the trip id is known. */
 export function useMembers(tripId: string | undefined) {
-  return useQuery({
-    queryKey: memberKeys.byTrip(tripId ?? ''),
-    queryFn: () => fetchMembers(tripId as string),
-    enabled: !!tripId,
-  });
+  return useLiveQuery(dataClient.models.Member, { tripId: { eq: tripId } }, byName, !!tripId);
 }
 
 /** Add a named member to a trip's roster, then refresh the roster query. */
