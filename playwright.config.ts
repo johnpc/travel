@@ -49,7 +49,9 @@ export default defineConfig({
   // actions more headroom so genuine slowness doesn't read as a failure.
   expect: { timeout: 15_000 },
   use: {
-    baseURL: 'http://localhost:5173',
+    // Travel pins its OWN Vite port (5180) so the suite never attaches to
+    // another repo's dev server already squatting the default 5173.
+    baseURL: 'http://localhost:5180',
     trace: 'on-first-retry',
     actionTimeout: 15_000,
     navigationTimeout: 30_000,
@@ -67,8 +69,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:5173',
+    command: 'npm run dev -- --port 5180 --strictPort',
+    url: 'http://localhost:5180',
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },

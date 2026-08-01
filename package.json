@@ -97,5 +97,10 @@
     "vite": "^5.0.0",
     "vitest": "^0.34.6"
   },
+  "overrides": {
+    "@opentelemetry/core": "2.10.0",
+    "@opentelemetry/resources": "2.10.0",
+    "@opentelemetry/sdk-trace-base": "2.10.0"
+  },
   "description": "Travel — brainstorm destinations, align on activities, dates & budget, and plan group trips together"
 }
