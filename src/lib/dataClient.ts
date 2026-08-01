@@ -44,3 +44,4 @@ export type InterestLevel = 'YES' | 'MAYBE' | 'NO';
 export type AvailabilityRecord = Schema['Availability']['type'];
 export type AvailabilityStatus = 'FREE' | 'MAYBE' | 'BUSY';
 export type ActivityRecord = Schema['Activity']['type'];
+export type BudgetEstimateRecord = Schema['BudgetEstimate']['type'];

@@ -1,0 +1,31 @@
+.budget {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed var(--tv-border);
+}
+
+.budget__form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+}
+
+.budget__inputs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+}
+
+.budget__totals {
+  display: flex;
+  gap: 1.25rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--tv-radius-sm);
+  background: var(--tv-accent-soft);
+  font-size: 0.95rem;
+}
+
+.budget__totals strong {
+  color: var(--tv-accent-strong);
+}

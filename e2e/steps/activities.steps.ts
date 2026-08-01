@@ -30,7 +30,14 @@ Then('at least one activity suggestion is shown', async ({ page }) => {
 });
 
 Then("the kept activity appears in the destination's activity list", async ({ page }) => {
-  await expect(firstCard(page).getByTestId('act-item').filter({ hasText: keptTitle })).toBeVisible({
-    timeout: 15_000,
-  });
+  // .first() — the shared sandbox can accumulate same-named activities across
+  // runs; the scenario only needs the kept one to be present.
+  await expect(
+    firstCard(page).getByTestId('act-item').filter({ hasText: keptTitle }).first(),
+  ).toBeVisible({ timeout: 15_000 });
+});
+
+Then('the kept activity links to a GetYourGuide search', async ({ page }) => {
+  const item = firstCard(page).getByTestId('act-item').filter({ hasText: keptTitle }).first();
+  await expect(item.getByTestId('act-gyg')).toHaveAttribute('href', /getyourguide\.com\/s\/\?q=/);
 });

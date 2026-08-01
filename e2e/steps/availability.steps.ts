@@ -13,8 +13,15 @@ function fifteenth(): string {
 let openingTitle = '';
 
 When('the visitor marks the 15th of the current month free', async ({ page }) => {
-  await page.getByTestId(`day-${fifteenth()}`).click();
-  await page.waitForTimeout(500); // let the write + refetch settle
+  // Tap until the day reaches FREE. The status cycle is FREE→BUSY→MAYBE→clear,
+  // so from ANY starting state (a leftover mark on the shared sandbox included)
+  // at most 4 taps lands on FREE — robust without assuming a clean day.
+  const day = page.getByTestId(`day-${fifteenth()}`);
+  for (let i = 0; i < 4; i++) {
+    if ((await day.getAttribute('data-mine')) === 'FREE') break;
+    await day.click();
+    await page.waitForTimeout(500); // let the write + refetch settle
+  }
 });
 
 When('the visitor goes to next month', async ({ page }) => {

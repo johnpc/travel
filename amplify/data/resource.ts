@@ -21,6 +21,7 @@ import { suggestActivities } from '../activitygen/resource';
  * - Interest:    one member's interest level in one destination (the votes).
  * - Availability: one member's free/busy status on one calendar day.
  * - Activity:    a thing to do at a destination (AI-suggested or hand-added).
+ * - BudgetEstimate: a rough shared cost estimate per destination.
  */
 const schema = a.schema({
   // The trip itself — the shared document at travel.jpc.io/<slug>. `slug` is the
@@ -123,6 +124,28 @@ const schema = a.schema({
       blurb: a.string(),
       category: a.string(),
       source: a.enum(['MANUAL', 'AI']),
+    })
+    .secondaryIndexes((index) => [index('destinationId')])
+    .authorization((allow) => [
+      allow.guest().to(['read', 'create', 'update', 'delete']),
+      allow.authenticated('identityPool').to(['read', 'create', 'update', 'delete']),
+      allow.authenticated().to(['read', 'create', 'update', 'delete']),
+      allow.group('editors').to(['create', 'update', 'delete']),
+    ]),
+
+  // A rough shared budget estimate for a destination — one per destination
+  // (its id IS the destinationId, so anyone editing updates the same estimate).
+  // Amounts are whole currency units (e.g. USD); per-person and per-couple
+  // totals are computed client-side. `seasonNote` captures why prices vary
+  // (high/low season, flight timing). Guest CRUD.
+  BudgetEstimate: a
+    .model({
+      tripId: a.id().required(),
+      destinationId: a.id().required(),
+      flightPerPerson: a.integer(),
+      lodgingPerNight: a.integer(),
+      nights: a.integer(),
+      seasonNote: a.string(),
     })
     .secondaryIndexes((index) => [index('destinationId')])
     .authorization((allow) => [
