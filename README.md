@@ -23,29 +23,29 @@ you're known by the name you pick. Open the link, add yourself, start planning.
 Getting a group aligned on travel is hard in four specific ways, and Travel takes each one on:
 
 1. **Destination preferences** — brainstorm places together; AI suggests destinations (and you can
-   add your own), so the list reflects the whole group.
-2. **Activity preferences** — see what there is to do at each place (island hopping, the Acropolis…)
-   with generated imagery of what you'd actually experience — the architecture, geology, views.
-3. **Available dates** — line up who's free when, per candidate trip.
-4. **Budget feasibility** — gauge the price of a trip as it shifts with dates (high vs low season,
-   flights, lodging).
+   add your own), and everyone votes their interest so the group's favorites rise to the top.
+2. **Activity preferences** — AI activity ideas at each place (island hopping, the Acropolis…), each
+   linking out to real GetYourGuide experiences.
+3. **Available dates** — a shared month calendar where everyone marks when they're free.
+4. **Budget feasibility** — a rough per-destination estimate (flights, lodging, nights) with
+   per-person and per-couple totals.
 
 The brainstorm is a **permanent, reusable artifact** — the destinations and activities you collect
 stay useful for this trip and the next.
 
 ## Features
 
-| Feature                                                | Status |
-| ------------------------------------------------------ | :----: |
-| Open/create a trip by URL — no account                 |   ✅   |
-| Name-only roster (pick your name, recognized anywhere) |   ✅   |
-| Light/dark theme (follows OS + in-app override)        |   ✅   |
-| Brainstorm destinations (AI-suggested + user-added)    |   ✅   |
-| Activity ideas per destination (AI-suggested)          |   ✅   |
-| Generated destination imagery (persistent)             |   ⬜   |
-| Per-person interest levels (voting)                    |   ✅   |
-| Date availability (shared month calendar)              |   ✅   |
-| Budget / price feasibility by dates                    |   ⬜   |
+| Feature                                                   | Status |
+| --------------------------------------------------------- | :----: |
+| Open/create a trip by URL — no account                    |   ✅   |
+| Name-only roster (pick your name, recognized anywhere)    |   ✅   |
+| Light/dark theme (follows OS + in-app override)           |   ✅   |
+| Brainstorm destinations (AI-suggested + user-added)       |   ✅   |
+| Activity ideas per destination (AI + GetYourGuide links)  |   ✅   |
+| Generated destination imagery (persistent)                |   ⬜   |
+| Per-person interest levels (voting)                       |   ✅   |
+| Date availability (shared month calendar)                 |   ✅   |
+| Budget estimate per destination (per-person / per-couple) |   ✅   |
 
 ## How it works
 
@@ -59,12 +59,13 @@ stay useful for this trip and the next.
 
 ## Where the data comes from
 
-- **Collaborative data** (trips, rosters, and — in upcoming slices — destinations, activities,
-  interest votes, dates, budgets) lives in **DynamoDB** via AWS Amplify, readable and writable by any
-  guest with the trip URL.
-- **AI suggestions & imagery** (upcoming) are generated with **Amazon Bedrock** (Claude for
-  structured destination/activity ideas; image generation for destination visuals), written once and
-  **kept permanently** — the brainstorm is meant to stay useful.
+- **Collaborative data** (trips, rosters, destinations, activities, interest votes, date availability,
+  and budget estimates) lives in **DynamoDB** via AWS Amplify, readable and writable by any guest with
+  the trip URL.
+- **AI suggestions** (destinations and per-destination activities) are generated with **Amazon
+  Bedrock** (Claude, tool-forced structured output) and kept as permanent brainstorm artifacts.
+  Activities also link out to a **GetYourGuide** search for real, current experiences. Destination
+  imagery (generated visuals) is the next slice.
 
 ## Install
 

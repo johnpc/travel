@@ -1,6 +1,7 @@
 import { IonButton, IonIcon } from '@ionic/react';
 import { sparklesOutline, addOutline } from 'ionicons/icons';
 import { LoadState } from '../shell/LoadState';
+import { ActivityItem } from './ActivityItem';
 import { useActivitiesPanel } from './useActivitiesPanel';
 import './activities.css';
 
@@ -62,11 +63,7 @@ export function ActivitiesSection({
       >
         <ul className="acts__list" data-testid="act-list">
           {p.activities.map((a) => (
-            <li key={a.id} className="acts__item" data-testid="act-item">
-              <span className="acts__cat tv-kicker">{a.category}</span>
-              <span className="acts__title">{a.title}</span>
-              {a.blurb && <p className="acts__blurb tv-muted">{a.blurb}</p>}
-            </li>
+            <ActivityItem key={a.id} activity={a} destinationName={destinationName} />
           ))}
         </ul>
       </LoadState>

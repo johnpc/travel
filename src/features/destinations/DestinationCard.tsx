@@ -8,6 +8,7 @@ import {
 } from 'ionicons/icons';
 import type { DestinationRecord } from '../../lib/dataClient';
 import { ActivitiesSection } from '../activities/ActivitiesSection';
+import { BudgetSection } from '../budget/BudgetSection';
 
 interface DestinationCardProps {
   destination: DestinationRecord;
@@ -44,7 +45,12 @@ export function DestinationCard({ destination: d, tripId, vote }: DestinationCar
         <IonIcon icon={open ? chevronUpOutline : chevronDownOutline} aria-hidden="true" />
         {open ? 'Hide things to do' : 'Things to do here'}
       </button>
-      {open && <ActivitiesSection tripId={tripId} destinationId={d.id} destinationName={d.name} />}
+      {open && (
+        <>
+          <ActivitiesSection tripId={tripId} destinationId={d.id} destinationName={d.name} />
+          <BudgetSection tripId={tripId} destinationId={d.id} />
+        </>
+      )}
     </li>
   );
 }

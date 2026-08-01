@@ -4,6 +4,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 vi.mock('../activities/ActivitiesSection', () => ({
   ActivitiesSection: () => <div data-testid="activities" />,
 }));
+vi.mock('../budget/BudgetSection', () => ({ BudgetSection: () => <div data-testid="budget" /> }));
 
 import { DestinationCard } from './DestinationCard';
 import type { DestinationRecord } from '../../lib/dataClient';

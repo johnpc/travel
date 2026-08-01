@@ -14,3 +14,4 @@ Feature: See things to do at a destination
     Then at least one activity suggestion is shown
     When the visitor keeps the first activity suggestion
     Then the kept activity appears in the destination's activity list
+    And the kept activity links to a GetYourGuide search
