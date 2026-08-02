@@ -10,9 +10,9 @@ interface BudgetSectionProps {
 }
 
 const FIELDS = [
-  { key: 'flightPerPerson', label: 'Flight / person' },
-  { key: 'lodgingPerNight', label: 'Lodging / night' },
-  { key: 'nights', label: 'Nights' },
+  { key: 'flightPerPerson', label: 'Flight / person', prefix: '$' },
+  { key: 'lodgingPerNight', label: 'Lodging / night', prefix: '$' },
+  { key: 'nights', label: 'Nights', prefix: '' },
 ] as const;
 
 /** A rough shared cost estimate for a destination: flight, lodging, nights →
@@ -35,17 +35,27 @@ export function BudgetSection({ tripId, destinationId }: BudgetSectionProps) {
             {FIELDS.map((f) => (
               <IonInput
                 key={f.key}
+                className="budget__field"
                 type="number"
+                fill="outline"
                 label={f.label}
                 labelPlacement="stacked"
                 inputmode="numeric"
                 value={p.form[f.key]}
                 data-testid={`budget-${f.key}`}
                 onIonInput={(e) => p.set(f.key, e.detail.value ?? '')}
-              />
+              >
+                {f.prefix && (
+                  <span slot="start" className="budget__prefix" aria-hidden="true">
+                    {f.prefix}
+                  </span>
+                )}
+              </IonInput>
             ))}
           </div>
           <IonInput
+            className="budget__field"
+            fill="outline"
             label="Season note (optional)"
             labelPlacement="stacked"
             placeholder="High season — book early"
