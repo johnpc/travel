@@ -4,6 +4,7 @@ import { useIonAlert } from '@ionic/react';
 const CONTAINER: Record<string, string> = {
   destination: 'board',
   stop: 'route',
+  message: 'thread',
 };
 
 /**

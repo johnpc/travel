@@ -93,6 +93,25 @@ const schema = a.schema({
       allow.group('editors').to(['create', 'update', 'delete']),
     ]),
 
+  // A discussion message on a trip — the free-form channel where the crew hashes
+  // out final consensus ("I'm in on Santorini if we do the catamaran", "can we
+  // push a week later?"), the piece structured votes/dates can't capture.
+  // `authorName` is the name-only identity; read a trip's whole thread by tripId
+  // and sort by createdAt. Guest CRUD (delete your own typo) like the rest.
+  Message: a
+    .model({
+      tripId: a.id().required(),
+      authorName: a.string().required(),
+      body: a.string().required(),
+    })
+    .secondaryIndexes((index) => [index('tripId')])
+    .authorization((allow) => [
+      allow.guest().to(['read', 'create', 'update', 'delete']),
+      allow.authenticated('identityPool').to(['read', 'create', 'update', 'delete']),
+      allow.authenticated().to(['read', 'create', 'update', 'delete']),
+      allow.group('editors').to(['create', 'update', 'delete']),
+    ]),
+
   // One stop on a multi-city itinerary (opt-in — not every trip is multi-stop).
   // An ordered leg of a route like Tokyo → Angkor Wat → Bangkok → Phuket: a
   // `place`, how many `nights` there, and an `order` index the client sorts by

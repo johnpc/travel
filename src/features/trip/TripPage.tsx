@@ -13,6 +13,7 @@ import { useJoinTrip } from './useJoinTrip';
 import { Roster } from './Roster';
 import { DestinationsPanel } from '../destinations/DestinationsPanel';
 import { ItinerarySection } from '../itinerary/ItinerarySection';
+import { ChatSection } from '../chat/ChatSection';
 import { AvailabilityPanel } from '../availability/AvailabilityPanel';
 import { TripPlan } from '../plan/TripPlan';
 import { ShareButton } from '../plan/ShareButton';
@@ -70,6 +71,7 @@ export function TripPage() {
               <div className="trip__main">
                 <DestinationsPanel tripId={trip?.id} tripTitle={trip?.title ?? ''} me={join.me} />
                 <ItinerarySection tripId={trip?.id} tripTitle={trip?.title ?? ''} />
+                <ChatSection tripId={trip?.id} me={join.me} />
               </div>
               <aside className="trip__rail">
                 <Roster
