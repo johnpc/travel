@@ -12,6 +12,7 @@
     "e2e-config": "ampx generate outputs --stack amplify-travel-xss-sandbox-d4c65224d6 --profile personal",
     "gen:icons": "node scripts/gen-app-icons.mjs",
     "seed": "tsx amplify/seed/seed.ts",
+    "panel": "node scripts/panel/run.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",

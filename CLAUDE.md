@@ -175,9 +175,37 @@ npm run quality        # full local gate: lint + format + check:lines + check:fe
 npm run format         # Prettier write (run before committing)
 npm run test:e2e       # Gherkin acceptance tests (bddgen + Playwright)
 npm run seed           # reset the shared sandbox to seeded trips (idempotent; needs editor creds)
+npm run panel          # multi-LLM usability panel (4 personas plan a trip, give feedback — see below)
 npm run e2e-config     # pull amplify_outputs.json from the sandbox stack
 npx ampx sandbox       # personal cloud backend sandbox
 ```
+
+## Usability panel (multi-LLM UX eval)
+
+A recurring, real-user-style usability test: **four LLM "friends" each drive a REAL
+Playwright browser** against the **same shared trip URL** and try to plan a trip together —
+join by name, brainstorm/vote on destinations, mark dates, check budget, and **talk in the
+discussion chat to converge** on one destination + dates. Each then gives structured feedback,
+and a synthesis pass produces a **ranked UX backlog** (issue · severity · how many hit it ·
+concrete fix). This surfaces the friction real friend-groups hit, repeatably and cheaply — feed
+the backlog straight into the design loop.
+
+- **Run it:** `npm run panel` (needs a running dev server + `AWS_PROFILE=personal` for Bedrock).
+  Env knobs: `PANEL_BASE` (default `http://localhost:5173`), `PANEL_SLUG`, `PANEL_MAX_TURNS`
+  (default 22), `PANEL_MODEL_ID` (default Claude Sonnet), `PANEL_RUN_ID` (report suffix).
+- **How it works:** `scripts/panel/` — `personas.mjs` (4 personalities: planner / budget-hawk /
+  adventurer / flaky, **same model, distinct prompts** so behavior diverges like a real group),
+  `agent.mjs` (Bedrock vision agent: each turn sees a screenshot + a `[ref]`-tagged list of the
+  live interactive elements and calls ONE tool — click/type/scroll/done), `browser.mjs` (snapshot
+  refs + execute the action), `feedback.mjs` (per-persona reflection + synthesis, tool-forced),
+  `run.mjs` (orchestrator — runs personas **sequentially** so each sees the others' contributions
+  build up on the shared board). Writes `panel-report/report-<id>.json` + per-persona final
+  screenshots (gitignored).
+- **Why sequential + same-model:** sequential mimics friends trickling in and keeps Bedrock calls
+  modest; same-model-different-persona controls for capability while varying behavior (the useful
+  signal). Bump to genuinely different vendors only if you wire their keys in.
+- The panel is only as good as the app's **consensus surface** — that's why the discussion chat
+  (`src/features/chat`) exists: without a place to talk, the personas can't actually converge.
 
 ## Key facts
 
