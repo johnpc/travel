@@ -24,6 +24,10 @@ export function useDestinationsPanel(
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
 
   const destinations: DestinationRecord[] = sortByInterest(listQuery.data ?? [], interest.tallies);
+  // The board is sorted best-first, so the leader is destinations[0] — but only
+  // badge it once it has genuine support (score > 0), not in an unvoted trip.
+  const top = destinations[0];
+  const frontRunnerId = top && (interest.tallies[top.id]?.score ?? 0) > 0 ? top.id : null;
 
   const addManual = (name: string) => {
     if (name.trim()) addDestination.mutate({ name, source: 'MANUAL' });
@@ -41,6 +45,7 @@ export function useDestinationsPanel(
 
   return {
     destinations,
+    frontRunnerId,
     isLoading: listQuery.isLoading,
     isError: listQuery.isError || interest.isError,
     refetch: () => {
