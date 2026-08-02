@@ -79,3 +79,18 @@ Then('{string} is offered under recent trips', async ({ page }, title: string) =
     timeout: 15_000,
   });
 });
+
+When('the visitor taps the theme toggle', async ({ page }) => {
+  const toggle = page.getByTestId('theme-toggle').first();
+  await toggle.waitFor({ timeout: 15_000 });
+  // Cycles System → Light → Dark; tap until <html> is explicitly dark.
+  for (let i = 0; i < 3; i++) {
+    if ((await page.locator('html').getAttribute('data-theme')) === 'dark') break;
+    await toggle.click();
+    await page.waitForTimeout(200);
+  }
+});
+
+Then('the app is in dark mode', async ({ page }) => {
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark', { timeout: 15_000 });
+});

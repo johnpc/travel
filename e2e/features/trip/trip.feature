@@ -36,3 +36,9 @@ Feature: Plan a trip by URL (guest, no account)
     And the trip title "Greece 2027" is shown
     And the visitor goes back to the home screen
     Then "Greece 2027" is offered under recent trips
+
+  # The app follows the OS theme but a visitor can override it in-app.
+  Scenario: A visitor switches the app to dark mode
+    When a visitor opens the trip "greece-2027"
+    And the visitor taps the theme toggle
+    Then the app is in dark mode

@@ -15,6 +15,7 @@ import { DestinationsPanel } from '../destinations/DestinationsPanel';
 import { AvailabilityPanel } from '../availability/AvailabilityPanel';
 import { TripPlan } from '../plan/TripPlan';
 import { ShareButton } from '../plan/ShareButton';
+import { ThemeToggle } from '../theme/ThemeToggle';
 import { TripLoading } from './TripLoading';
 import { TripWelcome } from './TripWelcome';
 import './trip.css';
@@ -38,7 +39,10 @@ export function TripPage() {
             <IonBackButton defaultHref="/" />
           </IonButtons>
           <IonTitle>{trip?.title ?? 'Trip'}</IonTitle>
-          <IonButtons slot="end">{trip && <ShareButton slug={slug} />}</IonButtons>
+          <IonButtons slot="end">
+            <ThemeToggle />
+            {trip && <ShareButton slug={slug} />}
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
