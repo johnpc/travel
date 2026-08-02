@@ -39,7 +39,7 @@ export function HomePage() {
                 fill="outline"
                 label="Name your trip"
                 labelPlacement="stacked"
-                placeholder="Portugal with the crew"
+                placeholder="e.g. Portugal with the crew"
                 value={name}
                 data-testid="trip-name"
                 onIonInput={(e) => setName(e.detail.value ?? '')}
