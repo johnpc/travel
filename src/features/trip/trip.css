@@ -3,6 +3,17 @@
   margin: 0 auto;
 }
 
+/* The sticky section-nav overlays content scrolling under it. Reserve its height
+   as scroll-padding so any scrollIntoView (the jump nav, and Playwright/browser
+   actionability scrolls) parks targets BELOW the nav — never under it, where the
+   nav would intercept the tap. 80px clears the ~74px pinned nav; only where the
+   nav shows. */
+@media (max-width: 899px) {
+  ion-content::part(scroll) {
+    scroll-padding-top: 80px;
+  }
+}
+
 /* ONLY iOS mode centers the toolbar title with absolute positioning, so it
    ignores the start (icon-only back) + end (theme + icon-only share) button
    clusters and a longer trip name overlaps them. Reserve just enough for the
