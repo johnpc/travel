@@ -69,6 +69,36 @@
   font-size: 0.62rem;
 }
 
+/* Category on the left, a quiet remove control on the right. */
+.acts__item-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.acts__remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  color: var(--tv-text-muted);
+  font-size: 1rem;
+  padding: 0.1rem;
+  margin: -0.1rem -0.15rem 0 0;
+  border-radius: 999px;
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    background 0.15s ease;
+}
+
+.acts__remove:hover {
+  color: var(--tv-negative);
+  background: var(--tv-surface);
+}
+
 .acts__title {
   font-weight: 600;
   font-size: 0.92rem;

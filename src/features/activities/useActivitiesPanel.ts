@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useActivities, useAddActivity } from './activityApi';
+import { useActivities, useAddActivity, useRemoveActivity } from './activityApi';
 import { useSuggestActivities, type ActivitySuggestion } from './suggestActivityApi';
 import type { ActivityRecord } from '../../lib/dataClient';
 
@@ -18,6 +18,7 @@ export function useActivitiesPanel(
   const listQuery = useActivities(destinationId, expanded);
   const activities: ActivityRecord[] = listQuery.data ?? [];
   const addActivity = useAddActivity(tripId, destinationId);
+  const removeActivity = useRemoveActivity(destinationId);
   const suggest = useSuggestActivities();
   const [suggestions, setSuggestions] = useState<ActivitySuggestion[]>([]);
 
@@ -31,6 +32,8 @@ export function useActivitiesPanel(
     setSuggestions((prev) => prev.filter((x) => x.title !== s.title));
   };
 
+  const remove = (id: string) => removeActivity.mutate(id);
+
   return {
     activities,
     isLoading: listQuery.isLoading,
@@ -40,5 +43,6 @@ export function useActivitiesPanel(
     isSuggesting: suggest.isPending,
     runSuggest,
     accept,
+    remove,
   };
 }

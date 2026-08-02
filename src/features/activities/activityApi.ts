@@ -64,3 +64,18 @@ export function useAddActivity(tripId: string | undefined, destinationId: string
     },
   });
 }
+
+/** Remove an activity from a destination (guest delete) — drop a stray or
+ * unwanted idea. The live query removes it for everyone. */
+export function useRemoveActivity(destinationId: string | undefined) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string): Promise<void> => {
+      await dataClient.models.Activity.delete({ id });
+    },
+    onSuccess: () => {
+      if (destinationId)
+        qc.invalidateQueries({ queryKey: activityKeys.byDestination(destinationId) });
+    },
+  });
+}

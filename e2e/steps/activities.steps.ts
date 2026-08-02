@@ -41,3 +41,16 @@ Then('the kept activity links to a GetYourGuide search', async ({ page }) => {
   const item = firstCard(page).getByTestId('act-item').filter({ hasText: keptTitle }).first();
   await expect(item.getByTestId('act-gyg')).toHaveAttribute('href', /getyourguide\.com\/s\/\?q=/);
 });
+
+When('the visitor removes the kept activity', async ({ page }) => {
+  page.once('dialog', (d) => d.accept()); // the item confirms before deleting
+  const item = firstCard(page).getByTestId('act-item').filter({ hasText: keptTitle }).first();
+  await item.getByTestId('act-remove').click();
+});
+
+Then('the kept activity is gone from the activity list', async ({ page }) => {
+  await expect(firstCard(page).getByTestId('act-item').filter({ hasText: keptTitle })).toHaveCount(
+    0,
+    { timeout: 15_000 },
+  );
+});

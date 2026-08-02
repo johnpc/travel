@@ -16,6 +16,7 @@ const base = {
   isSuggesting: false,
   runSuggest: vi.fn(),
   accept: vi.fn(),
+  remove: vi.fn(),
 };
 
 describe('ActivitiesSection', () => {
