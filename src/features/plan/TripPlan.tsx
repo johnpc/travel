@@ -5,6 +5,7 @@ import { bestWindowLabel } from './planLabels';
 import { joinNames } from './planCrew';
 import { PlanBookCta } from './PlanBookCta';
 import { useMediaUrl } from '../../lib/useMediaUrl';
+import { useWikiPhoto } from '../destinations/useWikiPhoto';
 import { formatMoney } from '../budget/computeBudget';
 import './plan.css';
 
@@ -18,9 +19,11 @@ interface TripPlanProps {
  * exists. Reads votes/availability/budget already collected. */
 export function TripPlan({ tripId }: TripPlanProps) {
   const plan = useTripPlan(tripId);
-  const img = useMediaUrl(plan.frontRunner?.imagePath);
+  const generated = useMediaUrl(plan.frontRunner?.imagePath);
+  const wiki = useWikiPhoto(plan.frontRunner?.name);
   if (plan.isLoading || plan.isError || !plan.frontRunner) return null;
   const crew = joinNames(plan.crew);
+  const img = generated ?? wiki;
   const cls = plan.readyToBook ? 'plan plan--ready' : 'plan';
   return (
     <section className={cls} data-testid="trip-plan">

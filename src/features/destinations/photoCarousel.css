@@ -1,0 +1,48 @@
+.carousel {
+  position: relative;
+}
+
+.carousel__track {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  border-radius: var(--tv-radius-sm);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.carousel__track::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel__img {
+  flex: 0 0 100%;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  scroll-snap-align: start;
+  background: var(--tv-skeleton-base);
+}
+
+.carousel__dots {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 8px;
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+}
+
+.carousel__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
+}
+
+.carousel__dot--on {
+  background: #fff;
+  transform: scale(1.25);
+}

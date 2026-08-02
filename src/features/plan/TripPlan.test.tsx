@@ -1,9 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 
-const h = vi.hoisted(() => ({ useTripPlan: vi.fn(), useMediaUrl: vi.fn() }));
+const h = vi.hoisted(() => ({ useTripPlan: vi.fn(), useMediaUrl: vi.fn(), useWikiPhoto: vi.fn() }));
 vi.mock('./useTripPlan', () => ({ useTripPlan: h.useTripPlan }));
 vi.mock('../../lib/useMediaUrl', () => ({ useMediaUrl: h.useMediaUrl }));
+vi.mock('../destinations/useWikiPhoto', () => ({ useWikiPhoto: h.useWikiPhoto }));
 
 import { TripPlan } from './TripPlan';
 import type { DestinationRecord } from '../../lib/dataClient';
@@ -26,6 +27,7 @@ describe('TripPlan', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     h.useMediaUrl.mockReturnValue('https://s3.example/b.webp');
+    h.useWikiPhoto.mockReturnValue(null);
   });
 
   it('renders nothing until there is a front-runner', () => {
