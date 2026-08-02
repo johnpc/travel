@@ -29,28 +29,35 @@ Getting a group aligned on travel is hard in four specific ways, and Travel take
 3. **Available dates** — a shared month calendar where everyone marks when they're free, with
    candidate windows and one-tap school-break quick-picks so the group's dates are never buried.
 4. **Budget feasibility** — a rough per-destination estimate (flights, lodging, nights) with
-   per-person and per-couple totals.
+   per-person and per-couple totals. AI can pre-fill a first-pass estimate (flights from DTW +
+   area lodging), with links to Google Flights / Booking / Airbnb to check real prices, and a
+   "Where to stay" pick of real hotels across price tiers (Book + Map links) plus a median Airbnb.
+5. **Multi-city routes** — for bigger trips, build an ordered, reorderable itinerary of stops (add
+   by hand or let AI suggest a whole route) — Tokyo → Angkor Wat → Bangkok → Phuket as one trip.
 
 The brainstorm is a **permanent, reusable artifact** — the destinations and activities you collect
 stay useful for this trip and the next.
 
 ## Features
 
-| Feature                                                   | Status |
-| --------------------------------------------------------- | :----: |
-| Open/create a trip by URL — no account                    |   ✅   |
-| "Jump back in" recent-trips list (device-local)           |   ✅   |
-| "The plan" summary (front-runner, best dates, cost)       |   ✅   |
-| Share the trip link (native share / copy)                 |   ✅   |
-| Name-only roster (pick your name, recognized anywhere)    |   ✅   |
-| Light/dark theme (follows OS + in-app override)           |   ✅   |
-| Brainstorm destinations (AI-suggested + user-added)       |   ✅   |
-| Activity ideas per destination (AI + GetYourGuide links)  |   ✅   |
-| Generated destination imagery (AI, persistent)            |   ✅   |
-| Per-person interest levels (voting)                       |   ✅   |
-| Date availability (shared month calendar)                 |   ✅   |
-| Candidate windows + school-break date quick-picks         |   ✅   |
-| Budget estimate per destination (per-person / per-couple) |   ✅   |
+| Feature                                                    | Status |
+| ---------------------------------------------------------- | :----: |
+| Open/create a trip by URL — no account                     |   ✅   |
+| "Jump back in" recent-trips list (device-local)            |   ✅   |
+| "The plan" summary (front-runner, best dates, cost)        |   ✅   |
+| Share the trip link (native share / copy)                  |   ✅   |
+| Name-only roster (pick your name, recognized anywhere)     |   ✅   |
+| Light/dark theme (follows OS + in-app override)            |   ✅   |
+| Brainstorm destinations (AI-suggested + user-added)        |   ✅   |
+| Activity ideas per destination (AI + GetYourGuide links)   |   ✅   |
+| Generated destination imagery (AI, persistent)             |   ✅   |
+| Per-person interest levels (voting)                        |   ✅   |
+| Date availability (shared month calendar)                  |   ✅   |
+| Candidate windows + school-break date quick-picks          |   ✅   |
+| Budget estimate per destination (per-person / per-couple)  |   ✅   |
+| AI budget pre-fill + Flights/Hotels/Airbnb price links     |   ✅   |
+| AI hotel picks across tiers (Book/Map links + Airbnb med.) |   ✅   |
+| Multi-city itinerary (ordered stops, reorder, AI route)    |   ✅   |
 
 ## How it works
 
@@ -67,11 +74,14 @@ stay useful for this trip and the next.
 - **Collaborative data** (trips, rosters, destinations, activities, interest votes, date availability,
   and budget estimates) lives in **DynamoDB** via AWS Amplify, readable and writable by any guest with
   the trip URL.
-- **AI suggestions** (destinations and per-destination activities) are generated with **Amazon
-  Bedrock** (Claude, tool-forced structured output) and kept as permanent brainstorm artifacts.
-  Activities also link out to a **GetYourGuide** search for real, current experiences. Destination
-  **imagery** is generated on demand with Bedrock (Stability), resized to WebP, and stored in S3 —
-  a persistent view of what you'd actually see there.
+- **AI suggestions** (destinations, per-destination activities, rough budgets, hotel picks, and
+  multi-city routes) are generated with **Amazon Bedrock** (Claude, tool-forced structured output).
+  Destinations and activities are kept as permanent brainstorm artifacts; budget/hotel/route results
+  are lookups that seed editable fields or addable stops. Activities link out to a **GetYourGuide**
+  search, hotels to **Booking.com** / **Google Maps** searches for the real property, and budget to
+  **Google Flights** (from DTW) / **Booking** / **Airbnb** — always searches, never fabricated
+  listing URLs, so they resolve to real, current prices you can verify. Destination **imagery** is
+  generated on demand with Bedrock (Stability), resized to WebP, and stored in S3.
 
 ## Install
 
