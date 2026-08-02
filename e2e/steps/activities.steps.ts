@@ -43,9 +43,11 @@ Then('the kept activity links to a GetYourGuide search', async ({ page }) => {
 });
 
 When('the visitor removes the kept activity', async ({ page }) => {
-  page.once('dialog', (d) => d.accept()); // the item confirms before deleting
   const item = firstCard(page).getByTestId('act-item').filter({ hasText: keptTitle }).first();
   await item.getByTestId('act-remove').click();
+  // A branded confirm alert appears — tap "Remove" inside it (scope to ion-alert
+  // so we don't match the cards' own "Remove <name>" × buttons).
+  await page.locator('ion-alert').getByRole('button', { name: 'Remove', exact: true }).click();
 });
 
 Then('the kept activity is gone from the activity list', async ({ page }) => {

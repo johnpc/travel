@@ -1,6 +1,7 @@
 import { IonIcon } from '@ionic/react';
 import { openOutline, closeOutline } from 'ionicons/icons';
 import type { ActivityRecord } from '../../lib/dataClient';
+import { useConfirmRemove } from '../shell/useConfirmRemove';
 import { getYourGuideUrl } from './getYourGuide';
 
 interface ActivityItemProps {
@@ -14,9 +15,7 @@ interface ActivityItemProps {
  * link that opens a real search for this experience at this destination (a
  * search, not a guessed listing, so it always resolves). A quiet × removes it. */
 export function ActivityItem({ activity: a, destinationName, onRemove }: ActivityItemProps) {
-  const confirmRemove = () => {
-    if (onRemove && window.confirm(`Remove "${a.title}"?`)) onRemove();
-  };
+  const confirmRemove = useConfirmRemove('activity', a.title, onRemove);
   return (
     <li className="acts__item" data-testid="act-item">
       <div className="acts__item-head">

@@ -9,6 +9,7 @@ import {
   closeOutline,
 } from 'ionicons/icons';
 import type { DestinationRecord } from '../../lib/dataClient';
+import { useConfirmRemove } from '../shell/useConfirmRemove';
 import { ActivitiesSection } from '../activities/ActivitiesSection';
 import { BudgetSection } from '../budget/BudgetSection';
 import { DestinationImage } from './DestinationImage';
@@ -35,9 +36,7 @@ export function DestinationCard({
   onRemove,
 }: DestinationCardProps) {
   const [open, setOpen] = useState(false);
-  const confirmRemove = () => {
-    if (onRemove && window.confirm(`Remove ${d.name} from the board?`)) onRemove();
-  };
+  const confirmRemove = useConfirmRemove('destination', d.name, onRemove);
   return (
     <li
       className={isFrontRunner ? 'dest-card dest-card--leader' : 'dest-card'}

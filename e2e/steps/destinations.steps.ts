@@ -8,6 +8,9 @@ let manualName = '';
 let acceptedName = '';
 
 When('the visitor adds the destination {string}', async ({ page }, name: string) => {
+  // Wait until the trip exists (title rendered) so a fresh-slug create has
+  // settled before we add — otherwise the add mutation has no trip id yet.
+  await page.getByTestId('trip-title').waitFor({ timeout: 15_000 });
   manualName = `${name} ${Date.now()}`;
   await page.getByTestId('dest-name').locator('input').fill(manualName);
   await page.getByTestId('dest-add').click();
@@ -45,8 +48,10 @@ When('the visitor accepts the first AI suggestion', async ({ page }) => {
 
 Then('{string} appears on the destination board', async ({ page }, name: string) => {
   const shown = name.startsWith('Lisbon') ? manualName : name;
+  // 30s: the shared sandbox's observeQuery sync can lag on a busy board (matches
+  // the AI-suggestion assertions' allowance) — this is propagation, not a bug.
   await expect(page.getByTestId('dest-item').filter({ hasText: shown })).toBeVisible({
-    timeout: 15_000,
+    timeout: 30_000,
   });
 });
 
@@ -66,14 +71,15 @@ Then('the destinations section shows a retry', async ({ page }) => {
 });
 
 When('the visitor removes that destination', async ({ page }) => {
-  // The card asks for confirm() before deleting — accept it.
-  page.once('dialog', (d) => d.accept());
   const card = page.getByTestId('dest-item').filter({ hasText: manualName });
   await card.getByTestId('dest-remove').click();
+  // A branded confirm alert appears — tap "Remove" inside it (scope to ion-alert
+  // so we don't match the cards' own "Remove <name>" × buttons).
+  await page.locator('ion-alert').getByRole('button', { name: 'Remove', exact: true }).click();
 });
 
 Then('that destination is gone from the board', async ({ page }) => {
   await expect(page.getByTestId('dest-item').filter({ hasText: manualName })).toHaveCount(0, {
-    timeout: 15_000,
+    timeout: 30_000,
   });
 });

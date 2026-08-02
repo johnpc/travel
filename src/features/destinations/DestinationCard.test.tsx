@@ -1,6 +1,17 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 
+// Capture the alert config so tests can drive its buttons (branded confirm).
+const present = vi.hoisted(() => vi.fn());
+vi.mock('@ionic/react', async (importActual) => {
+  const actual = await importActual<typeof import('@ionic/react')>();
+  return { ...actual, useIonAlert: () => [present, vi.fn()] };
+});
+const clickAlertButton = (label: string) => {
+  const cfg = present.mock.calls.at(-1)?.[0];
+  cfg.buttons.find((btn: { text: string }) => btn.text === label)?.handler?.();
+};
+
 vi.mock('../activities/ActivitiesSection', () => ({
   ActivitiesSection: () => <div data-testid="activities" />,
 }));
@@ -36,9 +47,9 @@ describe('DestinationCard', () => {
     expect(screen.getByTestId('activities')).toBeInTheDocument();
   });
 
-  it('shows a remove control only when onRemove is provided, and confirms before removing', () => {
+  it('shows a remove control only when onRemove is provided, and confirms via a branded alert', () => {
     const onRemove = vi.fn();
-    const confirmSpy = vi.spyOn(window, 'confirm');
+    present.mockClear();
 
     // no onRemove → no remove button
     const { rerender } = render(
@@ -53,15 +64,15 @@ describe('DestinationCard', () => {
         <DestinationCard destination={dest} tripId="t1" onRemove={onRemove} />
       </ul>,
     );
-    // cancelled confirm → no removal
-    confirmSpy.mockReturnValueOnce(false);
+    // tapping × presents a branded confirm, not window.confirm; nothing removed yet
     fireEvent.click(screen.getByTestId('dest-remove'));
+    expect(present).toHaveBeenCalledTimes(1);
     expect(onRemove).not.toHaveBeenCalled();
-    // confirmed → removes
-    confirmSpy.mockReturnValueOnce(true);
-    fireEvent.click(screen.getByTestId('dest-remove'));
+    // "Keep it" cancels; "Remove" fires the removal
+    clickAlertButton('Keep it');
+    expect(onRemove).not.toHaveBeenCalled();
+    clickAlertButton('Remove');
     expect(onRemove).toHaveBeenCalledTimes(1);
-    confirmSpy.mockRestore();
   });
 
   it('badges the front-runner and marks the card as leader', () => {
