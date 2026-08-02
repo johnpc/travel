@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { tallyVotes, tallyByDestination, myLevel } from './tally';
+import { tallyVotes, tallyByDestination, myLevel, consensusBar } from './tally';
 import type { InterestRecord } from '../../lib/dataClient';
 
 const v = (destinationId: string, memberName: string, level: string) =>
@@ -39,5 +39,24 @@ describe('myLevel', () => {
     expect(myLevel(votes, 'a', 'Priya')).toBeNull();
     expect(myLevel(votes, 'b', 'Alex')).toBeNull();
     expect(myLevel(votes, 'a', null)).toBeNull();
+  });
+});
+
+describe('consensusBar', () => {
+  it('is empty when nobody has voted', () => {
+    expect(consensusBar({ yes: 0, maybe: 0, no: 0, score: 0 })).toEqual({
+      yesPct: 0,
+      maybePct: 0,
+      noPct: 0,
+      total: 0,
+    });
+  });
+
+  it('converts a tally into segment percentages', () => {
+    const bar = consensusBar({ yes: 3, maybe: 1, no: 0, score: 3 });
+    expect(bar.total).toBe(4);
+    expect(bar.yesPct).toBe(75);
+    expect(bar.maybePct).toBe(25);
+    expect(bar.noPct).toBe(0);
   });
 });

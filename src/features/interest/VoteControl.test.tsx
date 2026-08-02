@@ -5,12 +5,26 @@ import { VoteControl } from './VoteControl';
 const tally = { yes: 2, maybe: 1, no: 0, score: 3 };
 
 describe('VoteControl', () => {
-  it('shows the tally and fires onVote with the chosen level', () => {
+  it('shows the tally + a consensus bar and fires onVote with the chosen level', () => {
     const onVote = vi.fn();
     render(<VoteControl tally={tally} myLevel={null} canVote isVoting={false} onVote={onVote} />);
     expect(screen.getByTestId('vote-tally')).toHaveTextContent('2 in · 1 maybe · 0 pass');
+    expect(screen.getByTestId('vote-bar')).toBeInTheDocument();
     fireEvent.click(screen.getByTestId('vote-YES'));
     expect(onVote).toHaveBeenCalledWith('YES');
+  });
+
+  it('hides the consensus bar when nobody has voted yet', () => {
+    render(
+      <VoteControl
+        tally={{ yes: 0, maybe: 0, no: 0, score: 0 }}
+        myLevel={null}
+        canVote
+        isVoting={false}
+        onVote={vi.fn()}
+      />,
+    );
+    expect(screen.queryByTestId('vote-bar')).not.toBeInTheDocument();
   });
 
   it('marks my current pick as pressed', () => {

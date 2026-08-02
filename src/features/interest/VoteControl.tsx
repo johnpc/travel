@@ -1,5 +1,5 @@
 import type { InterestLevel } from '../../lib/dataClient';
-import type { Tally } from './tally';
+import { consensusBar, type Tally } from './tally';
 import './interest.css';
 
 interface VoteControlProps {
@@ -19,6 +19,7 @@ const OPTIONS: { level: InterestLevel; label: string; emoji: string }[] = [
 /** Per-destination vote row: a Yes/Maybe/No control (highlighting this member's
  * pick) plus the group tally. Disabled until the visitor picks a name. */
 export function VoteControl({ tally, myLevel, canVote, isVoting, onVote }: VoteControlProps) {
+  const bar = consensusBar(tally);
   return (
     <div className="vote" data-testid="vote-control">
       <div className="vote__buttons" role="group" aria-label="Your interest">
@@ -36,9 +37,18 @@ export function VoteControl({ tally, myLevel, canVote, isVoting, onVote }: VoteC
           </button>
         ))}
       </div>
-      <span className="vote__tally tv-muted" data-testid="vote-tally">
-        {tally.yes} in · {tally.maybe} maybe · {tally.no} pass
-      </span>
+      <div className="vote__result">
+        {bar.total > 0 && (
+          <div className="vote__bar" data-testid="vote-bar" aria-hidden="true">
+            <span className="vote__seg vote__seg--yes" style={{ width: `${bar.yesPct}%` }} />
+            <span className="vote__seg vote__seg--maybe" style={{ width: `${bar.maybePct}%` }} />
+            <span className="vote__seg vote__seg--no" style={{ width: `${bar.noPct}%` }} />
+          </div>
+        )}
+        <span className="vote__tally tv-muted" data-testid="vote-tally">
+          {tally.yes} in · {tally.maybe} maybe · {tally.no} pass
+        </span>
+      </div>
     </div>
   );
 }
