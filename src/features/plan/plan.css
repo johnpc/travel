@@ -21,6 +21,11 @@
   display: block;
 }
 
+/* Reserves the hero height while the photo resolves (prevents layout shift). */
+.plan__hero--placeholder {
+  background: var(--tv-skeleton-base);
+}
+
 .plan__body {
   padding: 1rem 1.15rem 1.15rem;
 }

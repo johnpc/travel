@@ -4,6 +4,7 @@ import { useTripPlan } from './useTripPlan';
 import { bestWindowLabel } from './planLabels';
 import { joinNames } from './planCrew';
 import { PlanBookCta } from './PlanBookCta';
+import { PlanHero } from './PlanHero';
 import { useMediaUrl } from '../../lib/useMediaUrl';
 import { useWikiPhoto } from '../destinations/useWikiPhoto';
 import { formatMoney } from '../budget/computeBudget';
@@ -33,9 +34,7 @@ export function TripPlan({ tripId }: TripPlanProps) {
   const cls = plan.readyToBook ? 'plan plan--ready' : 'plan';
   return (
     <section className={cls} data-testid="trip-plan">
-      {img && (
-        <img className="plan__hero" src={img} alt={plan.frontRunner.name} data-testid="plan-hero" />
-      )}
+      <PlanHero src={img} alt={plan.frontRunner.name} />
       <div className="plan__body">
         <p className="tv-kicker">{plan.readyToBook ? 'Your trip' : 'The plan so far'}</p>
         <h2 className="plan__headline tv-serif" data-testid="plan-frontrunner">
