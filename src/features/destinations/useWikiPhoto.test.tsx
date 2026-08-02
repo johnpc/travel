@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import type { ReactNode } from 'react';
 import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useWikiPhotos, useWikiPhoto } from './useWikiPhoto';
+import { useWikiPhotos, useWikiPhoto, useWikiPhotosState } from './useWikiPhoto';
 
 function wrapper({ children }: { children: ReactNode }) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
@@ -54,5 +54,19 @@ describe('useWikiPhotos', () => {
     );
     const { result } = renderHook(() => useWikiPhoto('Kyoto'), { wrapper });
     await waitFor(() => expect(result.current).toBe('https://x/lead.jpg'));
+  });
+
+  it('useWikiPhotosState reports settled=false until the search resolves, then true', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, json: async () => payload([]) }));
+    const { result } = renderHook(() => useWikiPhotosState('Zambia safari'), { wrapper });
+    expect(result.current.settled).toBe(false); // still loading — reserve the slot
+    await waitFor(() => expect(result.current.settled).toBe(true));
+    expect(result.current.photos).toEqual([]); // settled with no match
+  });
+
+  it('useWikiPhotosState is settled=false with no name (never queried)', () => {
+    vi.stubGlobal('fetch', vi.fn());
+    const { result } = renderHook(() => useWikiPhotosState(undefined), { wrapper });
+    expect(result.current).toEqual({ photos: [], settled: false });
   });
 });
