@@ -3,13 +3,18 @@
    screens, where the 2-column layout already keeps every section reachable. */
 .secnav {
   position: sticky;
-  top: 0;
+  /* ion-content adds 16px padding. A bare top:0 sticky pins at the padding edge,
+     leaving a 16px strip where scrolling content bleeds through under the header.
+     Stick at top:-16px so it pins flush to the header, and pad the top back so
+     the chips aren't clipped. Full-bleed sides (negative margin + matching
+     padding) let chips reach the screen edge and the background mask the strip. */
+  top: -16px;
   z-index: 5;
   display: flex;
   gap: 0.4rem;
   overflow-x: auto;
-  margin: 0 0 1.25rem;
-  padding: 0.5rem 0;
+  margin: -16px -16px 1.25rem;
+  padding: calc(16px + 0.5rem) 16px 0.6rem;
   background: var(--tv-bg);
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
