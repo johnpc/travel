@@ -1,0 +1,172 @@
+.itin {
+  margin-top: 1.5rem;
+}
+
+.itin__kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.itin__hint {
+  font-size: 0.85rem;
+  margin: 0.1rem 0 0.6rem;
+}
+
+/* Ordered stops as a travel timeline: numbered markers joined by a line. */
+.itin__list {
+  list-style: none;
+  margin: 0.75rem 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.stop {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--tv-border);
+  border-radius: var(--tv-radius-sm);
+  background: var(--tv-surface);
+}
+
+.stop__marker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: var(--tv-accent);
+  color: var(--tv-accent-contrast);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.stop__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.stop__place {
+  font-size: 1.02rem;
+  overflow-wrap: anywhere;
+}
+
+.stop__nights {
+  font-size: 0.8rem;
+}
+
+.stop__note {
+  margin: 0.1rem 0 0;
+  font-size: 0.82rem;
+}
+
+.stop__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.1rem;
+  flex-shrink: 0;
+}
+
+.stop__move,
+.stop__remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  min-height: 40px;
+  border: none;
+  background: none;
+  color: var(--tv-text-muted);
+  font-size: 1.1rem;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.stop__move:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.stop__move:not(:disabled):hover {
+  color: var(--tv-accent-strong);
+  background: var(--tv-accent-soft);
+}
+
+.stop__remove:hover {
+  color: var(--tv-negative);
+  background: var(--tv-surface);
+}
+
+/* AI route suggestions — teal-soft cards with an add button, like activities. */
+.itin__suggestions {
+  list-style: none;
+  margin: 0.6rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.itin__suggestion {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px dashed var(--tv-border);
+  border-radius: var(--tv-radius-sm);
+  background: var(--tv-accent-soft);
+}
+
+.itin__suggestion-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.itin__suggestion ion-button[data-testid='route-accept'] {
+  min-width: 44px;
+  --padding-start: 0.5rem;
+  --padding-end: 0.5rem;
+}
+
+.itin ion-button::part(native) {
+  min-height: 44px;
+}
+
+/* Add-a-stop form: place grows, nights compact, add button aligns to the bottom. */
+.itin__add {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+}
+
+.itin__field {
+  flex: 1;
+  min-width: 0;
+  --background: var(--tv-bg);
+  --color: var(--tv-text);
+  --placeholder-color: var(--tv-text-muted);
+  --border-color: var(--tv-text-muted);
+  --border-width: 1.5px;
+  --border-radius: var(--tv-radius-sm);
+  --highlight-color-focused: var(--tv-accent);
+  --padding-start: 0.6rem;
+  --padding-end: 0.6rem;
+}
+
+.itin__field--nights {
+  flex: 0 0 4.5rem;
+}

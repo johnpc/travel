@@ -126,6 +126,8 @@ jobs:
             paths: .features-gen/e2e/features/availability
           - name: activities
             paths: .features-gen/e2e/features/activities
+          - name: itinerary
+            paths: .features-gen/e2e/features/itinerary
           - name: budget
             paths: .features-gen/e2e/features/budget
           - name: imagery

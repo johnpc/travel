@@ -1,5 +1,11 @@
 import { useIonAlert } from '@ionic/react';
 
+// Where each kind of item lives — used in the confirm copy ("taken off the …").
+const CONTAINER: Record<string, string> = {
+  destination: 'board',
+  stop: 'route',
+};
+
 /**
  * A branded "are you sure?" confirm for a destructive remove — replaces the
  * stark OS window.confirm() with an on-brand IonAlert (Keep it / Remove). Pass
@@ -12,7 +18,7 @@ export function useConfirmRemove(noun: string, name: string, onRemove?: () => vo
     if (!onRemove) return;
     presentAlert({
       header: `Remove this ${noun}?`,
-      message: `“${name}” will be taken off the ${noun === 'destination' ? 'board' : 'list'}.`,
+      message: `“${name}” will be taken off the ${CONTAINER[noun] ?? 'list'}.`,
       buttons: [
         { text: 'Keep it', role: 'cancel' },
         { text: 'Remove', role: 'destructive', handler: onRemove },

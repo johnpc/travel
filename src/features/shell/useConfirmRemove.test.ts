@@ -34,4 +34,13 @@ describe('useConfirmRemove', () => {
     result.current();
     expect(present.mock.calls.at(-1)?.[0].message).toContain('list');
   });
+
+  it('phrases the message as a route for itinerary stops', () => {
+    present.mockClear();
+    const { result } = renderHook(() => useConfirmRemove('stop', 'Bangkok', vi.fn()));
+    result.current();
+    const cfg = present.mock.calls.at(-1)?.[0];
+    expect(cfg.header).toBe('Remove this stop?');
+    expect(cfg.message).toContain('route');
+  });
 });
