@@ -11,6 +11,8 @@ const base = {
   set: vi.fn(),
   submit: vi.fn(),
   totals: { perPerson: 900, perCouple: 1800, hasEstimate: true },
+  runEstimate: vi.fn(),
+  isEstimating: false,
   isSaving: false,
   isLoading: false,
   isError: false,
@@ -49,5 +51,13 @@ describe('BudgetSection', () => {
     expect(screen.getByTestId('budget-link-flights')).toHaveAttribute('href', expect.stringContaining('google.com/travel/flights')); // prettier-ignore
     expect(screen.getByTestId('budget-link-hotels')).toHaveAttribute('href', expect.stringContaining('booking.com')); // prettier-ignore
     expect(screen.getByTestId('budget-link-airbnb')).toHaveAttribute('href', expect.stringContaining('airbnb.com')); // prettier-ignore
+  });
+
+  it('runs the AI estimate when the Estimate button is tapped', () => {
+    const runEstimate = vi.fn();
+    h.useBudgetPanel.mockReturnValue({ ...base, runEstimate });
+    render(<BudgetSection tripId="t1" destinationId="d1" destinationName="Lisbon, Portugal" />);
+    fireEvent.click(screen.getByTestId('budget-estimate'));
+    expect(runEstimate).toHaveBeenCalled();
   });
 });
