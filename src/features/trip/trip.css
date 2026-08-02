@@ -3,13 +3,15 @@
   margin: 0 auto;
 }
 
-/* iOS centers the toolbar title with absolute positioning, so it ignores the
-   start (icon-only back) + end (theme, share) button clusters and a longer trip
-   name overlaps them. Reserve space on both sides so the title truncates with
-   an ellipsis instead of colliding. The end cluster is wider (two buttons). */
-.trip__toolbar ion-title {
-  padding-inline-start: 52px;
-  padding-inline-end: 116px;
+/* ONLY iOS mode centers the toolbar title with absolute positioning, so it
+   ignores the start (icon-only back) + end (theme + icon-only share) button
+   clusters and a longer trip name overlaps them. Reserve just enough for the
+   two icon-only end buttons so the title truncates with an ellipsis instead of
+   colliding. Scoped to `.ios` because in Material mode the title flows inline
+   and this padding would wrongly eat its width (truncating a short name). */
+.trip__toolbar ion-title.ios {
+  padding-inline-start: 48px;
+  padding-inline-end: 92px;
 }
 
 .trip__title {

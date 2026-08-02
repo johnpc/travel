@@ -11,12 +11,15 @@ describe('ShareButton', () => {
     vi.clearAllMocks();
   });
 
-  it('shares the trip URL on click', () => {
+  it('shares the trip URL on click (icon-only by default)', () => {
     const share = vi.fn();
     h.useShare.mockReturnValue({ share, copied: false });
     render(<ShareButton slug="greece-2027" />);
     expect(h.useShare).toHaveBeenCalledWith('https://travel.jpc.io/greece-2027');
-    fireEvent.click(screen.getByTestId('share-trip'));
+    const btn = screen.getByTestId('share-trip');
+    expect(btn).toHaveAccessibleName('Share trip link');
+    expect(btn).not.toHaveTextContent('Share');
+    fireEvent.click(btn);
     expect(share).toHaveBeenCalled();
   });
 

@@ -12,6 +12,8 @@ interface ShareButtonProps {
 export function ShareButton({ slug }: ShareButtonProps) {
   const url = `https://travel.jpc.io/${slug}`;
   const { share, copied } = useShare(url);
+  // Icon-only by default (matches the back + theme buttons and keeps the header
+  // title room on narrow phones); the copy confirmation briefly shows a label.
   return (
     <IonButton
       fill="clear"
@@ -20,8 +22,12 @@ export function ShareButton({ slug }: ShareButtonProps) {
       data-testid="share-trip"
       aria-label="Share trip link"
     >
-      <IonIcon icon={copied ? checkmarkOutline : shareOutline} slot="start" aria-hidden="true" />
-      {copied ? 'Copied!' : 'Share'}
+      <IonIcon
+        icon={copied ? checkmarkOutline : shareOutline}
+        slot={copied ? 'start' : 'icon-only'}
+        aria-hidden="true"
+      />
+      {copied ? 'Copied!' : ''}
     </IonButton>
   );
 }
