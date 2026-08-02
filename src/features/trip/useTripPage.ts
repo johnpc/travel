@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { useEnsureTrip, useTrip } from './tripApi';
 import { useMembers } from './memberApi';
+import { recordRecent } from '../home/recentsStore';
 
 interface TripLocationState {
   title?: string;
@@ -27,6 +28,12 @@ export function useTripPage() {
       ensure.mutate({ slug, title: state?.title });
     }
   }, [tripQuery.isSuccess, tripQuery.data, ensure, slug, state]);
+
+  // Remember this trip on the device so Home can offer a "jump back in" list —
+  // the account-free safety net against losing the URL by closing the tab.
+  useEffect(() => {
+    if (trip?.title) recordRecent({ slug, title: trip.title }, window.localStorage);
+  }, [slug, trip?.title]);
 
   return {
     slug,

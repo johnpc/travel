@@ -88,6 +88,61 @@
   text-align: center;
 }
 
+/* "Jump back in" recents — a card under the start form, on its own surface so
+   it stays legible over the hero photo. */
+.home-recents {
+  margin-top: 1rem;
+  background: var(--tv-surface);
+  border-radius: var(--tv-radius);
+  padding: 0.85rem 1rem;
+  box-shadow: var(--tv-shadow-hover);
+  text-align: left;
+  color: var(--tv-text);
+}
+
+.home-recents__label {
+  margin: 0 0 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tv-text-muted);
+}
+
+.home-recents__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.home-recents__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--tv-border);
+  border-radius: var(--tv-radius-sm);
+  color: var(--tv-text);
+  text-decoration: none;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+
+.home-recents__item:hover {
+  border-color: var(--tv-accent);
+  background: var(--tv-accent-soft);
+}
+
+.home-recents__title {
+  font-family: var(--tv-font-serif);
+  font-size: 1rem;
+}
+
 @media (min-width: 768px) {
   .home-hero__title {
     font-size: 2.75rem;
