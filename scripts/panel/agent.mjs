@@ -37,7 +37,14 @@ export async function nextAction({ system, history, screenshotB64, elements }) {
     { type: 'image', source: { type: 'base64', media_type: 'image/png', data: screenshotB64 } },
     {
       type: 'text',
-      text: `Interactive elements on screen (use the [ref] number):\n${elementText}\n\nPick ONE action via the act tool. If the group has clearly converged on a destination + dates and you've had your say in chat, use action "done".`,
+      text:
+        `Interactive elements on screen (use the [ref] number):\n${elementText}\n\n` +
+        `Rules: To enter text in a field, use action "type" with that field's [ref] and the "text" — ` +
+        `it fills the field directly, you do NOT need to click it first. After typing into a form, the ` +
+        `NEXT action is usually "click" on its submit button (Join / Add / send). Never repeat the same ` +
+        `click twice — if something didn't change, do a DIFFERENT action (type, scroll, or click elsewhere). ` +
+        `Pick ONE action via the act tool. When the group has converged on a destination + dates and ` +
+        `you've had your say in chat, use action "done".`,
     },
   ];
   const body = JSON.stringify({
