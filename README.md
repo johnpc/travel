@@ -39,6 +39,7 @@ stay useful for this trip and the next.
 | Feature                                                   | Status |
 | --------------------------------------------------------- | :----: |
 | Open/create a trip by URL — no account                    |   ✅   |
+| "Jump back in" recent-trips list (device-local)           |   ✅   |
 | "The plan" summary (front-runner, best dates, cost)       |   ✅   |
 | Share the trip link (native share / copy)                 |   ✅   |
 | Name-only roster (pick your name, recognized anywhere)    |   ✅   |

@@ -68,3 +68,14 @@ Then('the trip shows a retry, not a blank screen', async ({ page }) => {
   await expect(page.getByTestId('load-error')).toBeVisible({ timeout: 15_000 });
   await expect(page.getByTestId('load-retry')).toBeVisible();
 });
+
+When('the visitor goes back to the home screen', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.getByTestId('start-form')).toBeVisible({ timeout: 15_000 });
+});
+
+Then('{string} is offered under recent trips', async ({ page }, title: string) => {
+  await expect(page.getByTestId('recent-trip').filter({ hasText: title }).first()).toBeVisible({
+    timeout: 15_000,
+  });
+});

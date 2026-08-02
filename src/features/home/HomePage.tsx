@@ -1,5 +1,7 @@
 import { IonContent, IonInput, IonPage, IonButton, IonText } from '@ionic/react';
 import { useStartTrip } from './useStartTrip';
+import { useRecents } from './useRecents';
+import { RecentTrips } from './RecentTrips';
 import './home.css';
 
 /** Landing screen: a wanderlust hero over the app's banner, with one focused
@@ -7,6 +9,7 @@ import './home.css';
  * account; the URL is the whole identity of a trip. */
 export function HomePage() {
   const { name, setName, slug, canStart, start } = useStartTrip();
+  const recents = useRecents();
   return (
     <IonPage>
       <IonContent fullscreen>
@@ -46,6 +49,7 @@ export function HomePage() {
                 </IonText>
               )}
             </form>
+            <RecentTrips recents={recents} />
           </div>
         </div>
       </IonContent>

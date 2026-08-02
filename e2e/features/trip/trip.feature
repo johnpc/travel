@@ -28,3 +28,11 @@ Feature: Plan a trip by URL (guest, no account)
   Scenario: A failed trip read shows a retry, not a blank screen
     When a visitor opens the trip "greece-2027" with the network failing
     Then the trip shows a retry, not a blank screen
+
+  # Account-free safety net: a visited trip is remembered on the device so you
+  # never lose the URL by closing the tab.
+  Scenario: A visited trip is offered on the home screen to jump back into
+    When a visitor opens the trip "greece-2027"
+    And the trip title "Greece 2027" is shown
+    And the visitor goes back to the home screen
+    Then "Greece 2027" is offered under recent trips
