@@ -119,13 +119,21 @@ a:focus-visible,
 button:focus-visible,
 [tabindex]:focus-visible,
 [role='button']:focus-visible,
-ion-button:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
   outline: var(--tv-focus-ring);
   outline-offset: var(--tv-focus-offset);
   border-radius: var(--tv-radius-sm);
+}
+
+/* Ionic renders keyboard focus on the shadow-DOM native button, so a host-level
+   ion-button:focus-visible outline gets clipped by the button's own background.
+   Style the inner ::part(native) instead so every ion-button (theme toggle,
+   Share, Join, Add, Book flights…) shows the same visible keyboard ring. */
+ion-button::part(native):focus-visible {
+  outline: var(--tv-focus-ring);
+  outline-offset: var(--tv-focus-offset);
 }
 
 /* Respect the OS "reduce motion" setting. Near-instant (0.01ms) rather than 0
