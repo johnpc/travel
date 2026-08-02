@@ -59,7 +59,7 @@ export function AvailabilityPanel({ tripId, me, start }: AvailabilityPanelProps)
             data-testid="cal-prev"
             aria-label="Previous month"
           >
-            <IonIcon icon={chevronBackOutline} slot="icon-only" />
+            <IonIcon icon={chevronBackOutline} slot="icon-only" aria-hidden="true" />
           </IonButton>
           <span className="cal__title tv-serif" data-testid="cal-title">
             {MONTHS[p.month - 1]} {p.year}
@@ -71,7 +71,7 @@ export function AvailabilityPanel({ tripId, me, start }: AvailabilityPanelProps)
             data-testid="cal-next"
             aria-label="Next month"
           >
-            <IonIcon icon={chevronForwardOutline} slot="icon-only" />
+            <IonIcon icon={chevronForwardOutline} slot="icon-only" aria-hidden="true" />
           </IonButton>
         </div>
         <CalendarGrid
