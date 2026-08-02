@@ -158,6 +158,10 @@
 
 .dest-card__name {
   flex: 1;
+  /* min-width:0 lets a long/unbreakable place name wrap inside the flex head
+     instead of stretching it past the card; overflow-wrap breaks a giant token. */
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .dest-card__badge {

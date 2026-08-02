@@ -30,8 +30,19 @@
    space is used instead of stranding a phone-width strip in the middle. */
 .trip__cols {
   display: grid;
-  grid-template-columns: 1fr;
+  /* minmax(0, 1fr), NOT 1fr: a grid track's implicit minimum is min-content, so
+     a single wide/unbreakable child (long destination title or AI blurb word,
+     the photo carousel) blows the column past the viewport with no way to
+     scroll. minmax(0, …) lets the track shrink so content wraps/scrolls inside. */
+  grid-template-columns: minmax(0, 1fr);
   gap: 1.5rem;
+}
+
+/* Same reason at the child level: grid/flex items default to min-width:auto and
+   won't shrink below their content, pushing the board off-screen on mobile. */
+.trip__main,
+.trip__rail {
+  min-width: 0;
 }
 
 @media (min-width: 900px) {
