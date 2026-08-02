@@ -17,6 +17,7 @@ describe('ChatComposer', () => {
   it('renders an accessible input and a send button', () => {
     render(<ChatComposer onSend={vi.fn()} isSending={false} />);
     expect(screen.getByTestId('chat-input')).toHaveAttribute('aria-label', 'Write a message');
-    expect(screen.getByTestId('chat-send')).toBeInTheDocument();
+    // icon-only send button must have a discernible name for screen readers
+    expect(screen.getByTestId('chat-send')).toHaveAttribute('aria-label', 'Send message');
   });
 });

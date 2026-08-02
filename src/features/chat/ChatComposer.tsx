@@ -29,7 +29,12 @@ export function ChatComposer({ onSend, isSending }: ChatComposerProps) {
         data-testid="chat-input"
         onIonInput={(e) => setBody(e.detail.value ?? '')}
       />
-      <IonButton type="submit" disabled={!body.trim() || isSending} data-testid="chat-send">
+      <IonButton
+        type="submit"
+        disabled={!body.trim() || isSending}
+        aria-label="Send message"
+        data-testid="chat-send"
+      >
         <IonIcon icon={sendOutline} slot="icon-only" aria-hidden="true" />
       </IonButton>
     </form>
