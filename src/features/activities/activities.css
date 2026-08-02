@@ -4,9 +4,19 @@
   border-top: 1px dashed var(--tv-border);
 }
 
-/* AI suggest + accept buttons meet the 44px tap-target minimum. */
+/* AI suggest + accept buttons meet the 44px tap-target minimum in BOTH
+   dimensions — the icon-only accept (+) was only ~28px wide, too small to
+   reliably tap on a phone (reads as "can't add the suggestion"). The host
+   element sizes an icon-only button, so widen it there too, not just native. */
 .acts ion-button::part(native) {
   min-height: 44px;
+  min-width: 44px;
+}
+
+.acts__suggestion ion-button[data-testid='act-accept'] {
+  min-width: 44px;
+  --padding-start: 0.5rem;
+  --padding-end: 0.5rem;
 }
 
 .acts__suggestions,
@@ -117,12 +127,15 @@
   font-size: 0.82rem;
 }
 
+/* "Find on GetYourGuide" is the booking hand-off — give it a comfortable 44px
+   tap height (it was a ~15px sliver) so it's an obvious, easy target on mobile. */
 .acts__link {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  margin-top: 0.4rem;
-  font-size: 0.8rem;
+  min-height: 44px;
+  margin-top: 0.15rem;
+  font-size: 0.85rem;
   font-weight: 600;
   color: var(--tv-accent-strong);
   text-decoration: none;
