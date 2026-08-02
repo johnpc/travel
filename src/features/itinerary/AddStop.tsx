@@ -25,7 +25,7 @@ export function AddStop({ onAdd }: AddStopProps) {
         fill="outline"
         label="Add a stop"
         labelPlacement="stacked"
-        placeholder="Bangkok, Thailand"
+        placeholder="e.g. Bangkok, Thailand"
         value={place}
         data-testid="stop-place"
         onIonInput={(e) => setPlace(e.detail.value ?? '')}

@@ -22,7 +22,7 @@ export function AddDestination({ onAdd, isAdding }: AddDestinationProps) {
       <IonInput
         label="Add a destination"
         labelPlacement="stacked"
-        placeholder="Lisbon, Portugal"
+        placeholder="e.g. Lisbon, Portugal"
         value={name}
         data-testid="dest-name"
         onIonInput={(e) => setName(e.detail.value ?? '')}
