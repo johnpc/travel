@@ -9,13 +9,26 @@
   margin: 0.4rem 0 0.8rem;
 }
 
+/* Unselected members read as tappable "pick me" chips. Ionic's default chip
+ * hardcodes near-black text that doesn't flip for dark mode (invisible on the
+ * dark bg), so drive every color from --tv-* tokens to track the theme. */
 .roster__chip {
+  --background: var(--tv-surface);
+  --color: var(--tv-text);
+  border: 1px solid var(--tv-border);
   cursor: pointer;
+  opacity: 1;
+}
+
+.roster__chip:not(.roster__chip--me):hover {
+  --background: var(--tv-accent-soft);
+  border-color: var(--tv-accent);
 }
 
 .roster__chip--me {
   --background: var(--tv-accent);
   --color: var(--tv-accent-contrast);
+  border-color: transparent;
 }
 
 .roster__you {
