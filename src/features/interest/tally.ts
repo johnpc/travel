@@ -49,3 +49,20 @@ export function myLevel(
   const mine = votes.find((v) => v.destinationId === destinationId && v.memberName === memberName);
   return (mine?.level as InterestLevel | null) ?? null;
 }
+
+export interface ConsensusBar {
+  /** Percent widths (0-100) of each segment, summing to 100 when any vote. */
+  yesPct: number;
+  maybePct: number;
+  noPct: number;
+  total: number;
+}
+
+/** Turn a tally into consensus-bar segment widths, so the group's leaning is
+ * readable at a glance (empty when nobody's voted). */
+export function consensusBar(t: Tally): ConsensusBar {
+  const total = t.yes + t.maybe + t.no;
+  if (total === 0) return { yesPct: 0, maybePct: 0, noPct: 0, total: 0 };
+  const pct = (n: number) => Math.round((n / total) * 100);
+  return { yesPct: pct(t.yes), maybePct: pct(t.maybe), noPct: pct(t.no), total };
+}
