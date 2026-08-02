@@ -34,9 +34,9 @@ export function TripPage() {
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar>
+        <IonToolbar className="trip__toolbar">
           <IonButtons slot="start">
-            <IonBackButton defaultHref="/" />
+            <IonBackButton defaultHref="/" text="" />
           </IonButtons>
           <IonTitle>{trip?.title ?? 'Trip'}</IonTitle>
           <IonButtons slot="end">

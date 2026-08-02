@@ -3,6 +3,15 @@
   margin: 0 auto;
 }
 
+/* iOS centers the toolbar title with absolute positioning, so it ignores the
+   start (icon-only back) + end (theme, share) button clusters and a longer trip
+   name overlaps them. Reserve space on both sides so the title truncates with
+   an ellipsis instead of colliding. The end cluster is wider (two buttons). */
+.trip__toolbar ion-title {
+  padding-inline-start: 52px;
+  padding-inline-end: 116px;
+}
+
 .trip__title {
   font-size: 1.8rem;
   margin: 0.2rem 0 0.5rem;
