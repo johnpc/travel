@@ -22,33 +22,33 @@ export function VoteControl({ tally, myLevel, canVote, isVoting, onVote }: VoteC
   const bar = consensusBar(tally);
   return (
     <div className="vote" data-testid="vote-control">
-      <div className="vote__buttons" role="group" aria-label="Your interest">
-        {OPTIONS.map((o) => (
-          <button
-            key={o.level}
-            type="button"
-            className={myLevel === o.level ? 'vote__btn vote__btn--on' : 'vote__btn'}
-            aria-pressed={myLevel === o.level}
-            disabled={!canVote || isVoting}
-            data-testid={`vote-${o.level}`}
-            onClick={() => onVote(o.level)}
-          >
-            <span aria-hidden="true">{o.emoji}</span> {o.label}
-          </button>
-        ))}
-      </div>
-      <div className="vote__result">
-        {bar.total > 0 && (
-          <div className="vote__bar" data-testid="vote-bar" aria-hidden="true">
-            <span className="vote__seg vote__seg--yes" style={{ width: `${bar.yesPct}%` }} />
-            <span className="vote__seg vote__seg--maybe" style={{ width: `${bar.maybePct}%` }} />
-            <span className="vote__seg vote__seg--no" style={{ width: `${bar.noPct}%` }} />
-          </div>
-        )}
+      <div className="vote__top">
+        <div className="vote__buttons" role="group" aria-label="Your interest">
+          {OPTIONS.map((o) => (
+            <button
+              key={o.level}
+              type="button"
+              className={myLevel === o.level ? 'vote__btn vote__btn--on' : 'vote__btn'}
+              aria-pressed={myLevel === o.level}
+              disabled={!canVote || isVoting}
+              data-testid={`vote-${o.level}`}
+              onClick={() => onVote(o.level)}
+            >
+              <span aria-hidden="true">{o.emoji}</span> {o.label}
+            </button>
+          ))}
+        </div>
         <span className="vote__tally tv-muted" data-testid="vote-tally">
           {tally.yes} in · {tally.maybe} maybe · {tally.no} pass
         </span>
       </div>
+      {bar.total > 0 && (
+        <div className="vote__bar" data-testid="vote-bar" aria-hidden="true">
+          <span className="vote__seg vote__seg--yes" style={{ width: `${bar.yesPct}%` }} />
+          <span className="vote__seg vote__seg--maybe" style={{ width: `${bar.maybePct}%` }} />
+          <span className="vote__seg vote__seg--no" style={{ width: `${bar.noPct}%` }} />
+        </div>
+      )}
     </div>
   );
 }
