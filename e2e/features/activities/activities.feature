@@ -15,3 +15,5 @@ Feature: See things to do at a destination
     When the visitor keeps the first activity suggestion
     Then the kept activity appears in the destination's activity list
     And the kept activity links to a GetYourGuide search
+    When the visitor removes the kept activity
+    Then the kept activity is gone from the activity list

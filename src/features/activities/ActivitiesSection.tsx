@@ -65,7 +65,12 @@ export function ActivitiesSection({
       >
         <ul className="acts__list" data-testid="act-list">
           {p.activities.map((a) => (
-            <ActivityItem key={a.id} activity={a} destinationName={destinationName} />
+            <ActivityItem
+              key={a.id}
+              activity={a}
+              destinationName={destinationName}
+              onRemove={() => p.remove(a.id)}
+            />
           ))}
         </ul>
       </LoadState>

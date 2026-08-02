@@ -3,13 +3,20 @@ import type { ReactNode } from 'react';
 import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-const m = vi.hoisted(() => ({ list: vi.fn(), create: vi.fn(), observeQuery: vi.fn() }));
+const m = vi.hoisted(() => ({ list: vi.fn(), create: vi.fn(), delete: vi.fn(), observeQuery: vi.fn() })); // prettier-ignore
 vi.mock('../../lib/dataClient', async (importActual) => {
   const actual = await importActual<typeof import('../../lib/dataClient')>();
   return {
     ...actual,
     dataClient: {
-      models: { Activity: { list: m.list, create: m.create, observeQuery: m.observeQuery } },
+      models: {
+        Activity: {
+          list: m.list,
+          create: m.create,
+          delete: m.delete,
+          observeQuery: m.observeQuery,
+        },
+      },
     },
   };
 });
@@ -23,7 +30,7 @@ function liveWith(items: unknown[]) {
   });
 }
 
-import { fetchActivities, useActivities, useAddActivity } from './activityApi';
+import { fetchActivities, useActivities, useAddActivity, useRemoveActivity } from './activityApi';
 
 function wrapper({ children }: { children: ReactNode }) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
@@ -82,5 +89,17 @@ describe('useAddActivity', () => {
     await expect(result.current.mutateAsync({ title: 'x', source: 'MANUAL' })).rejects.toThrow(
       'No destination',
     );
+  });
+});
+
+describe('useRemoveActivity', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+  it('deletes the activity by id', async () => {
+    m.delete.mockResolvedValue({ data: { id: 'a1' } });
+    const { result } = renderHook(() => useRemoveActivity('d1'), { wrapper });
+    await result.current.mutateAsync('a1');
+    expect(m.delete).toHaveBeenCalledWith({ id: 'a1' });
   });
 });

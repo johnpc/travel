@@ -4,13 +4,16 @@ import { renderHook, act, waitFor } from '@testing-library/react';
 const h = vi.hoisted(() => ({
   useActivities: vi.fn(),
   useAddActivity: vi.fn(),
+  useRemoveActivity: vi.fn(),
   useSuggestActivities: vi.fn(),
   addMutate: vi.fn(),
+  removeMutate: vi.fn(),
   suggestMutateAsync: vi.fn(),
 }));
 vi.mock('./activityApi', () => ({
   useActivities: h.useActivities,
   useAddActivity: h.useAddActivity,
+  useRemoveActivity: h.useRemoveActivity,
 }));
 vi.mock('./suggestActivityApi', () => ({ useSuggestActivities: h.useSuggestActivities }));
 
@@ -27,6 +30,7 @@ describe('useActivitiesPanel', () => {
       refetch: vi.fn(),
     });
     h.useAddActivity.mockReturnValue({ mutate: h.addMutate, isPending: false });
+    h.useRemoveActivity.mockReturnValue({ mutate: h.removeMutate, isPending: false });
     h.useSuggestActivities.mockReturnValue({ mutateAsync: h.suggestMutateAsync, isPending: false });
   });
 
@@ -52,5 +56,11 @@ describe('useActivitiesPanel', () => {
     act(() => result.current.accept({ title: 'Hike', blurb: 'b', category: 'Outdoors' }));
     expect(h.addMutate).toHaveBeenCalledWith({ title: 'Hike', blurb: 'b', category: 'Outdoors', source: 'AI' }); // prettier-ignore
     expect(result.current.suggestions.map((s) => s.title)).toEqual(['Dine']);
+  });
+
+  it('removes an activity by id', () => {
+    const { result } = renderHook(() => useActivitiesPanel('t1', 'd1', 'Santorini', true));
+    act(() => result.current.remove('1'));
+    expect(h.removeMutate).toHaveBeenCalledWith('1');
   });
 });
