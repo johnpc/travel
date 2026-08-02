@@ -1,18 +1,21 @@
 import { expect } from '@playwright/test';
 import { createBdd } from 'playwright-bdd';
 
-const { When, Then } = createBdd();
+const { Then } = createBdd();
 
 const firstCard = (page: import('@playwright/test').Page) => page.getByTestId('dest-item').first();
 
-When('the visitor generates an image for the first destination', async ({ page }) => {
-  await firstCard(page).getByTestId('dest-image-gen').click();
+Then('the first destination shows a photo automatically', async ({ page }) => {
+  // A visual renders with no interaction — either the real-photo carousel
+  // (default) or a group-generated AI view if one's been made. Assert an <img>
+  // with an http(s) src inside the card's image area.
+  const photo = firstCard(page).locator(
+    '[data-testid="carousel-photo"], [data-testid="dest-image-img"]',
+  );
+  await expect(photo.first()).toBeVisible({ timeout: 20_000 });
+  await expect(photo.first()).toHaveAttribute('src', /^https?:\/\//);
 });
 
-Then('the first destination shows a generated image', async ({ page }) => {
-  // The live Bedrock image pipeline runs (generate → resize → S3 → persist →
-  // getUrl), so allow generous time; then assert a real <img> with an http src.
-  const img = firstCard(page).getByTestId('dest-image-img');
-  await expect(img).toBeVisible({ timeout: 60_000 });
-  await expect(img).toHaveAttribute('src', /^https?:\/\//);
+Then('the destination offers to reimagine the view with AI', async ({ page }) => {
+  await expect(firstCard(page).getByTestId('dest-image-gen')).toBeVisible({ timeout: 15_000 });
 });

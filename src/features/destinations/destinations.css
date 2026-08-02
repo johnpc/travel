@@ -79,11 +79,34 @@
 }
 
 .dest-card {
+  position: relative;
   padding: 1rem;
   border: 1px solid var(--tv-border);
   border-radius: var(--tv-radius);
   background: var(--tv-surface);
   box-shadow: var(--tv-shadow);
+}
+
+/* The group's front-runner gets a teal accent border + a badge, so the winner
+   is obvious right on the board where you vote. */
+.dest-card--leader {
+  border-color: var(--tv-accent);
+  box-shadow: var(--tv-shadow-hover);
+}
+
+.dest-card__leader-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-bottom: 0.5rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: var(--tv-accent);
+  color: var(--tv-accent-contrast);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .dest-card__head {

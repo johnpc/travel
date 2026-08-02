@@ -35,4 +35,22 @@ describe('DestinationCard', () => {
     fireEvent.click(screen.getByTestId('dest-activities-toggle'));
     expect(screen.getByTestId('activities')).toBeInTheDocument();
   });
+
+  it('badges the front-runner and marks the card as leader', () => {
+    const { rerender } = render(
+      <ul>
+        <DestinationCard destination={dest} tripId="t1" />
+      </ul>,
+    );
+    expect(screen.queryByTestId('dest-frontrunner')).not.toBeInTheDocument();
+    expect(screen.getByTestId('dest-item')).not.toHaveClass('dest-card--leader');
+
+    rerender(
+      <ul>
+        <DestinationCard destination={dest} tripId="t1" isFrontRunner />
+      </ul>,
+    );
+    expect(screen.getByTestId('dest-frontrunner')).toHaveTextContent('Front-runner');
+    expect(screen.getByTestId('dest-item')).toHaveClass('dest-card--leader');
+  });
 });

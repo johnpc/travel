@@ -1,12 +1,14 @@
-Feature: See a generated view of a destination
+Feature: See what a destination looks like
   As one of the friends planning a trip
-  I want an AI-generated image of a destination
-  So that we can picture what we'd actually experience there
+  I want to see real photos of a destination at a glance
+  So that we can picture the place without any extra taps
 
-  # Honest e2e: clicks generate on a seeded destination, which runs the live
-  # Bedrock image pipeline, and asserts a real image renders from S3.
+  # Honest e2e: opens a seeded trip and asserts a REAL destination photo renders
+  # automatically (Wikimedia Commons), and that the "imagine it with AI" option
+  # is offered. We don't drive the live Bedrock generation here — it's a slow,
+  # costly round-trip; the fast auto-photo is the primary experience.
 
-  Scenario: Generate a destination image and see it render
+  Scenario: A destination shows a real photo automatically, no tap
     When a visitor opens the trip "greece-2027"
-    And the visitor generates an image for the first destination
-    Then the first destination shows a generated image
+    Then the first destination shows a photo automatically
+    And the destination offers to reimagine the view with AI

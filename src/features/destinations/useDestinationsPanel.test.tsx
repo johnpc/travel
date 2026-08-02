@@ -81,4 +81,29 @@ describe('useDestinationsPanel', () => {
     expect(h.addMutate).toHaveBeenCalledWith({ name: 'Oslo', blurb: 'b', why: 'w', source: 'AI' });
     expect(result.current.suggestions.map((s) => s.name)).toEqual(['Cairo']);
   });
+
+  it('names a front-runner only once a destination has positive support', () => {
+    h.useDestinations.mockReturnValue({
+      data: [
+        { id: '1', name: 'Rome' },
+        { id: '2', name: 'Bali' },
+      ],
+      isLoading: false,
+      isError: false,
+      refetch: vi.fn(),
+    });
+    // No votes yet → no front-runner badged.
+    h.useInterest.mockReturnValue(emptyInterest);
+    const { result, rerender } = renderHook(() => useDestinationsPanel('t1', 'Trip', 'Alex'));
+    expect(result.current.frontRunnerId).toBeNull();
+
+    // Bali gains support → it becomes the front-runner (sorted first + score>0).
+    h.useInterest.mockReturnValue({
+      ...emptyInterest,
+      tallies: { '2': { yes: 2, maybe: 0, no: 0, score: 2 } },
+    });
+    rerender();
+    expect(result.current.destinations[0].id).toBe('2');
+    expect(result.current.frontRunnerId).toBe('2');
+  });
 });

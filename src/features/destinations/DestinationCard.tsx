@@ -5,6 +5,7 @@ import {
   createOutline,
   chevronDownOutline,
   chevronUpOutline,
+  trophyOutline,
 } from 'ionicons/icons';
 import type { DestinationRecord } from '../../lib/dataClient';
 import { ActivitiesSection } from '../activities/ActivitiesSection';
@@ -14,16 +15,32 @@ import { DestinationImage } from './DestinationImage';
 interface DestinationCardProps {
   destination: DestinationRecord;
   tripId: string | undefined;
+  /** True when this is the group's front-runner — badges the card. */
+  isFrontRunner?: boolean;
   /** Optional vote control rendered under the card (interest slice). */
   vote?: ReactNode;
 }
 
 /** One destination on the board: name + source badge, blurb, why, a vote
- * control slot, and an expandable "things to do here" activities section. */
-export function DestinationCard({ destination: d, tripId, vote }: DestinationCardProps) {
+ * control slot, and an expandable "things to do here" activities section. The
+ * front-runner card wears a badge + accent so the leader is obvious. */
+export function DestinationCard({
+  destination: d,
+  tripId,
+  isFrontRunner,
+  vote,
+}: DestinationCardProps) {
   const [open, setOpen] = useState(false);
   return (
-    <li className="dest-card" data-testid="dest-item">
+    <li
+      className={isFrontRunner ? 'dest-card dest-card--leader' : 'dest-card'}
+      data-testid="dest-item"
+    >
+      {isFrontRunner && (
+        <span className="dest-card__leader-badge" data-testid="dest-frontrunner">
+          <IonIcon icon={trophyOutline} aria-hidden="true" /> Front-runner
+        </span>
+      )}
       <div className="dest-card__head">
         <span className="dest-card__name tv-serif">{d.name}</span>
         <span
