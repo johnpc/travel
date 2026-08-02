@@ -12,6 +12,12 @@ Feature: See the plan come together
     And the plan shows a best-dates line
     And the plan shows a budget line
 
+  # The seeded greece-2027 has a front-runner, a shared date window, and a budget
+  # — so the plan is ready to book and invites locking it in.
+  Scenario: An aligned plan invites booking the trip
+    When a visitor opens the trip "greece-2027"
+    Then the plan invites booking the trip
+
   Scenario: A visitor can share the trip link
     When a visitor opens the trip "greece-2027"
     And the visitor copies the trip link

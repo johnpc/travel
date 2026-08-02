@@ -48,6 +48,10 @@ describe('useTripPlan', () => {
     expect(result.current.frontRunnerVotes).toEqual({ yes: 2, maybe: 0, no: 0 });
     expect(result.current.bestWindow).toEqual({ start: '2027-06-12', end: '2027-06-13', days: 2 });
     expect(result.current.budget?.perPerson).toBe(900);
+    // Al + Sam voted YES on Bali → the crew you'd go with.
+    expect(result.current.crew).toEqual(['Al', 'Sam']);
+    // front-runner + yes votes + window + budget all present → ready to book.
+    expect(result.current.readyToBook).toBe(true);
   });
 
   it('has no front-runner when there are no destinations', () => {

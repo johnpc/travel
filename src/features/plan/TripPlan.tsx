@@ -1,7 +1,10 @@
 import { IonIcon } from '@ionic/react';
-import { locationOutline, calendarOutline, walletOutline } from 'ionicons/icons';
+import { calendarOutline, walletOutline, peopleOutline } from 'ionicons/icons';
 import { useTripPlan } from './useTripPlan';
 import { bestWindowLabel } from './planLabels';
+import { joinNames } from './planCrew';
+import { PlanBookCta } from './PlanBookCta';
+import { useMediaUrl } from '../../lib/useMediaUrl';
 import { formatMoney } from '../budget/computeBudget';
 import './plan.css';
 
@@ -9,45 +12,54 @@ interface TripPlanProps {
   tripId: string | undefined;
 }
 
-/** "The Plan" — a live synthesis of where the group leans, the best dates
- * everyone's free, and the rough cost. Reads the votes/availability/budget
- * already collected so nobody has to eyeball it all. Hidden until there's a
- * front-runner to show. */
+/** "The Plan" hero — synthesizes where the group leans into an invitation:
+ * {Destination} with {crew}, the best dates, the cost, and (once it all aligns)
+ * a "lock it in — book flights & hotels" CTA. Hidden until a front-runner
+ * exists. Reads votes/availability/budget already collected. */
 export function TripPlan({ tripId }: TripPlanProps) {
   const plan = useTripPlan(tripId);
+  const img = useMediaUrl(plan.frontRunner?.imagePath);
   if (plan.isLoading || plan.isError || !plan.frontRunner) return null;
-  const v = plan.frontRunnerVotes;
+  const crew = joinNames(plan.crew);
+  const cls = plan.readyToBook ? 'plan plan--ready' : 'plan';
   return (
-    <section className="plan" data-testid="trip-plan">
-      <p className="tv-kicker">The plan so far</p>
-      <div className="plan__row" data-testid="plan-frontrunner">
-        <IonIcon icon={locationOutline} className="plan__icon" aria-hidden="true" />
-        <span>
-          <strong>{plan.frontRunner.name}</strong> is out front
-          {v ? (
+    <section className={cls} data-testid="trip-plan">
+      {img && (
+        <img className="plan__hero" src={img} alt={plan.frontRunner.name} data-testid="plan-hero" />
+      )}
+      <div className="plan__body">
+        <p className="tv-kicker">{plan.readyToBook ? 'Your trip' : 'The plan so far'}</p>
+        <h2 className="plan__headline tv-serif" data-testid="plan-frontrunner">
+          {plan.frontRunner.name}
+          {crew ? <span className="plan__crew"> with {crew}</span> : null}
+        </h2>
+        <div className="plan__row" data-testid="plan-dates">
+          <IonIcon icon={calendarOutline} className="plan__icon" aria-hidden="true" />
+          <span>{bestWindowLabel(plan.bestWindow)}</span>
+        </div>
+        <div className="plan__row" data-testid="plan-budget">
+          <IonIcon icon={walletOutline} className="plan__icon" aria-hidden="true" />
+          <span>
+            {plan.budget?.hasEstimate ? (
+              <>
+                <strong>{formatMoney(plan.budget.perPerson)}</strong>
+                <span className="tv-muted"> / person</span>
+              </>
+            ) : (
+              <span className="tv-muted">Add a budget estimate to gauge cost</span>
+            )}
+          </span>
+        </div>
+        {plan.frontRunnerVotes && (
+          <div className="plan__row" data-testid="plan-votes">
+            <IonIcon icon={peopleOutline} className="plan__icon" aria-hidden="true" />
             <span className="tv-muted">
-              {' '}
-              · {v.yes} in · {v.maybe} maybe · {v.no} pass
+              {plan.frontRunnerVotes.yes} in · {plan.frontRunnerVotes.maybe} maybe ·{' '}
+              {plan.frontRunnerVotes.no} pass
             </span>
-          ) : null}
-        </span>
-      </div>
-      <div className="plan__row" data-testid="plan-dates">
-        <IonIcon icon={calendarOutline} className="plan__icon" aria-hidden="true" />
-        <span>{bestWindowLabel(plan.bestWindow)}</span>
-      </div>
-      <div className="plan__row" data-testid="plan-budget">
-        <IonIcon icon={walletOutline} className="plan__icon" aria-hidden="true" />
-        <span>
-          {plan.budget?.hasEstimate ? (
-            <>
-              <strong>{formatMoney(plan.budget.perPerson)}</strong>
-              <span className="tv-muted"> / person estimated</span>
-            </>
-          ) : (
-            <span className="tv-muted">Add a budget estimate to gauge cost</span>
-          )}
-        </span>
+          </div>
+        )}
+        {plan.readyToBook && <PlanBookCta destinationName={plan.frontRunner.name} />}
       </div>
     </section>
   );

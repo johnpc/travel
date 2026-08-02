@@ -16,6 +16,20 @@ export interface VoteFixture {
   level: 'YES' | 'MAYBE' | 'NO';
 }
 
+export interface AvailabilityFixture {
+  memberName: string;
+  date: string; // YYYY-MM-DD
+  status: 'FREE' | 'MAYBE' | 'BUSY';
+}
+
+export interface BudgetFixture {
+  destination: string; // matched to the created destination row
+  flightPerPerson: number;
+  lodgingPerNight: number;
+  nights: number;
+  seasonNote?: string;
+}
+
 export interface TripFixture {
   slug: string;
   title: string;
@@ -23,6 +37,8 @@ export interface TripFixture {
   members: string[];
   destinations: DestinationFixture[];
   votes: VoteFixture[];
+  availability: AvailabilityFixture[];
+  budgets: BudgetFixture[];
 }
 
 export const TRIP_FIXTURES: TripFixture[] = [
@@ -52,6 +68,23 @@ export const TRIP_FIXTURES: TripFixture[] = [
       { destination: 'Athens, Greece', memberName: 'Alex', level: 'MAYBE' },
       { destination: 'Athens, Greece', memberName: 'Jordan', level: 'NO' },
     ],
+    // Alex, Priya & Sam all free Jun 12–15, 2027 → a 4-day window everyone shares.
+    availability: ['Alex', 'Priya', 'Sam'].flatMap((memberName) =>
+      ['2027-06-12', '2027-06-13', '2027-06-14', '2027-06-15'].map((date) => ({
+        memberName,
+        date,
+        status: 'FREE' as const,
+      })),
+    ),
+    budgets: [
+      {
+        destination: 'Santorini, Greece',
+        flightPerPerson: 650,
+        lodgingPerNight: 220,
+        nights: 6,
+        seasonNote: 'Shoulder season — May/June is cheaper than August.',
+      },
+    ],
   },
   {
     slug: 'demo-trip',
@@ -60,5 +93,7 @@ export const TRIP_FIXTURES: TripFixture[] = [
     members: ['Alex', 'Sam'],
     destinations: [],
     votes: [],
+    availability: [],
+    budgets: [],
   },
 ];

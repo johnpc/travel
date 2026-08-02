@@ -5,6 +5,8 @@ const m = vi.hoisted(() => ({
   memberCreate: vi.fn(),
   destCreate: vi.fn(),
   interestCreate: vi.fn(),
+  availCreate: vi.fn(),
+  budgetCreate: vi.fn(),
   clearOneModel: vi.fn(),
 }));
 vi.mock('./seedClient', () => ({
@@ -14,6 +16,8 @@ vi.mock('./seedClient', () => ({
       Member: { create: m.memberCreate },
       Destination: { create: m.destCreate },
       Interest: { create: m.interestCreate },
+      Availability: { create: m.availCreate },
+      BudgetEstimate: { create: m.budgetCreate },
     },
   },
   clearOneModel: m.clearOneModel,
@@ -29,6 +33,8 @@ describe('seedTripData', () => {
     m.memberCreate.mockResolvedValue({ errors: null });
     m.destCreate.mockResolvedValue({ data: { id: 'dest1' }, errors: null });
     m.interestCreate.mockResolvedValue({ errors: null });
+    m.availCreate.mockResolvedValue({ errors: null });
+    m.budgetCreate.mockResolvedValue({ errors: null });
   });
 
   it('creates each fixture trip with its roster and destinations', async () => {
@@ -54,6 +60,14 @@ describe('seedTripData', () => {
     expect(m.interestCreate).toHaveBeenCalledTimes(5);
     expect(m.interestCreate).toHaveBeenCalledWith(
       expect.objectContaining({ id: 'trip1:dest1:Alex', memberName: 'Alex', level: 'YES' }),
+      { authMode: 'userPool' },
+    );
+    // greece-2027 seeds availability (3 people × 4 days = 12) + 1 budget so the
+    // plan is ready-to-book for the e2e; demo-trip seeds none.
+    expect(m.availCreate).toHaveBeenCalledTimes(12);
+    expect(m.budgetCreate).toHaveBeenCalledTimes(1);
+    expect(m.budgetCreate).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 'dest1', flightPerPerson: 650, nights: 6 }),
       { authMode: 'userPool' },
     );
   });
