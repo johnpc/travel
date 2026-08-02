@@ -74,6 +74,16 @@
   border-top: 1px solid var(--tv-border);
 }
 
+/* On desktop the roster's own join form is already visible in the side rail, so
+   this inline copy (welcome banner + join bar both use .welcome__join) is
+   redundant — two identical "Add yourself / Join" forms side by side. It only
+   earns its place on mobile, where the rail form is ~a screen down. */
+@media (min-width: 900px) {
+  .welcome__join {
+    display: none;
+  }
+}
+
 .welcome__join-field {
   flex: 1;
   min-width: 0;
