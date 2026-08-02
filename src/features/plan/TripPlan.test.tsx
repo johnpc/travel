@@ -45,6 +45,15 @@ describe('TripPlan', () => {
     expect(screen.getByTestId('plan-hero')).toHaveAttribute('src', 'https://s3.example/b.webp');
   });
 
+  it('reserves the hero height with a placeholder until a photo resolves', () => {
+    h.useMediaUrl.mockReturnValue(null);
+    h.useWikiPhoto.mockReturnValue(null);
+    h.useTripPlan.mockReturnValue(plan());
+    const { container } = render(<TripPlan tripId="t1" />);
+    expect(screen.queryByTestId('plan-hero')).not.toBeInTheDocument();
+    expect(container.querySelector('.plan__hero--placeholder')).toBeInTheDocument();
+  });
+
   it('shows the "lock it in" booking CTA only when ready', () => {
     h.useTripPlan.mockReturnValue(plan({ readyToBook: false }));
     const { rerender } = render(<TripPlan tripId="t1" />);

@@ -30,8 +30,16 @@ export function DestinationImage({ tripId, destination }: DestinationImageProps)
           data-testid="dest-image-img"
           loading="lazy"
         />
-      ) : (
+      ) : photos.length > 0 ? (
         <PhotoCarousel photos={photos} alt={destination.name} />
+      ) : (
+        // Reserve the 3:2 image slot while photos resolve so the card below
+        // doesn't jump when they arrive (was the biggest source of layout shift).
+        <div
+          className="destimg__placeholder"
+          aria-hidden="true"
+          data-testid="dest-image-placeholder"
+        />
       )}
       <button
         type="button"
