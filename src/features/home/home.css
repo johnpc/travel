@@ -35,6 +35,12 @@
   --color: #fff;
 }
 
+/* 44px tap target for the theme toggle over the hero. */
+.home-hero__toolbar ion-button::part(native) {
+  min-width: 44px;
+  min-height: 44px;
+}
+
 .home-hero__content {
   position: relative;
   width: 100%;
