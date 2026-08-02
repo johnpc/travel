@@ -89,6 +89,13 @@
   gap: 0.5rem;
 }
 
+/* The outline "Find hotels" button sits on the plan card's soft-teal panel;
+   use the darker accent for its label so text contrast clears WCAG AA (the
+   default --tv-accent was 4.41:1 on that background). */
+.plan__cta-btns ion-button[fill='outline'] {
+  --color: var(--tv-accent-strong);
+}
+
 @media (min-width: 768px) {
   .plan__hero {
     height: 260px;

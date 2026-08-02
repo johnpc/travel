@@ -21,7 +21,13 @@ export function PhotoCarousel({ photos, alt }: PhotoCarouselProps) {
 
   return (
     <div className="carousel" data-testid="photo-carousel">
-      <div className="carousel__track" onScroll={onScroll}>
+      <div
+        className="carousel__track"
+        onScroll={onScroll}
+        tabIndex={0}
+        role="group"
+        aria-label={`${alt} photos — scroll to browse`}
+      >
         {photos.map((src, i) => (
           <img
             key={src}
