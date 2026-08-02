@@ -1,0 +1,70 @@
+.welcome {
+  margin: 0.5rem 0 1.5rem;
+  padding: 1.25rem 1.35rem;
+  border: 1px solid var(--tv-border);
+  border-radius: var(--tv-radius);
+  background: var(--tv-accent-soft);
+  box-shadow: var(--tv-shadow);
+}
+
+.welcome__title {
+  font-size: 1.5rem;
+  line-height: 1.15;
+  margin: 0.15rem 0 0.9rem;
+  color: var(--tv-text);
+}
+
+.welcome__steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  counter-reset: step;
+}
+
+.welcome__step {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.98rem;
+  color: var(--tv-text);
+}
+
+.welcome__step ion-icon {
+  color: var(--tv-accent-strong);
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+/* Nudge the first step when the visitor hasn't picked a name yet. */
+.welcome__step--now {
+  font-weight: 700;
+}
+
+.welcome__step--now ion-icon {
+  animation: welcome-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes welcome-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.18);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .welcome__step--now ion-icon {
+    animation: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .welcome__title {
+    font-size: 1.8rem;
+  }
+}
