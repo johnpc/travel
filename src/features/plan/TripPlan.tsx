@@ -80,7 +80,16 @@ export function TripPlan({ tripId }: TripPlanProps) {
             </span>
           </div>
         )}
-        {plan.readyToBook && <PlanBookCta destinationName={plan.frontRunner.name} />}
+        {plan.readyToBook && (
+          <PlanBookCta
+            destinationName={plan.frontRunner.name}
+            dates={
+              plan.bestWindow
+                ? { start: plan.bestWindow.start, end: plan.bestWindow.end }
+                : undefined
+            }
+          />
+        )}
       </div>
     </section>
   );
