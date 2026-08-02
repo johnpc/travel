@@ -65,6 +65,18 @@
   scroll-margin-top: 4rem;
 }
 
+/* Below the 2-col breakpoint the layout is a single column. On a tablet (up to
+   ~900px) letting it fill the whole width stretches chat bubbles, the composer,
+   and candidate-window rows into absurdly wide single-line strips — it reads like
+   a phone UI zoomed to fill the screen. Cap the single column to a comfortable
+   measure and center it so tablet feels intentional. Desktop (≥900px) overrides
+   this back to 68rem for the 2-col rail. */
+@media (max-width: 899px) {
+  .trip {
+    max-width: 34rem;
+  }
+}
+
 @media (min-width: 900px) {
   .trip__cols {
     grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
