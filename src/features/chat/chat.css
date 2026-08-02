@@ -1,0 +1,110 @@
+.chat {
+  margin-top: 1.5rem;
+}
+
+.chat__kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.chat__list {
+  list-style: none;
+  margin: 0.75rem 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.chat__msg {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.35rem;
+  max-width: 85%;
+}
+
+/* Own messages hug the right in accent; others sit left on the surface. */
+.chat__msg--mine {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.chat__bubble {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid var(--tv-border);
+  border-radius: var(--tv-radius);
+  background: var(--tv-surface);
+  min-width: 0;
+}
+
+.chat__msg--mine .chat__bubble {
+  background: var(--tv-accent);
+  border-color: transparent;
+  color: var(--tv-accent-contrast);
+}
+
+.chat__author {
+  font-size: 0.62rem;
+  color: var(--tv-accent-strong);
+}
+
+.chat__body {
+  font-size: 0.92rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.chat__remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-width: 40px;
+  min-height: 40px;
+  border: none;
+  background: none;
+  color: var(--tv-text-muted);
+  font-size: 1rem;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.chat__remove:hover {
+  color: var(--tv-negative);
+}
+
+.chat__composer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+}
+
+.chat__field {
+  flex: 1;
+  min-width: 0;
+  --background: var(--tv-bg);
+  --color: var(--tv-text);
+  --placeholder-color: var(--tv-text-muted);
+  --border-color: var(--tv-text-muted);
+  --border-width: 1.5px;
+  --border-radius: var(--tv-radius-sm);
+  --highlight-color-focused: var(--tv-accent);
+  --padding-start: 0.7rem;
+  --padding-end: 0.7rem;
+}
+
+.chat ion-button::part(native) {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.chat__gate {
+  font-size: 0.9rem;
+  margin-top: 0.6rem;
+}

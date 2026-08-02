@@ -13,6 +13,7 @@ vi.mock('../destinations/DestinationsPanel', () => ({
 vi.mock('../itinerary/ItinerarySection', () => ({
   ItinerarySection: () => <div data-testid="itinerary" />,
 }));
+vi.mock('../chat/ChatSection', () => ({ ChatSection: () => <div data-testid="chat" /> }));
 vi.mock('../availability/AvailabilityPanel', () => ({
   AvailabilityPanel: () => <div data-testid="availability-panel" />,
 }));

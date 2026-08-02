@@ -46,3 +46,4 @@ export type AvailabilityStatus = 'FREE' | 'MAYBE' | 'BUSY';
 export type ActivityRecord = Schema['Activity']['type'];
 export type BudgetEstimateRecord = Schema['BudgetEstimate']['type'];
 export type ItineraryStopRecord = Schema['ItineraryStop']['type'];
+export type MessageRecord = Schema['Message']['type'];
