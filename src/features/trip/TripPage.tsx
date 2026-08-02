@@ -16,6 +16,7 @@ import { AvailabilityPanel } from '../availability/AvailabilityPanel';
 import { TripPlan } from '../plan/TripPlan';
 import { ShareButton } from '../plan/ShareButton';
 import { TripLoading } from './TripLoading';
+import { TripWelcome } from './TripWelcome';
 import './trip.css';
 
 // Open the calendar on the current month. Computed here (not in tested logic) so
@@ -53,6 +54,7 @@ export function TripPage() {
               {trip?.title}
             </h1>
             {trip?.description && <p className="tv-muted">{trip.description}</p>}
+            <TripWelcome tripId={trip?.id} hasIdentity={!!join.me} />
             <TripPlan tripId={trip?.id} />
             <div className="trip__cols">
               <div className="trip__main">

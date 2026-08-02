@@ -15,6 +15,7 @@ vi.mock('../availability/AvailabilityPanel', () => ({
 }));
 vi.mock('../plan/TripPlan', () => ({ TripPlan: () => <div data-testid="trip-plan" /> }));
 vi.mock('../plan/ShareButton', () => ({ ShareButton: () => <div data-testid="share-trip" /> }));
+vi.mock('./TripWelcome', () => ({ TripWelcome: () => <div data-testid="trip-welcome" /> }));
 
 import { TripPage } from './TripPage';
 
