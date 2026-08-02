@@ -161,3 +161,52 @@
   outline: 2px dashed var(--tv-accent-strong);
   outline-offset: -2px;
 }
+
+/* School-break quick-picks. */
+.breaks {
+  margin: 0 0 0.75rem;
+}
+
+.breaks__hint {
+  font-size: 0.8rem;
+  margin: 0 0 0.4rem;
+}
+
+.breaks__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.breaks__chip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.05rem;
+  border: 1px solid var(--tv-border);
+  background: var(--tv-surface);
+  color: var(--tv-text);
+  border-radius: var(--tv-radius-sm);
+  padding: 0.4rem 0.7rem;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+
+.breaks__chip:hover {
+  border-color: var(--tv-accent);
+  background: var(--tv-accent-soft);
+}
+
+.breaks__label {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.breaks__range {
+  font-size: 0.75rem;
+}

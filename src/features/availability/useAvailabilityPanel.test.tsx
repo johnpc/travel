@@ -22,7 +22,7 @@ const marks = [
   { date: '2027-06-13', memberName: 'Alex', status: 'FREE' },
 ] as AvailabilityRecord[];
 
-const today = { year: 2026, month: 1 };
+const today = { year: 2026, month: 1, day: 1 };
 
 describe('useAvailabilityPanel', () => {
   beforeEach(() => {
@@ -68,5 +68,24 @@ describe('useAvailabilityPanel', () => {
     expect(result.current.canMark).toBe(false);
     act(() => result.current.toggle('2027-06-12'));
     expect(h.markDay).not.toHaveBeenCalled();
+  });
+
+  it('offers upcoming school breaks and picking one jumps there + marks me free', () => {
+    const { result } = renderHook(() => useAvailabilityPanel('t1', 'Alex', today));
+    expect(result.current.breaks.map((b) => b.label)).toContain('Spring Break');
+    const spring = result.current.breaks.find((b) => b.label === 'Spring Break')!;
+    act(() => result.current.pickBreak(spring));
+    expect(result.current).toMatchObject({ year: 2026, month: 3 });
+    expect(h.markRange).toHaveBeenCalledWith(
+      expect.objectContaining({ memberName: 'Alex', status: 'FREE' }),
+    );
+  });
+
+  it('does not mark a picked break without an identity, but still jumps', () => {
+    const { result } = renderHook(() => useAvailabilityPanel('t1', null, today));
+    const spring = result.current.breaks.find((b) => b.label === 'Spring Break')!;
+    act(() => result.current.pickBreak(spring));
+    expect(result.current).toMatchObject({ month: 3 });
+    expect(h.markRange).not.toHaveBeenCalled();
   });
 });
