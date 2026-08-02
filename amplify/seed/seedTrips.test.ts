@@ -86,7 +86,8 @@ describe('clearAll', () => {
   it('clears every child model then trips', async () => {
     m.clearOneModel.mockResolvedValue(0);
     await clearAll();
-    // Interest, Availability, Activity, BudgetEstimate, Member, Destination, Trip
-    expect(m.clearOneModel).toHaveBeenCalledTimes(7);
+    // Interest, Availability, Activity, BudgetEstimate, ItineraryStop, Member,
+    // Destination, Trip
+    expect(m.clearOneModel).toHaveBeenCalledTimes(8);
   });
 });

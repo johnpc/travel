@@ -10,6 +10,7 @@ export async function clearAll(): Promise<void> {
   await clearOneModel(client.models.Availability);
   await clearOneModel(client.models.Activity);
   await clearOneModel(client.models.BudgetEstimate);
+  await clearOneModel(client.models.ItineraryStop);
   await clearOneModel(client.models.Member);
   await clearOneModel(client.models.Destination);
   await clearOneModel(client.models.Trip);

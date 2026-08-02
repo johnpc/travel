@@ -9,8 +9,16 @@ const uniq = (name: string) => `${name}${suffix}`;
 
 const itin = (page: import('@playwright/test').Page) => page.getByTestId('itinerary');
 
+// The itinerary starts as a compact teaser on a single-destination trip — open it
+// so the route editor (add form, AI button, list) is present. No-op once opened.
+async function openItinerary(page: import('@playwright/test').Page) {
+  const teaser = itin(page).getByTestId('itinerary-open');
+  if (await teaser.isVisible().catch(() => false)) await teaser.click();
+}
+
 When('the visitor adds the stop {string}', async ({ page }, name: string) => {
   await page.getByTestId('trip-title').waitFor({ timeout: 15_000 });
+  await openItinerary(page);
   await itin(page).getByTestId('stop-place').locator('input').fill(uniq(name));
   await itin(page).getByTestId('stop-add').click();
   await expect(
@@ -55,6 +63,7 @@ Then('{string} is gone from the itinerary', async ({ page }, name: string) => {
 
 When('the visitor asks AI to suggest a route', async ({ page }) => {
   await page.getByTestId('trip-title').waitFor({ timeout: 15_000 });
+  await openItinerary(page);
   await itin(page).getByTestId('route-suggest').click();
 });
 

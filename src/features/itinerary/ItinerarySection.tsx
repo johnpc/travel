@@ -1,10 +1,8 @@
-import { IonButton, IonIcon } from '@ionic/react';
-import { sparklesOutline, mapOutline } from 'ionicons/icons';
-import { LoadState } from '../shell/LoadState';
+import { useState } from 'react';
+import { IonIcon } from '@ionic/react';
+import { mapOutline, addOutline } from 'ionicons/icons';
 import { useItineraryPanel } from './useItineraryPanel';
-import { StopRow } from './StopRow';
-import { AddStop } from './AddStop';
-import { RouteSuggestions } from './RouteSuggestions';
+import { ItineraryBody } from './ItineraryBody';
 import './itinerary.css';
 
 interface ItinerarySectionProps {
@@ -12,52 +10,35 @@ interface ItinerarySectionProps {
   tripTitle: string;
 }
 
-/** Multi-city itinerary (opt-in): an ordered, reorderable route of stops with
- * nights each — add by hand or let AI suggest a whole route. Empty until someone
- * adds a stop, so single-destination trips aren't cluttered. */
+/** Multi-city itinerary (opt-in). Most trips are single-destination, so when
+ * there are no stops this stays a COMPACT one-line teaser — tap to open the full
+ * route editor. Once it has stops it always shows the editor. Keeps the busy
+ * add/AI/list UI out of the way until someone actually wants a multi-city route. */
 export function ItinerarySection({ tripId, tripTitle }: ItinerarySectionProps) {
   const p = useItineraryPanel(tripId, tripTitle);
+  const [open, setOpen] = useState(false);
+  const expanded = open || p.stops.length > 0;
   return (
     <section className="itin" data-testid="itinerary">
-      <p className="tv-kicker itin__kicker">
-        <IonIcon icon={mapOutline} aria-hidden="true" /> Multi-city route
-      </p>
-      <p className="tv-muted itin__hint">
-        Planning several stops? Build the route in travel order.
-      </p>
-      <IonButton
-        size="small"
-        fill="outline"
-        onClick={p.runSuggest}
-        disabled={p.isSuggesting}
-        data-testid="route-suggest"
-      >
-        <IonIcon icon={sparklesOutline} slot="start" aria-hidden="true" />
-        {p.isSuggesting ? 'Planning…' : 'Suggest a route with AI'}
-      </IonButton>
-      <RouteSuggestions suggestions={p.suggestions} onAccept={p.accept} />
-      <LoadState
-        isLoading={p.isLoading}
-        isError={p.isError}
-        isEmpty={p.stops.length === 0 && !p.isSuggesting}
-        onRetry={p.refetch}
-        emptyTitle="No stops yet"
-        emptyMessage="Add your first stop, or let AI suggest a route."
-      >
-        <ol className="itin__list" data-testid="stop-list">
-          {p.stops.map((s, i) => (
-            <StopRow
-              key={s.id}
-              stop={s}
-              index={i}
-              total={p.stops.length}
-              onMove={p.move}
-              onRemove={() => p.remove(s.id)}
-            />
-          ))}
-        </ol>
-      </LoadState>
-      <AddStop onAdd={p.addManual} />
+      {expanded ? (
+        <p className="tv-kicker itin__kicker">
+          <IonIcon icon={mapOutline} aria-hidden="true" /> Multi-city route
+        </p>
+      ) : (
+        <button
+          type="button"
+          className="itin__teaser"
+          onClick={() => setOpen(true)}
+          data-testid="itinerary-open"
+        >
+          <IonIcon icon={mapOutline} aria-hidden="true" className="itin__teaser-lead" />
+          <span className="itin__teaser-text">
+            <strong>Multi-city trip?</strong> Plan a route across several stops.
+          </span>
+          <IonIcon icon={addOutline} aria-hidden="true" className="itin__teaser-add" />
+        </button>
+      )}
+      {expanded && <ItineraryBody panel={p} />}
     </section>
   );
 }
