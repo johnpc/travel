@@ -2,6 +2,7 @@ import { IonButton, IonIcon } from '@ionic/react';
 import { sparklesOutline, addOutline } from 'ionicons/icons';
 import { LoadState } from '../shell/LoadState';
 import { ActivityItem } from './ActivityItem';
+import { ActivitySkeleton } from './ActivitySkeleton';
 import { useActivitiesPanel } from './useActivitiesPanel';
 import './activities.css';
 
@@ -32,6 +33,7 @@ export function ActivitiesSection({
         <IonIcon icon={sparklesOutline} slot="start" aria-hidden="true" />
         {p.isSuggesting ? 'Thinking…' : 'Suggest activities'}
       </IonButton>
+      {p.isSuggesting && p.suggestions.length === 0 && <ActivitySkeleton />}
       {p.suggestions.length > 0 && (
         <ul className="acts__suggestions" data-testid="act-suggestions">
           {p.suggestions.map((s) => (
@@ -56,7 +58,7 @@ export function ActivitiesSection({
       <LoadState
         isLoading={p.isLoading}
         isError={p.isError}
-        isEmpty={p.activities.length === 0}
+        isEmpty={p.activities.length === 0 && !p.isSuggesting}
         onRetry={p.refetch}
         emptyTitle="No activities yet"
         emptyMessage="Suggest a few with AI to see what you could do here."
