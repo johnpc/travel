@@ -16,9 +16,16 @@ When('the visitor copies the trip link', async ({ page, context }) => {
 });
 
 Then('the plan names a front-runner destination', async ({ page }) => {
-  await expect(page.getByTestId('plan-frontrunner')).toContainText('out front', {
+  // The headline reads like an invitation: "{Destination} with {crew}".
+  await expect(page.getByTestId('plan-frontrunner')).toContainText('Santorini', {
     timeout: 15_000,
   });
+});
+
+Then('the plan invites booking the trip', async ({ page }) => {
+  await expect(page.getByTestId('plan-book')).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByTestId('book-flights')).toBeVisible();
+  await expect(page.getByTestId('book-hotels')).toBeVisible();
 });
 
 Then('the plan shows a best-dates line', async ({ page }) => {

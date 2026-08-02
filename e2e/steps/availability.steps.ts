@@ -3,20 +3,28 @@ import { createBdd } from 'playwright-bdd';
 
 const { When, Then } = createBdd();
 
-/** YYYY-MM-15 for the current month (the calendar opens on the current month). */
-function fifteenth(): string {
-  const now = new Date();
-  const mm = String(now.getMonth() + 1).padStart(2, '0');
-  return `${now.getFullYear()}-${mm}-15`;
+// A fixed, far-future month that no fixture seeds into, so day-marking is
+// deterministic no matter which month the calendar opens on (busiest-month).
+const TARGET = { year: 2035, month: 12, label: 'December 2035' };
+const targetDay = (d: number) => `2035-12-${String(d).padStart(2, '0')}`;
+
+/** Page the calendar to the target clean month via the nav arrows. */
+async function gotoTargetMonth(page: import('@playwright/test').Page) {
+  for (let i = 0; i < 240; i++) {
+    const title = (await page.getByTestId('cal-title').innerText()).trim();
+    if (title === TARGET.label) return;
+    await page.getByTestId('cal-next').click();
+  }
 }
 
 let openingTitle = '';
 
 When('the visitor marks the 15th of the current month free', async ({ page }) => {
-  // Use single-day mode (the FREE→BUSY→MAYBE→clear cycle); tap until the day
-  // reaches FREE, robust to any leftover mark on the shared sandbox.
+  await gotoTargetMonth(page);
+  // Single-day mode (the FREE→BUSY→MAYBE→clear cycle); tap until FREE, robust to
+  // any leftover mark on the shared sandbox.
   await page.getByTestId('mode-single').click();
-  const day = page.getByTestId(`day-${fifteenth()}`);
+  const day = page.getByTestId(`day-${targetDay(15)}`);
   for (let i = 0; i < 4; i++) {
     if ((await day.getAttribute('data-mine')) === 'FREE') break;
     await day.click();
@@ -30,12 +38,14 @@ When('the visitor goes to next month', async ({ page }) => {
 });
 
 Then('the calendar days are not markable', async ({ page }) => {
-  await expect(page.getByTestId(`day-${fifteenth()}`)).toBeDisabled({ timeout: 15_000 });
+  // Any visible day works — no identity means every cell is disabled.
+  await expect(page.getByTestId('cal').getByRole('button').first()).toBeDisabled({
+    timeout: 15_000,
+  });
 });
 
 Then('the 15th shows the visitor as free', async ({ page }) => {
-  // A single tap on an unmarked day cycles it to FREE (see nextStatus).
-  await expect(page.getByTestId(`day-${fifteenth()}`)).toHaveAttribute('data-mine', 'FREE', {
+  await expect(page.getByTestId(`day-${targetDay(15)}`)).toHaveAttribute('data-mine', 'FREE', {
     timeout: 15_000,
   });
 });
@@ -46,17 +56,11 @@ Then('the calendar shows a different month than it opened on', async ({ page }) 
 
 let jumpedTitle = '';
 
-/** Two day stamps in the current month for a range (the 10th and 12th). */
-function dayStamp(d: number): string {
-  const now = new Date();
-  const mm = String(now.getMonth() + 1).padStart(2, '0');
-  return `${now.getFullYear()}-${mm}-${String(d).padStart(2, '0')}`;
-}
-
 When('the visitor marks a free range in the current month', async ({ page }) => {
+  await gotoTargetMonth(page);
   // Default mode is range: tap start, tap end → whole span marked FREE.
-  await page.getByTestId(`day-${dayStamp(10)}`).click();
-  await page.getByTestId(`day-${dayStamp(12)}`).click();
+  await page.getByTestId(`day-${targetDay(10)}`).click();
+  await page.getByTestId(`day-${targetDay(12)}`).click();
   await page.waitForTimeout(800); // per-day writes + live echo
 });
 
