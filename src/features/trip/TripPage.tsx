@@ -59,7 +59,12 @@ export function TripPage() {
               {trip?.title}
             </h1>
             {trip?.description && <p className="tv-muted">{trip.description}</p>}
-            <TripWelcome tripId={trip?.id} hasIdentity={!!join.me} />
+            <TripWelcome
+              tripId={trip?.id}
+              hasIdentity={!!join.me}
+              onJoin={join.join}
+              isJoining={join.isJoining}
+            />
             <TripPlan tripId={trip?.id} />
             <div className="trip__cols">
               <div className="trip__main">

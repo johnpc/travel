@@ -63,6 +63,31 @@
   }
 }
 
+/* Inline "add your name" — sits right under the steps so the primary #1 action
+   is reachable here, not a screenful down in the roster rail. */
+.welcome__join {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.6rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--tv-border);
+}
+
+.welcome__join-field {
+  flex: 1;
+  min-width: 0;
+  --background: var(--tv-surface);
+  --color: var(--tv-text);
+  --placeholder-color: var(--tv-text-muted);
+  --border-color: var(--tv-text-muted);
+  --border-width: 1.5px;
+  --border-radius: var(--tv-radius-sm);
+  --highlight-color-focused: var(--tv-accent);
+  --padding-start: 0.7rem;
+  --padding-end: 0.7rem;
+}
+
 @media (min-width: 768px) {
   .welcome__title {
     font-size: 1.8rem;
