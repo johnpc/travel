@@ -16,6 +16,7 @@ const base = {
   runEstimate: vi.fn(),
   isEstimating: false,
   isSaving: false,
+  justSaved: false,
   isLoading: false,
   isError: false,
   refetch: vi.fn(),
@@ -61,5 +62,16 @@ describe('BudgetSection', () => {
     render(<BudgetSection tripId="t1" destinationId="d1" destinationName="Lisbon, Portugal" />);
     fireEvent.click(screen.getByTestId('budget-estimate'));
     expect(runEstimate).toHaveBeenCalled();
+  });
+
+  it('confirms a successful save on the button', () => {
+    h.useBudgetPanel.mockReturnValue({ ...base }); // not saved yet
+    const { rerender } = render(
+      <BudgetSection tripId="t1" destinationId="d1" destinationName="Lisbon, Portugal" />,
+    );
+    expect(screen.getByTestId('budget-save')).toHaveTextContent('Save estimate');
+    h.useBudgetPanel.mockReturnValue({ ...base, justSaved: true });
+    rerender(<BudgetSection tripId="t1" destinationId="d1" destinationName="Lisbon, Portugal" />);
+    expect(screen.getByTestId('budget-save')).toHaveTextContent('Saved ✓');
   });
 });

@@ -85,7 +85,7 @@ export function BudgetSection({ tripId, destinationId, destinationName }: Budget
             disabled={p.isSaving}
             data-testid="budget-save"
           >
-            Save estimate
+            {p.justSaved ? 'Saved ✓' : 'Save estimate'}
           </IonButton>
         </form>
       </LoadState>
