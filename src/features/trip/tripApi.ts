@@ -5,7 +5,7 @@
  */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { dataClient, unwrap, type TripRecord } from '../../lib/dataClient';
-import { slugify } from './slug';
+import { slugify, titleFromSlug } from './slug';
 
 /** Look up a single trip by its unique slug (null when it doesn't exist yet). */
 export async function fetchTripBySlug(slug: string): Promise<TripRecord | null> {
@@ -38,7 +38,7 @@ export function useEnsureTrip() {
       const existing = await fetchTripBySlug(slug);
       if (existing) return existing;
       const created = unwrap(
-        await dataClient.models.Trip.create({ slug, title: title?.trim() || slug }),
+        await dataClient.models.Trip.create({ slug, title: title?.trim() || titleFromSlug(slug) }),
       );
       if (!created) throw new Error('Trip creation returned no record');
       return created;

@@ -75,11 +75,12 @@ describe('useEnsureTrip', () => {
     expect(trip.id).toBe('t2');
   });
 
-  it('falls back to the slug as title when none is given', async () => {
+  it('falls back to a prettified title from the slug when none is given', async () => {
     m.list.mockResolvedValue({ data: [] });
-    m.create.mockResolvedValue({ data: { id: 't3', slug: 'peru', title: 'peru' } });
+    m.create.mockResolvedValue({ data: { id: 't3', slug: 'peru-2027', title: 'Peru 2027' } });
     const { result } = renderHook(() => useEnsureTrip(), { wrapper });
-    await result.current.mutateAsync({ slug: 'peru' });
-    expect(m.create).toHaveBeenCalledWith({ slug: 'peru', title: 'peru' });
+    await result.current.mutateAsync({ slug: 'peru-2027' });
+    // "peru-2027" → "Peru 2027", not the raw slug.
+    expect(m.create).toHaveBeenCalledWith({ slug: 'peru-2027', title: 'Peru 2027' });
   });
 });
