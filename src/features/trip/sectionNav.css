@@ -43,6 +43,14 @@
   background: var(--tv-accent-soft);
 }
 
+/* The section currently in view — a solid teal chip so the bar reads as "you are
+   here" and a tap visibly confirms where it landed. */
+.secnav__chip--on {
+  background: var(--tv-accent);
+  border-color: transparent;
+  color: var(--tv-accent-contrast);
+}
+
 @media (min-width: 900px) {
   .secnav {
     display: none;
