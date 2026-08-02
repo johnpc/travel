@@ -17,6 +17,26 @@
   gap: 0.6rem;
 }
 
+/* Make the estimate fields read as clearly editable inputs (outlined), not
+   static text — consume the theme tokens so both schemes come free. */
+.budget__field {
+  --background: var(--tv-bg);
+  --color: var(--tv-text);
+  --placeholder-color: var(--tv-text-muted);
+  --border-color: var(--tv-text-muted);
+  --border-width: 1.5px;
+  --border-radius: var(--tv-radius-sm);
+  --highlight-color-focused: var(--tv-accent);
+  --padding-start: 0.6rem;
+  --padding-end: 0.6rem;
+}
+
+.budget__prefix {
+  color: var(--tv-text-muted);
+  font-weight: 600;
+  margin-inline-end: 0.15rem;
+}
+
 .budget__totals {
   display: flex;
   gap: 1.25rem;
