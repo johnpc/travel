@@ -36,6 +36,34 @@ describe('DestinationCard', () => {
     expect(screen.getByTestId('activities')).toBeInTheDocument();
   });
 
+  it('shows a remove control only when onRemove is provided, and confirms before removing', () => {
+    const onRemove = vi.fn();
+    const confirmSpy = vi.spyOn(window, 'confirm');
+
+    // no onRemove → no remove button
+    const { rerender } = render(
+      <ul>
+        <DestinationCard destination={dest} tripId="t1" />
+      </ul>,
+    );
+    expect(screen.queryByTestId('dest-remove')).not.toBeInTheDocument();
+
+    rerender(
+      <ul>
+        <DestinationCard destination={dest} tripId="t1" onRemove={onRemove} />
+      </ul>,
+    );
+    // cancelled confirm → no removal
+    confirmSpy.mockReturnValueOnce(false);
+    fireEvent.click(screen.getByTestId('dest-remove'));
+    expect(onRemove).not.toHaveBeenCalled();
+    // confirmed → removes
+    confirmSpy.mockReturnValueOnce(true);
+    fireEvent.click(screen.getByTestId('dest-remove'));
+    expect(onRemove).toHaveBeenCalledTimes(1);
+    confirmSpy.mockRestore();
+  });
+
   it('badges the front-runner and marks the card as leader', () => {
     const { rerender } = render(
       <ul>

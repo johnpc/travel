@@ -10,6 +10,8 @@ interface DestinationListProps {
   frontRunnerId?: string | null;
   /** Optional per-destination vote control (interest slice). */
   renderVote?: (destination: DestinationRecord) => ReactNode;
+  /** Remove a destination from the board (undo a mistaken/unwanted place). */
+  onRemove?: (destination: DestinationRecord) => void;
 }
 
 /** The trip's brainstorm board: each candidate destination as a card, with an
@@ -20,6 +22,7 @@ export function DestinationList({
   tripId,
   frontRunnerId,
   renderVote,
+  onRemove,
 }: DestinationListProps) {
   return (
     <ul className="dest-list" data-testid="dest-list">
@@ -30,6 +33,7 @@ export function DestinationList({
           tripId={tripId}
           isFrontRunner={d.id === frontRunnerId}
           vote={renderVote?.(d)}
+          onRemove={onRemove ? () => onRemove(d) : undefined}
         />
       ))}
     </ul>

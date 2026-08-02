@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useAddDestination, useDestinations } from './destinationApi';
+import { useAddDestination, useDestinations, useRemoveDestination } from './destinationApi';
 import { useSuggestDestinations, type Suggestion } from './suggestApi';
 import { useInterest, type InterestView } from '../interest/useInterest';
 import { sortByInterest } from './sortByInterest';
@@ -19,6 +19,7 @@ export function useDestinationsPanel(
 ) {
   const listQuery = useDestinations(tripId);
   const addDestination = useAddDestination(tripId);
+  const removeDestination = useRemoveDestination(tripId);
   const suggest = useSuggestDestinations();
   const interest: InterestView = useInterest(tripId, me);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
@@ -43,6 +44,8 @@ export function useDestinationsPanel(
     setSuggestions((prev) => prev.filter((x) => x.name !== s.name));
   };
 
+  const remove = (id: string) => removeDestination.mutate(id);
+
   return {
     destinations,
     frontRunnerId,
@@ -58,6 +61,7 @@ export function useDestinationsPanel(
     isSuggesting: suggest.isPending,
     runSuggest,
     accept,
+    remove,
     interest,
   };
 }

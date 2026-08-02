@@ -44,6 +44,7 @@ export function DestinationsPanel({ tripId, tripTitle, me }: DestinationsPanelPr
           destinations={p.destinations}
           tripId={tripId}
           frontRunnerId={p.frontRunnerId}
+          onRemove={(d) => p.remove(d.id)}
           renderVote={(d) => (
             <VoteControl
               tally={p.interest.tallies[d.id] ?? { yes: 0, maybe: 0, no: 0, score: 0 }}

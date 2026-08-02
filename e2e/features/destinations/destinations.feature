@@ -18,6 +18,14 @@ Feature: Brainstorm destinations on a trip
     When the visitor accepts the first AI suggestion
     Then the accepted suggestion appears on the destination board
 
+  # Undo a mistaken/unwanted destination so it stops skewing the votes.
+  Scenario: A visitor removes a destination they added
+    When a visitor opens the trip "greece-2027"
+    And the visitor adds the destination "Lisbon, Portugal"
+    And "Lisbon, Portugal" appears on the destination board
+    And the visitor removes that destination
+    Then that destination is gone from the board
+
   # A failed destinations read must offer a retry, not a blank board.
   Scenario: A failed destinations read shows a retry
     When a visitor opens the trip "greece-2027" with destination reads failing

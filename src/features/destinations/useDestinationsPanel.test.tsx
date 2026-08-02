@@ -4,14 +4,17 @@ import { renderHook, act, waitFor } from '@testing-library/react';
 const h = vi.hoisted(() => ({
   useDestinations: vi.fn(),
   useAddDestination: vi.fn(),
+  useRemoveDestination: vi.fn(),
   useSuggestDestinations: vi.fn(),
   useInterest: vi.fn(),
   addMutate: vi.fn(),
+  removeMutate: vi.fn(),
   suggestMutateAsync: vi.fn(),
 }));
 vi.mock('./destinationApi', () => ({
   useDestinations: h.useDestinations,
   useAddDestination: h.useAddDestination,
+  useRemoveDestination: h.useRemoveDestination,
 }));
 vi.mock('./suggestApi', () => ({ useSuggestDestinations: h.useSuggestDestinations }));
 vi.mock('../interest/useInterest', () => ({ useInterest: h.useInterest }));
@@ -39,6 +42,7 @@ describe('useDestinationsPanel', () => {
       refetch: vi.fn(),
     });
     h.useAddDestination.mockReturnValue({ mutate: h.addMutate, isPending: false });
+    h.useRemoveDestination.mockReturnValue({ mutate: h.removeMutate, isPending: false });
     h.useSuggestDestinations.mockReturnValue({
       mutateAsync: h.suggestMutateAsync,
       isPending: false,
@@ -80,6 +84,12 @@ describe('useDestinationsPanel', () => {
     act(() => result.current.accept({ name: 'Oslo', blurb: 'b', why: 'w' }));
     expect(h.addMutate).toHaveBeenCalledWith({ name: 'Oslo', blurb: 'b', why: 'w', source: 'AI' });
     expect(result.current.suggestions.map((s) => s.name)).toEqual(['Cairo']);
+  });
+
+  it('removes a destination by id', () => {
+    const { result } = renderHook(() => useDestinationsPanel('t1', 'Trip', 'Alex'));
+    act(() => result.current.remove('1'));
+    expect(h.removeMutate).toHaveBeenCalledWith('1');
   });
 
   it('names a front-runner only once a destination has positive support', () => {

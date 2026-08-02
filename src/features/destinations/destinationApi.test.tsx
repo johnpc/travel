@@ -3,13 +3,20 @@ import type { ReactNode } from 'react';
 import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-const m = vi.hoisted(() => ({ list: vi.fn(), create: vi.fn(), observeQuery: vi.fn() }));
+const m = vi.hoisted(() => ({ list: vi.fn(), create: vi.fn(), delete: vi.fn(), observeQuery: vi.fn() })); // prettier-ignore
 vi.mock('../../lib/dataClient', async (importActual) => {
   const actual = await importActual<typeof import('../../lib/dataClient')>();
   return {
     ...actual,
     dataClient: {
-      models: { Destination: { list: m.list, create: m.create, observeQuery: m.observeQuery } },
+      models: {
+        Destination: {
+          list: m.list,
+          create: m.create,
+          delete: m.delete,
+          observeQuery: m.observeQuery,
+        },
+      },
     },
   };
 });
@@ -24,7 +31,12 @@ function liveWith(items: unknown[]) {
   });
 }
 
-import { fetchDestinations, useDestinations, useAddDestination } from './destinationApi';
+import {
+  fetchDestinations,
+  useDestinations,
+  useAddDestination,
+  useRemoveDestination,
+} from './destinationApi';
 
 function wrapper({ children }: { children: ReactNode }) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
@@ -94,5 +106,18 @@ describe('useAddDestination', () => {
     await expect(result.current.mutateAsync({ name: 'Rome', source: 'MANUAL' })).rejects.toThrow(
       'No trip',
     );
+  });
+});
+
+describe('useRemoveDestination', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('deletes the destination by id', async () => {
+    m.delete.mockResolvedValue({ data: { id: 'd1' } });
+    const { result } = renderHook(() => useRemoveDestination('t1'), { wrapper });
+    await result.current.mutateAsync('d1');
+    expect(m.delete).toHaveBeenCalledWith({ id: 'd1' });
   });
 });
