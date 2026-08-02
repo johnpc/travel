@@ -20,6 +20,11 @@ export function DestinationsPanel({ tripId, tripTitle, me }: DestinationsPanelPr
   return (
     <section className="destinations" data-testid="destinations">
       <p className="tv-kicker">Destinations</p>
+      {!me && p.destinations.length > 0 && (
+        <p className="tv-muted destinations__hint" data-testid="vote-hint">
+          Pick your name above to vote on these.
+        </p>
+      )}
       <AddDestination onAdd={p.addManual} isAdding={p.isAdding} />
       <Suggestions
         suggestions={p.suggestions}

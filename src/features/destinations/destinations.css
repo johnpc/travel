@@ -2,6 +2,13 @@
   margin-top: 2rem;
 }
 
+/* Nudge shown to a nameless visitor who has a board to vote on but can't yet —
+   mirrors the availability panel's "pick your name" hint. */
+.destinations__hint {
+  font-size: 0.9rem;
+  margin: 0 0 0.5rem;
+}
+
 .dest-add {
   display: flex;
   align-items: flex-end;

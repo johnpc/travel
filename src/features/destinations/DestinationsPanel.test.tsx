@@ -60,6 +60,30 @@ describe('DestinationsPanel', () => {
     expect(screen.getByTestId('vote-control')).toBeInTheDocument();
   });
 
+  it('nudges a nameless visitor to pick a name when there is a board to vote on', () => {
+    h.useDestinationsPanel.mockReturnValue({
+      ...base,
+      destinations: [{ id: '1', name: 'Rome', source: 'MANUAL' }] as DestinationRecord[],
+    });
+    render(<DestinationsPanel tripId="t1" tripTitle="Trip" me={null} />);
+    expect(screen.getByTestId('vote-hint')).toHaveTextContent('Pick your name above to vote');
+  });
+
+  it('does not show the vote nudge once the visitor has a name', () => {
+    h.useDestinationsPanel.mockReturnValue({
+      ...base,
+      destinations: [{ id: '1', name: 'Rome', source: 'MANUAL' }] as DestinationRecord[],
+    });
+    render(<DestinationsPanel tripId="t1" tripTitle="Trip" me="Alex" />);
+    expect(screen.queryByTestId('vote-hint')).not.toBeInTheDocument();
+  });
+
+  it('does not show the vote nudge on an empty trip (welcome covers onboarding)', () => {
+    h.useDestinationsPanel.mockReturnValue({ ...base });
+    render(<DestinationsPanel tripId="t1" tripTitle="Trip" me={null} />);
+    expect(screen.queryByTestId('vote-hint')).not.toBeInTheDocument();
+  });
+
   it('shows a retry on error', () => {
     h.useDestinationsPanel.mockReturnValue({ ...base, isError: true });
     render(<DestinationsPanel tripId="t1" tripTitle="Trip" me={null} />);
