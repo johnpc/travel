@@ -50,6 +50,26 @@
   flex-shrink: 0;
 }
 
+/* An incomplete row (no date window yet) is a shortcut to the section that
+   fills it — style it as a tappable, full-width control, not dead text. */
+.plan__row--action {
+  width: 100%;
+  border: none;
+  background: none;
+  color: var(--tv-accent-strong);
+  font: inherit;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 0.15s ease;
+}
+
+.plan__row--action:hover {
+  text-decoration-color: currentColor;
+}
+
 /* Booking call-to-action. */
 .plan__cta {
   margin-top: 0.9rem;

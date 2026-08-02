@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 
 const h = vi.hoisted(() => ({ useTripPlan: vi.fn(), useMediaUrl: vi.fn(), useWikiPhoto: vi.fn() }));
 vi.mock('./useTripPlan', () => ({ useTripPlan: h.useTripPlan }));
@@ -61,5 +61,28 @@ describe('TripPlan', () => {
     render(<TripPlan tripId="t1" />);
     expect(screen.getByTestId('plan-dates')).toHaveTextContent('Mark your dates');
     expect(screen.getByTestId('plan-budget')).toHaveTextContent('Add a budget estimate');
+  });
+
+  it('makes the date nudge a shortcut that scrolls to the calendar', () => {
+    h.useTripPlan.mockReturnValue(plan({ bestWindow: null }));
+    const anchor = document.createElement('div');
+    anchor.id = 'trip-dates';
+    const scrollIntoView = vi.fn();
+    anchor.scrollIntoView = scrollIntoView;
+    document.body.appendChild(anchor);
+
+    render(<TripPlan tripId="t1" />);
+    const row = screen.getByTestId('plan-dates');
+    expect(row.tagName).toBe('BUTTON');
+    fireEvent.click(row);
+    expect(scrollIntoView).toHaveBeenCalled();
+
+    document.body.removeChild(anchor);
+  });
+
+  it('keeps the date row static (not a button) once a window is found', () => {
+    h.useTripPlan.mockReturnValue(plan());
+    render(<TripPlan tripId="t1" />);
+    expect(screen.getByTestId('plan-dates').tagName).not.toBe('BUTTON');
   });
 });
