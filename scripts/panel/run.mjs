@@ -33,19 +33,34 @@ async function runPersona(browser, persona) {
   const system = `${persona.persona}\n\n${GOAL}\n\nYour name for the roster is "${persona.name}". Act one step at a time.`;
   const history = [];
   const transcript = [];
+  let lastSig = '';
+  let repeats = 0;
   await page.goto(`${BASE}/${SLUG}`, { waitUntil: 'networkidle' });
   await page.waitForTimeout(2500);
 
   for (let turn = 0; turn < MAX_TURNS; turn++) {
     const elements = await snapshot(page);
     const shot = await page.screenshot();
+    // If the agent keeps repeating the same action, nudge it to change tack.
+    const hint =
+      repeats >= 2
+        ? ' NOTE: your last action repeated with no effect — try a DIFFERENT action now (e.g. type into the field instead of clicking it).'
+        : '';
     let act;
     try {
-      act = await nextAction({ system, history, screenshotB64: shot.toString('base64'), elements });
+      act = await nextAction({
+        system: system + hint,
+        history,
+        screenshotB64: shot.toString('base64'),
+        elements,
+      });
     } catch (e) {
       log(`  [${persona.id}] model error: ${e.message}`);
       break;
     }
+    const sig = `${act.action}:${act.ref ?? ''}`;
+    repeats = sig === lastSig ? repeats + 1 : 0;
+    lastSig = sig;
     const line = `${act.action}${act.ref ? ` [${act.ref}]` : ''}${act.text ? ` "${act.text}"` : ''} — ${act.think}`; // prettier-ignore
     transcript.push(line);
     log(`  [${persona.id}] ${line}`);
