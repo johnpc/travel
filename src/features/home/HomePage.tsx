@@ -2,6 +2,7 @@ import { IonContent, IonInput, IonPage, IonButton, IonText } from '@ionic/react'
 import { useStartTrip } from './useStartTrip';
 import { useRecents } from './useRecents';
 import { RecentTrips } from './RecentTrips';
+import { ThemeToggle } from '../theme/ThemeToggle';
 import './home.css';
 
 /** Landing screen: a wanderlust hero over the app's banner, with one focused
@@ -15,6 +16,9 @@ export function HomePage() {
       <IonContent fullscreen>
         <div className="home-hero">
           <div className="home-hero__scrim" />
+          <div className="home-hero__toolbar">
+            <ThemeToggle />
+          </div>
           <div className="home-hero__content">
             <p className="home-hero__brand">✈ Travel</p>
             <h1 className="home-hero__title">Plan the trip your group actually takes.</h1>

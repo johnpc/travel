@@ -26,6 +26,15 @@
   );
 }
 
+/* Theme toggle pinned top-right over the hero (white so it reads on the photo). */
+.home-hero__toolbar {
+  position: absolute;
+  top: max(0.5rem, env(safe-area-inset-top));
+  right: 0.5rem;
+  z-index: 1;
+  --color: #fff;
+}
+
 .home-hero__content {
   position: relative;
   width: 100%;
