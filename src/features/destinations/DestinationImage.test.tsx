@@ -42,12 +42,14 @@ describe('DestinationImage', () => {
     expect(screen.getByTestId('dest-image-gen')).toHaveTextContent('Reimagine with AI');
   });
 
-  it('shows just the imagine action when there is no photo at all', () => {
+  it('reserves the image slot (placeholder) while there is no photo yet', () => {
     h.useMediaUrl.mockReturnValue(null);
     h.useWikiPhotos.mockReturnValue([]);
     render(<DestinationImage tripId="t1" destination={dest} />);
     expect(screen.queryByTestId('photo-carousel')).not.toBeInTheDocument();
     expect(screen.queryByTestId('dest-image-img')).not.toBeInTheDocument();
+    // a fixed-aspect placeholder holds the space so the card doesn't jump on load
+    expect(screen.getByTestId('dest-image-placeholder')).toBeInTheDocument();
     expect(screen.getByTestId('dest-image-gen')).toBeInTheDocument();
   });
 
