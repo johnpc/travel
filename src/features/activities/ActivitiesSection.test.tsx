@@ -39,6 +39,14 @@ describe('ActivitiesSection', () => {
     expect(screen.getByText('Wine tour')).toBeInTheDocument();
   });
 
+  it('previews a skeleton (not the empty state) while the AI is thinking', () => {
+    h.useActivitiesPanel.mockReturnValue({ ...base, isSuggesting: true });
+    render(<ActivitiesSection tripId="t1" destinationId="d1" destinationName="Santorini" />);
+    expect(screen.getByTestId('act-loading')).toBeInTheDocument();
+    expect(screen.queryByTestId('load-empty')).not.toBeInTheDocument();
+    expect(screen.getByTestId('act-suggest')).toHaveTextContent('Thinking…');
+  });
+
   it('accepts an AI suggestion', () => {
     const accept = vi.fn();
     h.useActivitiesPanel.mockReturnValue({
