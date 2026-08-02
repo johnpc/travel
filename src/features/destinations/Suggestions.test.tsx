@@ -17,6 +17,7 @@ describe('Suggestions', () => {
   it('shows a loading affordance and disables the button while loading', () => {
     render(<Suggestions suggestions={[]} isLoading onSuggest={vi.fn()} onAccept={vi.fn()} />);
     expect(screen.getByTestId('suggest-loading')).toBeInTheDocument();
+    expect(screen.getByTestId('suggest-btn')).toHaveTextContent('Thinking…');
   });
 
   it('renders suggestions and accepts one', () => {
