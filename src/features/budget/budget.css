@@ -4,6 +4,39 @@
   border-top: 1px dashed var(--tv-border);
 }
 
+/* Label on the left, "Estimate with AI" on the right — wraps on a narrow phone. */
+.budget__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+}
+
+.budget__estimate {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-height: 44px;
+  padding: 0 0.7rem;
+  border: 1px solid var(--tv-accent);
+  border-radius: 999px;
+  background: none;
+  color: var(--tv-accent-strong);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.budget__estimate:hover {
+  background: var(--tv-accent-soft);
+}
+
+.budget__estimate:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
 .budget__form {
   display: flex;
   flex-direction: column;

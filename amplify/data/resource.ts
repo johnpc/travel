@@ -1,6 +1,7 @@
 import { type ClientSchema, a, defineData } from '@aws-amplify/backend';
 import { suggestDestinations } from '../destinationgen/resource';
 import { suggestActivities } from '../activitygen/resource';
+import { estimateBudget } from '../budgetgen/resource';
 import { generateDestinationImage } from '../imagegen/resource';
 
 /**
@@ -210,6 +211,21 @@ const schema = a.schema({
     .returns(a.customType({ suggestions: a.string().required() }))
     .authorization((allow) => [allow.guest(), allow.authenticated()])
     .handler(a.handler.function(suggestActivities)),
+
+  // Guest-callable AI ROUGH BUDGET estimate for a destination. Synchronous
+  // tool-forced Claude call; returns a JSON string of
+  // { flightPerPerson, lodgingPerNight, nights, seasonNote } the client uses to
+  // seed the editable budget fields (it does NOT persist — the group verifies
+  // against the real-price links and saves). `homeAirport` defaults to DTW.
+  estimateBudget: a
+    .mutation()
+    .arguments({
+      destinationName: a.string().required(),
+      homeAirport: a.string(),
+    })
+    .returns(a.customType({ estimate: a.string().required() }))
+    .authorization((allow) => [allow.guest(), allow.authenticated()])
+    .handler(a.handler.function(estimateBudget)),
 
   // Guest-callable: generate a representative image for a destination. The
   // resolver generates via Bedrock, resizes to WebP, stores it in S3, persists

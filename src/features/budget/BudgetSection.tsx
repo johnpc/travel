@@ -3,6 +3,7 @@ import { LoadState } from '../shell/LoadState';
 import { useBudgetPanel } from './useBudgetPanel';
 import { formatMoney } from './computeBudget';
 import { BudgetLinks } from './BudgetLinks';
+import { BudgetHeader } from './BudgetHeader';
 import './budget.css';
 
 interface BudgetSectionProps {
@@ -20,10 +21,10 @@ const FIELDS = [
 /** A rough shared cost estimate for a destination: flight, lodging, nights →
  * live per-person and per-couple totals. Everyone edits the same estimate. */
 export function BudgetSection({ tripId, destinationId, destinationName }: BudgetSectionProps) {
-  const p = useBudgetPanel(tripId, destinationId, true);
+  const p = useBudgetPanel(tripId, destinationId, true, destinationName);
   return (
     <div className="budget" data-testid="budget">
-      <span className="acts__cat tv-kicker">Rough budget</span>
+      <BudgetHeader onEstimate={p.runEstimate} isEstimating={p.isEstimating} />
       <BudgetLinks destinationName={destinationName} />
       <LoadState isLoading={p.isLoading} isError={p.isError} onRetry={p.refetch}>
         <form
