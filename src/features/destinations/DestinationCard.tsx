@@ -85,7 +85,7 @@ export function DestinationCard({
       {open && (
         <>
           <ActivitiesSection tripId={tripId} destinationId={d.id} destinationName={d.name} />
-          <BudgetSection tripId={tripId} destinationId={d.id} />
+          <BudgetSection tripId={tripId} destinationId={d.id} destinationName={d.name} />
         </>
       )}
     </li>

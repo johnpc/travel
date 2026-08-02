@@ -13,8 +13,49 @@
 
 .budget__inputs {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  /* minmax(0,…) so the three numeric fields can shrink on a narrow phone
+     instead of pushing the card wider than the screen. */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.6rem;
+}
+
+/* Real-price lookup links (flights from DTW, hotels, Airbnb) — a wrapping row of
+   quiet chips above the editable estimate, so you can check actual prices. */
+.budget__links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.6rem;
+  margin: 0.5rem 0 0.2rem;
+}
+
+.budget__links-hint {
+  font-size: 0.8rem;
+}
+
+.budget__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-height: 44px;
+  padding: 0 0.7rem;
+  border: 1px solid var(--tv-border);
+  border-radius: 999px;
+  background: var(--tv-surface);
+  color: var(--tv-accent-strong);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.budget__link:hover {
+  border-color: var(--tv-accent);
+  background: var(--tv-accent-soft);
+}
+
+.budget__link-ext {
+  font-size: 0.85em;
+  opacity: 0.7;
 }
 
 /* Make the estimate fields read as clearly editable inputs (outlined), not
