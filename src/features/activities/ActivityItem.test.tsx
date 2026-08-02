@@ -1,5 +1,16 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+
+const present = vi.hoisted(() => vi.fn());
+vi.mock('@ionic/react', async (importActual) => {
+  const actual = await importActual<typeof import('@ionic/react')>();
+  return { ...actual, useIonAlert: () => [present, vi.fn()] };
+});
+const clickAlertButton = (label: string) => {
+  const cfg = present.mock.calls.at(-1)?.[0];
+  cfg.buttons.find((btn: { text: string }) => btn.text === label)?.handler?.();
+};
+
 import { ActivityItem } from './ActivityItem';
 import type { ActivityRecord } from '../../lib/dataClient';
 
@@ -22,9 +33,9 @@ describe('ActivityItem', () => {
     expect(link).toHaveAttribute('rel', 'noopener noreferrer');
   });
 
-  it('shows a remove control only when onRemove is given, and confirms first', () => {
+  it('shows a remove control only when onRemove is given, and confirms via a branded alert', () => {
     const onRemove = vi.fn();
-    const confirmSpy = vi.spyOn(window, 'confirm');
+    present.mockClear();
 
     const { rerender } = render(
       <ul>
@@ -38,12 +49,12 @@ describe('ActivityItem', () => {
         <ActivityItem activity={act} destinationName="Santorini" onRemove={onRemove} />
       </ul>,
     );
-    confirmSpy.mockReturnValueOnce(false);
     fireEvent.click(screen.getByTestId('act-remove'));
+    expect(present).toHaveBeenCalledTimes(1);
     expect(onRemove).not.toHaveBeenCalled();
-    confirmSpy.mockReturnValueOnce(true);
-    fireEvent.click(screen.getByTestId('act-remove'));
+    clickAlertButton('Keep it');
+    expect(onRemove).not.toHaveBeenCalled();
+    clickAlertButton('Remove');
     expect(onRemove).toHaveBeenCalledTimes(1);
-    confirmSpy.mockRestore();
   });
 });

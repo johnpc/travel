@@ -1,8 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 
-const h = vi.hoisted(() => ({ useDestinationsPanel: vi.fn() }));
+const h = vi.hoisted(() => ({ useDestinationsPanel: vi.fn(), present: vi.fn() }));
 vi.mock('./useDestinationsPanel', () => ({ useDestinationsPanel: h.useDestinationsPanel }));
+vi.mock('@ionic/react', async (importActual) => {
+  const actual = await importActual<typeof import('@ionic/react')>();
+  return { ...actual, useIonAlert: () => [h.present, vi.fn()] };
+});
 vi.mock('../activities/ActivitiesSection', () => ({
   ActivitiesSection: () => <div data-testid="activities" />,
 }));
@@ -63,7 +67,7 @@ describe('DestinationsPanel', () => {
 
   it('removes a destination (confirmed) via the card control', () => {
     const remove = vi.fn();
-    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
+    h.present.mockClear();
     h.useDestinationsPanel.mockReturnValue({
       ...base,
       remove,
@@ -71,8 +75,10 @@ describe('DestinationsPanel', () => {
     });
     render(<DestinationsPanel tripId="t1" tripTitle="Trip" me="Alex" />);
     fireEvent.click(screen.getByTestId('dest-remove'));
+    // the branded confirm is presented; firing its "Remove" handler removes by id
+    const cfg = h.present.mock.calls.at(-1)?.[0];
+    cfg.buttons.find((btn: { text: string }) => btn.text === 'Remove').handler();
     expect(remove).toHaveBeenCalledWith('1');
-    confirmSpy.mockRestore();
   });
 
   it('nudges a nameless visitor to pick a name when there is a board to vote on', () => {
