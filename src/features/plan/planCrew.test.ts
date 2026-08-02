@@ -34,4 +34,14 @@ describe('booking links', () => {
       'https://www.booking.com/searchresults.html?ss=Lisbon%2C%20Portugal',
     );
   });
+
+  it('pre-fills the agreed dates when a window is passed', () => {
+    const dates = { start: '2027-06-12', end: '2027-06-18' };
+    expect(flightsUrl('Lisbon, Portugal', dates)).toContain(
+      encodeURIComponent('flights to Lisbon, Portugal from 2027-06-12 to 2027-06-18'),
+    );
+    expect(hotelsUrl('Lisbon, Portugal', dates)).toBe(
+      'https://www.booking.com/searchresults.html?ss=Lisbon%2C%20Portugal&checkin=2027-06-12&checkout=2027-06-18',
+    );
+  });
 });
