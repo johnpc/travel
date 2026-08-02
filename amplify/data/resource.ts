@@ -2,6 +2,7 @@ import { type ClientSchema, a, defineData } from '@aws-amplify/backend';
 import { suggestDestinations } from '../destinationgen/resource';
 import { suggestActivities } from '../activitygen/resource';
 import { estimateBudget } from '../budgetgen/resource';
+import { suggestHotels } from '../hotelgen/resource';
 import { generateDestinationImage } from '../imagegen/resource';
 
 /**
@@ -226,6 +227,19 @@ const schema = a.schema({
     .returns(a.customType({ estimate: a.string().required() }))
     .authorization((allow) => [allow.guest(), allow.authenticated()])
     .handler(a.handler.function(estimateBudget)),
+
+  // Guest-callable AI HOTEL suggestions for a destination. Synchronous
+  // tool-forced Claude call; returns a JSON string of
+  // { hotels: [{name,tier,pricePerNight,area,pros,cons}], airbnbMedianPerNight }
+  // the client renders with Booking.com/Maps SEARCH links (which resolve to the
+  // real property + its real photos — never a hallucinated listing URL). Not
+  // persisted; it's a lookup to help decide where to stay.
+  suggestHotels: a
+    .mutation()
+    .arguments({ destinationName: a.string().required() })
+    .returns(a.customType({ suggestions: a.string().required() }))
+    .authorization((allow) => [allow.guest(), allow.authenticated()])
+    .handler(a.handler.function(suggestHotels)),
 
   // Guest-callable: generate a representative image for a destination. The
   // resolver generates via Bedrock, resizes to WebP, stores it in S3, persists
