@@ -41,8 +41,13 @@ Then('the trip title {string} is shown', async ({ page }, title: string) => {
 });
 
 Then('the trip title matching that slug is shown', async ({ page }) => {
-  // A freshly-created trip is titled from its slug (no title was passed).
-  await expect(page.getByTestId('trip-title')).toHaveText(freshSlug, { timeout: 15_000 });
+  // A freshly-created trip (no title passed) is titled from its slug, prettified
+  // to Title Case: "e2e-1234" → "E2e 1234".
+  const pretty = freshSlug
+    .split('-')
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ');
+  await expect(page.getByTestId('trip-title')).toHaveText(pretty, { timeout: 15_000 });
 });
 
 Then('{string} is listed on the roster', async ({ page }, name: string) => {

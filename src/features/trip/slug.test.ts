@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { slugify, isValidSlug } from './slug';
+import { slugify, isValidSlug, titleFromSlug } from './slug';
 
 describe('slugify', () => {
   it('lowercases and hyphenates spaces', () => {
@@ -27,5 +27,17 @@ describe('isValidSlug', () => {
     expect(isValidSlug('-greece')).toBe(false);
     expect(isValidSlug('greece--2027')).toBe(false);
     expect(isValidSlug('a b')).toBe(false);
+  });
+});
+
+describe('titleFromSlug', () => {
+  it('turns a slug into a Title Case display name', () => {
+    expect(titleFromSlug('greece-2027')).toBe('Greece 2027');
+    expect(titleFromSlug('portugal-with-the-crew')).toBe('Portugal With The Crew');
+    expect(titleFromSlug('bali')).toBe('Bali');
+  });
+
+  it('tolerates stray/extra hyphens', () => {
+    expect(titleFromSlug('lisbon--trip-')).toBe('Lisbon Trip');
   });
 });

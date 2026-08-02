@@ -16,3 +16,16 @@ export function slugify(input: string): string {
 export function isValidSlug(slug: string): boolean {
   return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug);
 }
+
+/**
+ * A friendly display title derived from a slug, for trips opened by a raw URL
+ * with no title passed. Hyphens → spaces, Title Case, e.g. "greece-2027" →
+ * "Greece 2027". Pure; keeps a bare slug from showing as the giant page title.
+ */
+export function titleFromSlug(slug: string): string {
+  return slug
+    .split('-')
+    .filter(Boolean)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ');
+}
