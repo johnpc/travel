@@ -4,13 +4,36 @@
 }
 
 .destimg__img,
-.destimg__placeholder {
+.destimg__placeholder,
+.destimg__empty {
   width: 100%;
   border-radius: var(--tv-radius-sm);
   aspect-ratio: 3 / 2;
   object-fit: cover;
   display: block;
   background: var(--tv-skeleton-base);
+}
+
+/* Settled-but-no-stock-photo state (e.g. a freeform "Zambia safari"): a soft,
+   inviting slot that points at the "Imagine it with AI" action rather than an
+   empty grey void that reads as a broken image. */
+.destimg__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  background: var(--tv-accent-soft);
+  color: var(--tv-text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  padding: 0 1rem;
+}
+
+.destimg__empty ion-icon {
+  font-size: 1.6rem;
+  color: var(--tv-accent);
 }
 
 /* Subtle "imagine with AI" chip — floats over the photo's corner when there's an
