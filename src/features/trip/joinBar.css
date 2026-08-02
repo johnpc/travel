@@ -1,0 +1,23 @@
+/* Compact "add your name" bar for a nameless visitor on an active trip — sits
+   just under the title so a late-arriving friend can identify themselves without
+   scrolling to the roster. Lighter than the full welcome banner. */
+.joinbar {
+  margin: 0.25rem 0 1.25rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--tv-accent);
+  border-radius: var(--tv-radius);
+  background: var(--tv-accent-soft);
+}
+
+.joinbar__lead {
+  margin: 0 0 0.15rem;
+  font-size: 0.95rem;
+  color: var(--tv-text);
+}
+
+/* The shared WelcomeJoin form has no top border/padding here (no steps above it). */
+.joinbar .welcome__join {
+  margin-top: 0.5rem;
+  padding-top: 0;
+  border-top: none;
+}

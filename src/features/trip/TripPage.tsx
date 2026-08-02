@@ -20,6 +20,7 @@ import { ShareButton } from '../plan/ShareButton';
 import { ThemeToggle } from '../theme/ThemeToggle';
 import { TripLoading } from './TripLoading';
 import { TripWelcome } from './TripWelcome';
+import { JoinBar } from './JoinBar';
 import './trip.css';
 
 // Open the calendar on the current month. Computed here (not in tested logic) so
@@ -61,6 +62,12 @@ export function TripPage() {
             </h1>
             {trip?.description && <p className="tv-muted">{trip.description}</p>}
             <TripWelcome
+              tripId={trip?.id}
+              hasIdentity={!!join.me}
+              onJoin={join.join}
+              isJoining={join.isJoining}
+            />
+            <JoinBar
               tripId={trip?.id}
               hasIdentity={!!join.me}
               onJoin={join.join}
