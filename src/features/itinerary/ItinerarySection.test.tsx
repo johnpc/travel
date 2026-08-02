@@ -26,12 +26,22 @@ describe('ItinerarySection', () => {
     h.useItineraryPanel.mockReturnValue({ ...base });
   });
 
-  it('shows an empty state when there are no stops yet', () => {
+  it('stays a compact teaser (no editor) when there are no stops', () => {
     render(<ItinerarySection tripId="t1" tripTitle="Asia" />);
+    expect(screen.getByTestId('itinerary-open')).toBeInTheDocument();
+    // the full editor (AI-route button, add form) is hidden until opened
+    expect(screen.queryByTestId('route-suggest')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('stop-add-form')).not.toBeInTheDocument();
+  });
+
+  it('opens the full editor when the teaser is tapped', () => {
+    render(<ItinerarySection tripId="t1" tripTitle="Asia" />);
+    fireEvent.click(screen.getByTestId('itinerary-open'));
+    expect(screen.getByTestId('route-suggest')).toBeInTheDocument();
     expect(screen.getByText('No stops yet')).toBeInTheDocument();
   });
 
-  it('renders the ordered stops when present', () => {
+  it('shows the editor directly (no teaser) when stops already exist', () => {
     h.useItineraryPanel.mockReturnValue({
       ...base,
       stops: [
@@ -40,13 +50,15 @@ describe('ItinerarySection', () => {
       ],
     });
     render(<ItinerarySection tripId="t1" tripTitle="Asia" />);
+    expect(screen.queryByTestId('itinerary-open')).not.toBeInTheDocument();
     expect(screen.getAllByTestId('stop-row')).toHaveLength(2);
   });
 
-  it('asks the AI to suggest a route', () => {
+  it('asks the AI to suggest a route once opened', () => {
     const runSuggest = vi.fn();
     h.useItineraryPanel.mockReturnValue({ ...base, runSuggest });
     render(<ItinerarySection tripId="t1" tripTitle="Asia" />);
+    fireEvent.click(screen.getByTestId('itinerary-open'));
     fireEvent.click(screen.getByTestId('route-suggest'));
     expect(runSuggest).toHaveBeenCalled();
   });

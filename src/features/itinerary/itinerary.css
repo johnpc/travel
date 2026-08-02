@@ -8,6 +8,46 @@
   gap: 0.35rem;
 }
 
+/* Collapsed opt-in teaser: one quiet, tappable line so a single-destination trip
+   isn't dominated by an empty multi-city editor. Expands to the full route UI. */
+.itin__teaser {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  min-height: 44px;
+  padding: 0.7rem 0.85rem;
+  border: 1px dashed var(--tv-border);
+  border-radius: var(--tv-radius-sm);
+  background: none;
+  color: var(--tv-text);
+  font-size: 0.9rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.itin__teaser:hover {
+  border-color: var(--tv-accent);
+  background: var(--tv-accent-soft);
+}
+
+.itin__teaser-lead {
+  flex-shrink: 0;
+  font-size: 1.2rem;
+  color: var(--tv-accent);
+}
+
+.itin__teaser-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.itin__teaser-add {
+  flex-shrink: 0;
+  font-size: 1.2rem;
+  color: var(--tv-accent-strong);
+}
+
 .itin__hint {
   font-size: 0.85rem;
   margin: 0.1rem 0 0.6rem;
