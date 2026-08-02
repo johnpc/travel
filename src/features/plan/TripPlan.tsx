@@ -13,6 +13,12 @@ interface TripPlanProps {
   tripId: string | undefined;
 }
 
+/** Jump to the availability calendar — the plan card's date nudge is a shortcut
+ * to the section that resolves it, so "what's missing" is one tap from fixed. */
+function scrollToDates() {
+  document.getElementById('trip-dates')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
 /** "The Plan" hero — synthesizes where the group leans into an invitation:
  * {Destination} with {crew}, the best dates, the cost, and (once it all aligns)
  * a "lock it in — book flights & hotels" CTA. Hidden until a front-runner
@@ -36,10 +42,22 @@ export function TripPlan({ tripId }: TripPlanProps) {
           {plan.frontRunner.name}
           {crew ? <span className="plan__crew"> with {crew}</span> : null}
         </h2>
-        <div className="plan__row" data-testid="plan-dates">
-          <IonIcon icon={calendarOutline} className="plan__icon" aria-hidden="true" />
-          <span>{bestWindowLabel(plan.bestWindow)}</span>
-        </div>
+        {plan.bestWindow ? (
+          <div className="plan__row" data-testid="plan-dates">
+            <IonIcon icon={calendarOutline} className="plan__icon" aria-hidden="true" />
+            <span>{bestWindowLabel(plan.bestWindow)}</span>
+          </div>
+        ) : (
+          <button
+            type="button"
+            className="plan__row plan__row--action"
+            data-testid="plan-dates"
+            onClick={scrollToDates}
+          >
+            <IonIcon icon={calendarOutline} className="plan__icon" aria-hidden="true" />
+            <span>{bestWindowLabel(plan.bestWindow)}</span>
+          </button>
+        )}
         <div className="plan__row" data-testid="plan-budget">
           <IonIcon icon={walletOutline} className="plan__icon" aria-hidden="true" />
           <span>
