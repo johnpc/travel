@@ -10,6 +10,9 @@ vi.mock('./useJoinTrip', () => ({ useJoinTrip: h.useJoinTrip }));
 vi.mock('../destinations/DestinationsPanel', () => ({
   DestinationsPanel: () => <div data-testid="destinations-panel" />,
 }));
+vi.mock('../itinerary/ItinerarySection', () => ({
+  ItinerarySection: () => <div data-testid="itinerary" />,
+}));
 vi.mock('../availability/AvailabilityPanel', () => ({
   AvailabilityPanel: () => <div data-testid="availability-panel" />,
 }));

@@ -3,6 +3,7 @@ import { suggestDestinations } from '../destinationgen/resource';
 import { suggestActivities } from '../activitygen/resource';
 import { estimateBudget } from '../budgetgen/resource';
 import { suggestHotels } from '../hotelgen/resource';
+import { suggestRoute } from '../routegen/resource';
 import { generateDestinationImage } from '../imagegen/resource';
 
 /**
@@ -83,6 +84,29 @@ const schema = a.schema({
       imagePath: a.string(), // S3 key under media/destinations/, resolved via getUrl()
       interests: a.hasMany('Interest', 'destinationId'),
       activities: a.hasMany('Activity', 'destinationId'),
+    })
+    .secondaryIndexes((index) => [index('tripId')])
+    .authorization((allow) => [
+      allow.guest().to(['read', 'create', 'update', 'delete']),
+      allow.authenticated('identityPool').to(['read', 'create', 'update', 'delete']),
+      allow.authenticated().to(['read', 'create', 'update', 'delete']),
+      allow.group('editors').to(['create', 'update', 'delete']),
+    ]),
+
+  // One stop on a multi-city itinerary (opt-in — not every trip is multi-stop).
+  // An ordered leg of a route like Tokyo → Angkor Wat → Bangkok → Phuket: a
+  // `place`, how many `nights` there, and an `order` index the client sorts by
+  // (reorder = update the order values). AI-suggested (a whole route at once) or
+  // hand-added; `source` records which. Scoped to a trip, read by tripId. Guest
+  // CRUD like the rest. Separate from single-destination voting.
+  ItineraryStop: a
+    .model({
+      tripId: a.id().required(),
+      place: a.string().required(),
+      nights: a.integer(),
+      order: a.integer().required(),
+      note: a.string(),
+      source: a.enum(['MANUAL', 'AI']),
     })
     .secondaryIndexes((index) => [index('tripId')])
     .authorization((allow) => [
@@ -240,6 +264,17 @@ const schema = a.schema({
     .returns(a.customType({ suggestions: a.string().required() }))
     .authorization((allow) => [allow.guest(), allow.authenticated()])
     .handler(a.handler.function(suggestHotels)),
+
+  // Guest-callable AI MULTI-CITY ROUTE suggestion. Synchronous tool-forced
+  // Claude call; returns a JSON string of ordered [{place,nights,note}] the
+  // client shows and the user adds as ItineraryStop rows. Excludes stops already
+  // on the itinerary so it complements them. Not persisted.
+  suggestRoute: a
+    .mutation()
+    .arguments({ theme: a.string(), exclude: a.string().array() })
+    .returns(a.customType({ stops: a.string().required() }))
+    .authorization((allow) => [allow.guest(), allow.authenticated()])
+    .handler(a.handler.function(suggestRoute)),
 
   // Guest-callable: generate a representative image for a destination. The
   // resolver generates via Bedrock, resizes to WebP, stores it in S3, persists
