@@ -24,7 +24,7 @@ describe('BudgetSection', () => {
 
   it('shows the computed per-person and per-couple totals', () => {
     h.useBudgetPanel.mockReturnValue({ ...base });
-    render(<BudgetSection tripId="t1" destinationId="d1" />);
+    render(<BudgetSection tripId="t1" destinationId="d1" destinationName="Lisbon, Portugal" />);
     expect(screen.getByTestId('budget-per-person')).toHaveTextContent('$900');
     expect(screen.getByTestId('budget-per-couple')).toHaveTextContent('$1,800');
   });
@@ -32,14 +32,22 @@ describe('BudgetSection', () => {
   it('submits the estimate on save', () => {
     const submit = vi.fn();
     h.useBudgetPanel.mockReturnValue({ ...base, submit });
-    render(<BudgetSection tripId="t1" destinationId="d1" />);
+    render(<BudgetSection tripId="t1" destinationId="d1" destinationName="Lisbon, Portugal" />);
     fireEvent.submit(screen.getByTestId('budget-form'));
     expect(submit).toHaveBeenCalled();
   });
 
   it('shows a retry on error', () => {
     h.useBudgetPanel.mockReturnValue({ ...base, isError: true });
-    render(<BudgetSection tripId="t1" destinationId="d1" />);
+    render(<BudgetSection tripId="t1" destinationId="d1" destinationName="Lisbon, Portugal" />);
     expect(screen.getByTestId('load-error')).toBeInTheDocument();
+  });
+
+  it('offers real-price lookup links for flights, hotels and Airbnb', () => {
+    h.useBudgetPanel.mockReturnValue({ ...base });
+    render(<BudgetSection tripId="t1" destinationId="d1" destinationName="Lisbon, Portugal" />);
+    expect(screen.getByTestId('budget-link-flights')).toHaveAttribute('href', expect.stringContaining('google.com/travel/flights')); // prettier-ignore
+    expect(screen.getByTestId('budget-link-hotels')).toHaveAttribute('href', expect.stringContaining('booking.com')); // prettier-ignore
+    expect(screen.getByTestId('budget-link-airbnb')).toHaveAttribute('href', expect.stringContaining('airbnb.com')); // prettier-ignore
   });
 });

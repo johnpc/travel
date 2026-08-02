@@ -2,11 +2,13 @@ import { IonButton, IonInput } from '@ionic/react';
 import { LoadState } from '../shell/LoadState';
 import { useBudgetPanel } from './useBudgetPanel';
 import { formatMoney } from './computeBudget';
+import { BudgetLinks } from './BudgetLinks';
 import './budget.css';
 
 interface BudgetSectionProps {
   tripId: string | undefined;
   destinationId: string;
+  destinationName: string;
 }
 
 const FIELDS = [
@@ -17,11 +19,12 @@ const FIELDS = [
 
 /** A rough shared cost estimate for a destination: flight, lodging, nights →
  * live per-person and per-couple totals. Everyone edits the same estimate. */
-export function BudgetSection({ tripId, destinationId }: BudgetSectionProps) {
+export function BudgetSection({ tripId, destinationId, destinationName }: BudgetSectionProps) {
   const p = useBudgetPanel(tripId, destinationId, true);
   return (
     <div className="budget" data-testid="budget">
       <span className="acts__cat tv-kicker">Rough budget</span>
+      <BudgetLinks destinationName={destinationName} />
       <LoadState isLoading={p.isLoading} isError={p.isError} onRetry={p.refetch}>
         <form
           className="budget__form"
