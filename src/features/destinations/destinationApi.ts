@@ -63,3 +63,17 @@ export function useAddDestination(tripId: string | undefined) {
     },
   });
 }
+
+/** Remove a destination from the board (guest delete) — undo a mistaken, duplicate
+ * or unwanted place so it stops skewing the votes. The live query drops it. */
+export function useRemoveDestination(tripId: string | undefined) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string): Promise<void> => {
+      await dataClient.models.Destination.delete({ id });
+    },
+    onSuccess: () => {
+      if (tripId) qc.invalidateQueries({ queryKey: destinationKeys.byTrip(tripId) });
+    },
+  });
+}

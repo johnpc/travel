@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 
 const h = vi.hoisted(() => ({ useDestinationsPanel: vi.fn() }));
 vi.mock('./useDestinationsPanel', () => ({ useDestinationsPanel: h.useDestinationsPanel }));
@@ -34,6 +34,7 @@ const base = {
   isSuggesting: false,
   runSuggest: vi.fn(),
   accept: vi.fn(),
+  remove: vi.fn(),
   interest,
 };
 
@@ -58,6 +59,20 @@ describe('DestinationsPanel', () => {
     expect(screen.getByTestId('dest-list')).toBeInTheDocument();
     expect(screen.getByText('Rome')).toBeInTheDocument();
     expect(screen.getByTestId('vote-control')).toBeInTheDocument();
+  });
+
+  it('removes a destination (confirmed) via the card control', () => {
+    const remove = vi.fn();
+    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
+    h.useDestinationsPanel.mockReturnValue({
+      ...base,
+      remove,
+      destinations: [{ id: '1', name: 'Rome', source: 'MANUAL' }] as DestinationRecord[],
+    });
+    render(<DestinationsPanel tripId="t1" tripTitle="Trip" me="Alex" />);
+    fireEvent.click(screen.getByTestId('dest-remove'));
+    expect(remove).toHaveBeenCalledWith('1');
+    confirmSpy.mockRestore();
   });
 
   it('nudges a nameless visitor to pick a name when there is a board to vote on', () => {

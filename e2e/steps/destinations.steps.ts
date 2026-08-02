@@ -64,3 +64,16 @@ Then('the destinations section shows a retry', async ({ page }) => {
   await expect(page.getByTestId('load-error')).toBeVisible({ timeout: 15_000 });
   await expect(page.getByTestId('load-retry')).toBeVisible();
 });
+
+When('the visitor removes that destination', async ({ page }) => {
+  // The card asks for confirm() before deleting — accept it.
+  page.once('dialog', (d) => d.accept());
+  const card = page.getByTestId('dest-item').filter({ hasText: manualName });
+  await card.getByTestId('dest-remove').click();
+});
+
+Then('that destination is gone from the board', async ({ page }) => {
+  await expect(page.getByTestId('dest-item').filter({ hasText: manualName })).toHaveCount(0, {
+    timeout: 15_000,
+  });
+});

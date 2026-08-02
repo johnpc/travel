@@ -6,6 +6,7 @@ import {
   chevronDownOutline,
   chevronUpOutline,
   trophyOutline,
+  closeOutline,
 } from 'ionicons/icons';
 import type { DestinationRecord } from '../../lib/dataClient';
 import { ActivitiesSection } from '../activities/ActivitiesSection';
@@ -19,6 +20,8 @@ interface DestinationCardProps {
   isFrontRunner?: boolean;
   /** Optional vote control rendered under the card (interest slice). */
   vote?: ReactNode;
+  /** Remove this destination from the board (undo a mistaken/unwanted place). */
+  onRemove?: () => void;
 }
 
 /** One destination on the board: name + source badge, blurb, why, a vote
@@ -29,8 +32,12 @@ export function DestinationCard({
   tripId,
   isFrontRunner,
   vote,
+  onRemove,
 }: DestinationCardProps) {
   const [open, setOpen] = useState(false);
+  const confirmRemove = () => {
+    if (onRemove && window.confirm(`Remove ${d.name} from the board?`)) onRemove();
+  };
   return (
     <li
       className={isFrontRunner ? 'dest-card dest-card--leader' : 'dest-card'}
@@ -49,6 +56,18 @@ export function DestinationCard({
         >
           <IonIcon icon={d.source === 'AI' ? sparklesOutline : createOutline} aria-hidden="true" />
         </span>
+        {onRemove && (
+          <button
+            type="button"
+            className="dest-card__remove"
+            data-testid="dest-remove"
+            aria-label={`Remove ${d.name}`}
+            title="Remove from board"
+            onClick={confirmRemove}
+          >
+            <IonIcon icon={closeOutline} aria-hidden="true" />
+          </button>
+        )}
       </div>
       {d.blurb && <p className="dest-card__blurb">{d.blurb}</p>}
       {d.why && <p className="dest-card__why tv-muted">{d.why}</p>}

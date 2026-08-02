@@ -148,12 +148,38 @@
 .dest-card__head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 0.5rem;
+}
+
+.dest-card__name {
+  flex: 1;
 }
 
 .dest-card__badge {
   color: var(--tv-accent);
   font-size: 1.1rem;
   display: inline-flex;
+}
+
+/* Quiet remove control (undo a mistaken/unwanted place); brightens on hover so
+   it never competes with the destination name but is there when needed. */
+.dest-card__remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  color: var(--tv-text-muted);
+  font-size: 1.15rem;
+  padding: 0.15rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    background 0.15s ease;
+}
+
+.dest-card__remove:hover {
+  color: var(--tv-negative);
+  background: var(--tv-bg);
 }
