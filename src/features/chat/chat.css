@@ -85,18 +85,26 @@
   margin-top: 0.6rem;
 }
 
+/* No visible label here (aria-label only), so Ionic's fill="outline" notch draws
+   no border and the composer looked like floating placeholder text. Give the host
+   a real border + surface fill so it obviously reads as a tappable input. */
 .chat__field {
   flex: 1;
   min-width: 0;
-  --background: var(--tv-bg);
+  border: 1.5px solid var(--tv-border);
+  border-radius: var(--tv-radius-sm);
+  background: var(--tv-surface);
+  --background: transparent;
   --color: var(--tv-text);
   --placeholder-color: var(--tv-text-muted);
-  --border-color: var(--tv-text-muted);
-  --border-width: 1.5px;
-  --border-radius: var(--tv-radius-sm);
-  --highlight-color-focused: var(--tv-accent);
   --padding-start: 0.7rem;
   --padding-end: 0.7rem;
+  --padding-top: 0.55rem;
+  --padding-bottom: 0.55rem;
+}
+
+.chat__field.ion-focused {
+  border-color: var(--tv-accent);
 }
 
 .chat ion-button::part(native) {

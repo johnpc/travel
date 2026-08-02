@@ -23,7 +23,6 @@ export function ChatComposer({ onSend, isSending }: ChatComposerProps) {
     >
       <IonInput
         className="chat__field"
-        fill="outline"
         aria-label="Write a message"
         placeholder="Say something to the crew…"
         value={body}
