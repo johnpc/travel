@@ -80,3 +80,35 @@ Then("the calendar shows that window's month", async ({ page }) => {
   const title = (await page.getByTestId('cal-title').innerText()).trim();
   expect(title.slice(0, 3)).toBe(jumpedTitle.slice(0, 3));
 });
+
+// Map "Mar 14–21, 2027" (chip range) to its ISO first day for a day-cell lookup.
+const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+let breakLabel = '';
+let breakFirstDay = '';
+
+When('the visitor picks the first school-break quick-pick', async ({ page }) => {
+  // The mark-mode buttons only render once identity has propagated to the panel;
+  // wait for them so pickBreak actually marks (not just jumps).
+  await page.getByTestId('mode-range').waitFor({ timeout: 15_000 });
+  const chip = page.getByTestId('school-break').first();
+  await chip.waitFor({ timeout: 15_000 });
+  const range = (await chip.locator('.breaks__range').innerText()).trim(); // "Mar 14–21, 2027"
+  const m = range.match(/^([A-Za-z]{3})\s+(\d+).*?(\d{4})$/);
+  if (!m) throw new Error(`Unrecognized break range: ${range}`);
+  const month = String(MON.indexOf(m[1]) + 1).padStart(2, '0');
+  breakLabel = MON[MON.indexOf(m[1])];
+  breakFirstDay = `${m[3]}-${month}-${m[2].padStart(2, '0')}`;
+  await chip.click();
+  await page.waitForTimeout(800); // jump + per-day FREE writes + live echo
+});
+
+Then("the calendar jumps to that break's month", async ({ page }) => {
+  const title = (await page.getByTestId('cal-title').innerText()).trim();
+  expect(title.slice(0, 3)).toBe(breakLabel);
+});
+
+Then("that break's first day shows the visitor as free", async ({ page }) => {
+  await expect(page.getByTestId(`day-${breakFirstDay}`)).toHaveAttribute('data-mine', 'FREE', {
+    timeout: 15_000,
+  });
+});

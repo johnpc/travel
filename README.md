@@ -26,7 +26,8 @@ Getting a group aligned on travel is hard in four specific ways, and Travel take
    add your own), and everyone votes their interest so the group's favorites rise to the top.
 2. **Activity preferences** — AI activity ideas at each place (island hopping, the Acropolis…), each
    linking out to real GetYourGuide experiences.
-3. **Available dates** — a shared month calendar where everyone marks when they're free.
+3. **Available dates** — a shared month calendar where everyone marks when they're free, with
+   candidate windows and one-tap school-break quick-picks so the group's dates are never buried.
 4. **Budget feasibility** — a rough per-destination estimate (flights, lodging, nights) with
    per-person and per-couple totals.
 
@@ -47,6 +48,7 @@ stay useful for this trip and the next.
 | Generated destination imagery (AI, persistent)            |   ✅   |
 | Per-person interest levels (voting)                       |   ✅   |
 | Date availability (shared month calendar)                 |   ✅   |
+| Candidate windows + school-break date quick-picks         |   ✅   |
 | Budget estimate per destination (per-person / per-couple) |   ✅   |
 
 ## How it works

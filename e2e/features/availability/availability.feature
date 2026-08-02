@@ -28,3 +28,10 @@ Feature: Mark when you're free so the group can pick dates
     Then a candidate date window is listed
     When the visitor jumps to the first candidate window
     Then the calendar shows that window's month
+
+  Scenario: A school-break quick-pick jumps the calendar and marks me free
+    When a visitor opens the trip "greece-2027"
+    And the visitor joins as "Casey"
+    And the visitor picks the first school-break quick-pick
+    Then the calendar jumps to that break's month
+    And that break's first day shows the visitor as free
