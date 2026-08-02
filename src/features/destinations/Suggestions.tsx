@@ -1,5 +1,6 @@
-import { IonButton, IonIcon, IonSpinner } from '@ionic/react';
+import { IonButton, IonIcon } from '@ionic/react';
 import { sparklesOutline, addOutline } from 'ionicons/icons';
+import { SuggestionSkeleton } from './SuggestionSkeleton';
 import type { Suggestion } from './suggestApi';
 
 interface SuggestionsProps {
@@ -24,7 +25,7 @@ export function Suggestions({ suggestions, isLoading, onSuggest, onAccept }: Sug
         <IonIcon icon={sparklesOutline} slot="start" aria-hidden="true" />
         {isLoading ? 'Thinking…' : 'Suggest destinations with AI'}
       </IonButton>
-      {isLoading && <IonSpinner className="suggest__spinner" data-testid="suggest-loading" />}
+      {isLoading && <SuggestionSkeleton />}
       {suggestions.length > 0 && (
         <ul className="suggest__list" data-testid="suggest-list">
           {suggestions.map((s) => (
