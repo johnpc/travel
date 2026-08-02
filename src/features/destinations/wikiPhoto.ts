@@ -11,9 +11,13 @@ export function wikiTitle(destinationName: string): string {
   return destinationName.split(',')[0].trim();
 }
 
-/** Commons image-search for scenic photos of the destination (up to `limit`). */
+/** Commons image-search for scenic photos of the destination (up to `limit`).
+ * We bias the query toward "panorama" — a bare place-name search surfaces
+ * arbitrary street shots (a peeling facade, a realtor sign), whereas the scenic
+ * qualifier reorders results to postcard skylines/vistas across cities, islands,
+ * and landscapes alike. The JUNK filter still drops any maps/diagrams. */
 export function commonsSearchUrl(destinationName: string, limit = 8): string {
-  const q = encodeURIComponent(wikiTitle(destinationName));
+  const q = encodeURIComponent(`${wikiTitle(destinationName)} panorama`);
   return (
     `https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*` +
     `&generator=search&gsrsearch=${q}&gsrnamespace=6&gsrlimit=${limit}` +

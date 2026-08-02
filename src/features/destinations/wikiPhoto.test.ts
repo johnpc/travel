@@ -10,10 +10,11 @@ describe('wikiTitle', () => {
 });
 
 describe('commonsSearchUrl', () => {
-  it('builds an encoded Commons image search for the place', () => {
+  it('builds an encoded, scenic-biased Commons image search for the place', () => {
     const url = commonsSearchUrl('Amalfi Coast, Italy');
     expect(url).toContain('commons.wikimedia.org');
-    expect(url).toContain('gsrsearch=Amalfi%20Coast');
+    // place name + scenic qualifier so we get postcard views, not street shots
+    expect(url).toContain('gsrsearch=Amalfi%20Coast%20panorama');
     expect(url).toContain('gsrnamespace=6'); // File namespace
   });
 });
