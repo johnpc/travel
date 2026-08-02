@@ -15,6 +15,7 @@ import { DestinationsPanel } from '../destinations/DestinationsPanel';
 import { AvailabilityPanel } from '../availability/AvailabilityPanel';
 import { TripPlan } from '../plan/TripPlan';
 import { ShareButton } from '../plan/ShareButton';
+import { TripLoading } from './TripLoading';
 import './trip.css';
 
 // Open the calendar on the current month. Computed here (not in tested logic) so
@@ -40,7 +41,12 @@ export function TripPage() {
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
-        <LoadState isLoading={isLoading} isError={isError} onRetry={refetch}>
+        <LoadState
+          isLoading={isLoading}
+          isError={isError}
+          onRetry={refetch}
+          skeleton={<TripLoading />}
+        >
           <div className="trip">
             <p className="tv-kicker">travel.jpc.io/{slug}</p>
             <h1 className="tv-heading trip__title" data-testid="trip-title">
