@@ -45,6 +45,15 @@
   min-width: 0;
 }
 
+/* Section-nav jump targets land clear of the sticky jump bar, not tucked under
+   it. Scoped to the anchor ids the SectionNav scrolls to. */
+#trip-crew,
+#trip-destinations,
+#trip-dates,
+#trip-chat {
+  scroll-margin-top: 4rem;
+}
+
 @media (min-width: 900px) {
   .trip__cols {
     grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);

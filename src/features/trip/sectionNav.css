@@ -1,0 +1,45 @@
+/* Sticky in-page jump bar — mobile wayfinding for the tall (~4 screen) trip page.
+   Sticks just under the app header as you scroll ion-content. Hidden on wide
+   screens, where the 2-column layout already keeps every section reachable. */
+.secnav {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  gap: 0.4rem;
+  overflow-x: auto;
+  margin: 0 0 1.25rem;
+  padding: 0.5rem 0;
+  background: var(--tv-bg);
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.secnav::-webkit-scrollbar {
+  display: none;
+}
+
+.secnav__chip {
+  flex: 0 0 auto;
+  min-height: 40px;
+  padding: 0 0.85rem;
+  border: 1px solid var(--tv-border);
+  border-radius: 999px;
+  background: var(--tv-surface);
+  color: var(--tv-accent-strong);
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.secnav__chip:hover {
+  border-color: var(--tv-accent);
+  background: var(--tv-accent-soft);
+}
+
+@media (min-width: 900px) {
+  .secnav {
+    display: none;
+  }
+}

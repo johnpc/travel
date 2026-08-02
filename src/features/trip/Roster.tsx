@@ -16,7 +16,7 @@ interface RosterProps {
 export function Roster({ members, me, onJoin, onPick, isJoining }: RosterProps) {
   const [name, setName] = useState('');
   return (
-    <section className="roster" data-testid="roster">
+    <section className="roster" id="trip-crew" data-testid="roster">
       <p className="tv-kicker">Who's in</p>
       <div className="roster__chips">
         {members.map((m) => (

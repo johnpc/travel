@@ -18,7 +18,7 @@ interface DestinationsPanelProps {
 export function DestinationsPanel({ tripId, tripTitle, me }: DestinationsPanelProps) {
   const p = useDestinationsPanel(tripId, tripTitle, me);
   return (
-    <section className="destinations" data-testid="destinations">
+    <section className="destinations" id="trip-destinations" data-testid="destinations">
       <p className="tv-kicker">Destinations</p>
       {!me && p.destinations.length > 0 && (
         <p className="tv-muted destinations__hint" data-testid="vote-hint">
