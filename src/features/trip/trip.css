@@ -14,6 +14,12 @@
   padding-inline-end: 92px;
 }
 
+/* Header icon buttons (theme toggle, share) get a full 44px tap target. */
+.trip__toolbar ion-buttons ion-button::part(native) {
+  min-width: 44px;
+  min-height: 44px;
+}
+
 .trip__title {
   font-size: 1.8rem;
   margin: 0.2rem 0 0.5rem;

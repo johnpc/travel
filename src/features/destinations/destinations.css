@@ -29,6 +29,11 @@
   margin-bottom: 1.25rem;
 }
 
+/* Ensure the AI suggest + accept buttons meet the 44px tap-target minimum. */
+.suggest ion-button::part(native) {
+  min-height: 44px;
+}
+
 /* Loading placeholder cards mimic the real suggestion items so the AI wait
    previews what's coming. A gentle stagger makes the shimmer feel alive. */
 .suggest__item--skeleton {
@@ -171,7 +176,11 @@
   background: none;
   color: var(--tv-text-muted);
   font-size: 1.15rem;
-  padding: 0.15rem;
+  /* 44px hit target (WCAG 2.5.5 / Apple HIG); negative margin keeps the visual
+     compact so the icon doesn't push the header taller. */
+  min-width: 44px;
+  min-height: 44px;
+  margin: -0.6rem -0.6rem -0.6rem 0;
   border-radius: 999px;
   cursor: pointer;
   transition:
@@ -182,4 +191,22 @@
 .dest-card__remove:hover {
   color: var(--tv-negative);
   background: var(--tv-bg);
+}
+
+/* Expand/collapse "things to do" — quiet inline control with a full-height
+   (44px) tap target. */
+.dest-card__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-height: 44px;
+  margin-top: 0.35rem;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--tv-accent-strong);
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
 }

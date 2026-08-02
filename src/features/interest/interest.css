@@ -24,11 +24,16 @@
 }
 
 .vote__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
   border: 1px solid var(--tv-border);
   background: var(--tv-bg);
   color: var(--tv-text);
   border-radius: 999px;
-  padding: 0.35rem 0.7rem;
+  padding: 0.5rem 0.85rem;
+  /* comfortable 44px tap target (WCAG 2.5.5) */
+  min-height: 44px;
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;

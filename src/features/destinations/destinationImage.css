@@ -19,6 +19,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
+  min-height: 44px; /* comfortable tap target */
   font-size: 0.8rem;
   font-weight: 600;
   color: var(--tv-accent-strong);
@@ -32,7 +33,10 @@
   position: absolute;
   right: 0.5rem;
   bottom: 0.5rem;
-  padding: 0.35rem 0.6rem;
+  /* A comfortable ~40px target — the floating chip stays compact so it doesn't
+     obscure the photo, but is easy to hit (it's an optional secondary action). */
+  min-height: 0;
+  padding: 0.6rem 0.85rem;
   border-radius: 999px;
   color: #fff;
   background: rgba(22, 19, 15, 0.55);
