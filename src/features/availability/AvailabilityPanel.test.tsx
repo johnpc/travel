@@ -40,6 +40,8 @@ describe('AvailabilityPanel', () => {
     expect(screen.getByTestId('cal-title')).toHaveTextContent('June 2027');
     expect(screen.getByTestId('candidate-window')).toHaveTextContent('Jun 12–18, 2027');
     expect(screen.getByTestId('day-2027-06-01')).toBeInTheDocument();
+    // the free-count badge is explained by a legend below the grid
+    expect(screen.getByTestId('cal-legend')).toHaveTextContent(/how many are free/i);
   });
 
   it('jumps to a window when tapped', () => {

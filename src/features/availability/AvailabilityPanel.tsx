@@ -4,6 +4,7 @@ import { chevronBackOutline, chevronForwardOutline } from 'ionicons/icons';
 import { LoadState } from '../shell/LoadState';
 import { CalendarGrid } from './CalendarGrid';
 import { CandidateWindowList } from './CandidateWindowList';
+import { CalendarLegend } from './CalendarLegend';
 import { SchoolBreakChips } from './SchoolBreakChips';
 import { useAvailabilityPanel } from './useAvailabilityPanel';
 import './availability.css';
@@ -82,6 +83,7 @@ export function AvailabilityPanel({ tripId, me, start }: AvailabilityPanelProps)
           canMark={p.canMark}
           onTap={rangeMode ? p.pickRange : p.toggle}
         />
+        <CalendarLegend />
       </LoadState>
     </section>
   );

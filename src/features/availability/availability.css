@@ -98,6 +98,29 @@
   color: var(--tv-positive);
 }
 
+/* One-line key so the green free-count badge explains itself. */
+.cal__legend {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.6rem 0 0;
+  font-size: 0.8rem;
+}
+
+.cal__legend-swatch {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--tv-radius-sm);
+  background: var(--tv-accent-soft);
+  color: var(--tv-positive);
+  font-size: 0.6rem;
+  font-weight: 700;
+}
+
 /* Candidate windows — the ranked "best dates" list above the calendar. */
 .cwins {
   list-style: none;
