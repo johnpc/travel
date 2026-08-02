@@ -19,8 +19,8 @@ import { TripPlan } from '../plan/TripPlan';
 import { ShareButton } from '../plan/ShareButton';
 import { ThemeToggle } from '../theme/ThemeToggle';
 import { TripLoading } from './TripLoading';
-import { TripWelcome } from './TripWelcome';
-import { JoinBar } from './JoinBar';
+import { TripIntro } from './TripIntro';
+import { SectionNav } from './SectionNav';
 import './trip.css';
 
 // Open the calendar on the current month. Computed here (not in tested logic) so
@@ -56,24 +56,15 @@ export function TripPage() {
           skeleton={<TripLoading />}
         >
           <div className="trip">
-            <p className="tv-kicker">travel.jpc.io/{slug}</p>
-            <h1 className="tv-heading trip__title" data-testid="trip-title">
-              {trip?.title}
-            </h1>
-            {trip?.description && <p className="tv-muted">{trip.description}</p>}
-            <TripWelcome
-              tripId={trip?.id}
-              hasIdentity={!!join.me}
-              onJoin={join.join}
-              isJoining={join.isJoining}
-            />
-            <JoinBar
-              tripId={trip?.id}
-              hasIdentity={!!join.me}
+            <TripIntro
+              slug={slug}
+              trip={trip}
+              me={join.me}
               onJoin={join.join}
               isJoining={join.isJoining}
             />
             <TripPlan tripId={trip?.id} />
+            <SectionNav />
             <div className="trip__cols">
               <div className="trip__main">
                 <DestinationsPanel tripId={trip?.id} tripTitle={trip?.title ?? ''} me={join.me} />

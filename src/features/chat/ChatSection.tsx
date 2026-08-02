@@ -17,7 +17,7 @@ interface ChatSectionProps {
 export function ChatSection({ tripId, me }: ChatSectionProps) {
   const p = useChatPanel(tripId, me);
   return (
-    <section className="chat" data-testid="chat">
+    <section className="chat" id="trip-chat" data-testid="chat">
       <p className="tv-kicker chat__kicker">
         <IonIcon icon={chatbubblesOutline} aria-hidden="true" /> Discussion
       </p>
