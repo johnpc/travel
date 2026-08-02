@@ -4,6 +4,7 @@ import { useBudgetPanel } from './useBudgetPanel';
 import { formatMoney } from './computeBudget';
 import { BudgetLinks } from './BudgetLinks';
 import { BudgetHeader } from './BudgetHeader';
+import { HotelPicks } from './HotelPicks';
 import './budget.css';
 
 interface BudgetSectionProps {
@@ -88,6 +89,7 @@ export function BudgetSection({ tripId, destinationId, destinationName }: Budget
           </IonButton>
         </form>
       </LoadState>
+      <HotelPicks destinationName={destinationName} />
     </div>
   );
 }

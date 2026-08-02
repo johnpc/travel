@@ -29,3 +29,16 @@ export function airbnbUrl(destinationName: string): string {
   const q = encodeURIComponent(place(destinationName));
   return `https://www.airbnb.com/s/${q}/homes`;
 }
+
+/** Booking.com search for a SPECIFIC hotel at a destination — resolves to the
+ * real property page (with its real photos/price), never a guessed dead URL. */
+export function hotelBookingUrl(hotelName: string, destinationName: string): string {
+  const q = encodeURIComponent(`${hotelName} ${place(destinationName)}`);
+  return `https://www.booking.com/searchresults.html?ss=${q}`;
+}
+
+/** Google Maps search for a specific hotel — its location, photos, and reviews. */
+export function hotelMapUrl(hotelName: string, destinationName: string): string {
+  const q = encodeURIComponent(`${hotelName} ${place(destinationName)}`);
+  return `https://www.google.com/maps/search/?api=1&query=${q}`;
+}

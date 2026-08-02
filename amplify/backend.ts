@@ -6,6 +6,7 @@ import { storage } from './storage/resource';
 import { suggestDestinations } from './destinationgen/resource';
 import { suggestActivities } from './activitygen/resource';
 import { estimateBudget } from './budgetgen/resource';
+import { suggestHotels } from './hotelgen/resource';
 import { generateDestinationImage } from './imagegen/resource';
 
 /**
@@ -23,6 +24,7 @@ const backend = defineBackend({
   suggestDestinations,
   suggestActivities,
   estimateBudget,
+  suggestHotels,
   generateDestinationImage,
 });
 
@@ -40,6 +42,7 @@ const bedrockGrant = () =>
 backend.suggestDestinations.resources.lambda.addToRolePolicy(bedrockGrant());
 backend.suggestActivities.resources.lambda.addToRolePolicy(bedrockGrant());
 backend.estimateBudget.resources.lambda.addToRolePolicy(bedrockGrant());
+backend.suggestHotels.resources.lambda.addToRolePolicy(bedrockGrant());
 
 // Image generator: Bedrock (image) + write media to S3 + persist the key on the
 // Destination table (writes straight to DynamoDB under its IAM role).

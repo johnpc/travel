@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { flightsUrl, hotelsUrl, airbnbUrl } from './bookingLinks';
+import { flightsUrl, hotelsUrl, airbnbUrl, hotelBookingUrl, hotelMapUrl } from './bookingLinks';
 
 describe('bookingLinks', () => {
   it('builds a Google Flights search from DTW to the place', () => {
@@ -24,5 +24,17 @@ describe('bookingLinks', () => {
   it('handles a freeform name with no country part', () => {
     expect(decodeURIComponent(flightsUrl('Zambia safari'))).toContain('to Zambia safari');
     expect(hotelsUrl('Zambia safari')).toContain('ss=Zambia%20safari');
+  });
+
+  it('builds a Booking.com search for a specific hotel (resolves to the real page)', () => {
+    const url = hotelBookingUrl('Grace Hotel', 'Santorini, Greece');
+    expect(url).toContain('booking.com/searchresults');
+    expect(decodeURIComponent(url)).toContain('Grace Hotel Santorini');
+  });
+
+  it('builds a Google Maps search for a specific hotel', () => {
+    const url = hotelMapUrl('Grace Hotel', 'Santorini, Greece');
+    expect(url).toContain('google.com/maps/search');
+    expect(decodeURIComponent(url)).toContain('Grace Hotel Santorini');
   });
 });

@@ -3,6 +3,8 @@ import { render, screen, fireEvent } from '@testing-library/react';
 
 const h = vi.hoisted(() => ({ useBudgetPanel: vi.fn() }));
 vi.mock('./useBudgetPanel', () => ({ useBudgetPanel: h.useBudgetPanel }));
+// HotelPicks does its own AI mutation — stub it; it has its own tests.
+vi.mock('./HotelPicks', () => ({ HotelPicks: () => <div data-testid="hotels" /> }));
 
 import { BudgetSection } from './BudgetSection';
 

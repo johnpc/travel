@@ -123,3 +123,97 @@
 .budget__totals strong {
   color: var(--tv-accent-strong);
 }
+
+/* AI "where to stay" — tiered hotel picks + median Airbnb, below the estimate. */
+.hotels {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed var(--tv-border);
+}
+
+.hotels__list {
+  list-style: none;
+  margin: 0.6rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.hotel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--tv-border);
+  border-radius: var(--tv-radius-sm);
+  background: var(--tv-surface);
+}
+
+.hotel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.hotel__tier {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background: var(--tv-accent-soft);
+  color: var(--tv-accent-strong);
+}
+
+.hotel__tier--luxury {
+  background: var(--tv-accent);
+  color: var(--tv-accent-contrast);
+}
+
+.hotel__price {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.hotel__name {
+  font-size: 1.02rem;
+}
+
+.hotel__area {
+  font-size: 0.8rem;
+}
+
+.hotel__pro,
+.hotel__con {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.3rem;
+  margin: 0.1rem 0 0;
+  font-size: 0.82rem;
+}
+
+.hotel__pro ion-icon {
+  color: var(--tv-positive);
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+}
+
+.hotel__con ion-icon {
+  color: var(--tv-text-muted);
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+}
+
+.hotel__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+}
+
+.hotels__airbnb {
+  margin-top: 0.6rem;
+}
