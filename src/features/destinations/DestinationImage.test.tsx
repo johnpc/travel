@@ -85,4 +85,18 @@ describe('DestinationImage', () => {
     fireEvent.click(screen.getByTestId('dest-image-gen'));
     expect(h.mutate).toHaveBeenCalled();
   });
+
+  it("shows a freshly generated image immediately from the mutation's returned path", () => {
+    // The row has no persisted imagePath yet, but the mutation just returned one —
+    // it must render now, not wait for a reload (the live query misses the write).
+    h.useWikiPhotosState.mockReturnValue(wiki([], true));
+    h.useDestinationImage.mockReturnValue({
+      mutate: h.mutate,
+      isPending: false,
+      data: 'media/destinations/fresh.webp',
+    });
+    render(<DestinationImage tripId="t1" destination={{ id: 'd1', name: 'Santorini' } as DestinationRecord} />); // prettier-ignore
+    // useMediaUrl must be resolving the fresh path, not the (empty) row path
+    expect(h.useMediaUrl).toHaveBeenCalledWith('media/destinations/fresh.webp');
+  });
 });
