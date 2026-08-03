@@ -214,6 +214,9 @@
   --padding-end: 0.6rem;
 }
 
+/* Wide enough for the full "Nights" stacked label — at 4.5rem the outline field's
+   padding + notch squeezed it to "Nig…". The place field (flex:1) absorbs the
+   extra width and stays comfortably usable. */
 .itin__field--nights {
-  flex: 0 0 4.5rem;
+  flex: 0 0 5.5rem;
 }
