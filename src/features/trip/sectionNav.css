@@ -11,28 +11,25 @@
   top: -16px;
   z-index: 5;
   display: flex;
-  gap: 0.4rem;
-  overflow-x: auto;
+  gap: 0.3rem;
   margin: -16px -16px 1.25rem;
   padding: calc(16px + 0.5rem) 16px 0.6rem;
   background: var(--tv-bg);
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
 }
 
-.secnav::-webkit-scrollbar {
-  display: none;
-}
-
+/* The four sections fit the row edge-to-edge as a segmented tab bar — users read
+   these as tabs, and all four (incl. Discussion, the consensus surface) stay
+   visible at 360px, so nothing is clipped off a scrollable edge with no cue. */
 .secnav__chip {
-  flex: 0 0 auto;
+  flex: 1 1 auto;
+  min-width: 0;
   min-height: 40px;
-  padding: 0 0.85rem;
+  padding: 0 0.55rem;
   border: 1px solid var(--tv-border);
   border-radius: 999px;
   background: var(--tv-surface);
   color: var(--tv-accent-strong);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 600;
   white-space: nowrap;
   cursor: pointer;
