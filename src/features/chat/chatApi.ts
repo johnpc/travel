@@ -4,7 +4,7 @@
  * tripId, sorted oldest-first (chat order). observeQuery streams new messages
  * in live so the thread updates as the crew talks.
  */
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { dataClient, unwrap, type MessageRecord } from '../../lib/dataClient';
 import { useLiveQuery } from '../../lib/useLiveQuery';
 
@@ -20,9 +20,9 @@ export function useMessages(tripId: string | undefined) {
   return useLiveQuery(dataClient.models.Message, { tripId: { eq: tripId } }, byOldest, !!tripId);
 }
 
-/** Post a message to the trip thread as the given author (name-only identity). */
+/** Post a message to the trip thread as the given author (name-only identity).
+ * The live query streams it to every collaborator — no manual refresh. */
 export function usePostMessage(tripId: string | undefined) {
-  const qc = useQueryClient();
   return useMutation({
     mutationFn: async (msg: { authorName: string; body: string }): Promise<void> => {
       if (!tripId) throw new Error('No trip to post to');
@@ -30,21 +30,14 @@ export function usePostMessage(tripId: string | undefined) {
       if (!body) return;
       unwrap(await dataClient.models.Message.create({ tripId, authorName: msg.authorName, body }));
     },
-    onSuccess: () => {
-      if (tripId) qc.invalidateQueries({ queryKey: chatKeys.byTrip(tripId) });
-    },
   });
 }
 
-/** Delete a message (guest delete — remove your own typo). */
-export function useRemoveMessage(tripId: string | undefined) {
-  const qc = useQueryClient();
+/** Delete a message (guest delete — remove your own typo); live query updates all. */
+export function useRemoveMessage(_tripId: string | undefined) {
   return useMutation({
     mutationFn: async (id: string): Promise<void> => {
       await dataClient.models.Message.delete({ id });
-    },
-    onSuccess: () => {
-      if (tripId) qc.invalidateQueries({ queryKey: chatKeys.byTrip(tripId) });
     },
   });
 }

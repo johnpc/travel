@@ -3,7 +3,7 @@
  * ordered legs of a multi-city route on a trip (opt-in). Guest CRUD, read by
  * tripId, sorted by the `order` index. Reordering updates two rows' order values.
  */
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { dataClient, unwrap, type ItineraryStopRecord } from '../../lib/dataClient';
 import { useLiveQuery } from '../../lib/useLiveQuery';
 
@@ -31,9 +31,9 @@ export function useItinerary(tripId: string | undefined) {
   );
 }
 
-/** Add a stop to the itinerary (caller supplies the order = append at the end). */
+/** Add a stop to the itinerary (caller supplies the order = append at the end).
+ * The live query streams it into the route — no manual refresh. */
 export function useAddStop(tripId: string | undefined) {
-  const qc = useQueryClient();
   return useMutation({
     mutationFn: async (stop: NewStop): Promise<void> => {
       if (!tripId) throw new Error('No trip to add a stop to');
@@ -48,37 +48,26 @@ export function useAddStop(tripId: string | undefined) {
         }),
       );
     },
-    onSuccess: () => {
-      if (tripId) qc.invalidateQueries({ queryKey: itineraryKeys.byTrip(tripId) });
-    },
   });
 }
 
 /** Remove a stop (guest delete); the live query drops it. */
-export function useRemoveStop(tripId: string | undefined) {
-  const qc = useQueryClient();
+export function useRemoveStop(_tripId: string | undefined) {
   return useMutation({
     mutationFn: async (id: string): Promise<void> => {
       await dataClient.models.ItineraryStop.delete({ id });
     },
-    onSuccess: () => {
-      if (tripId) qc.invalidateQueries({ queryKey: itineraryKeys.byTrip(tripId) });
-    },
   });
 }
 
-/** Swap the order of two stops (reorder up/down) in one go. */
-export function useReorderStops(tripId: string | undefined) {
-  const qc = useQueryClient();
+/** Swap the order of two stops (reorder up/down) in one go; live query reflects it. */
+export function useReorderStops(_tripId: string | undefined) {
   return useMutation({
     mutationFn: async (pair: { a: ItineraryStopRecord; b: ItineraryStopRecord }): Promise<void> => {
       await Promise.all([
         dataClient.models.ItineraryStop.update({ id: pair.a.id, order: pair.b.order ?? 0 }),
         dataClient.models.ItineraryStop.update({ id: pair.b.id, order: pair.a.order ?? 0 }),
       ]);
-    },
-    onSuccess: () => {
-      if (tripId) qc.invalidateQueries({ queryKey: itineraryKeys.byTrip(tripId) });
     },
   });
 }
