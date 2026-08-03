@@ -28,6 +28,7 @@ export function useBudgetPanel(
 ) {
   const query = useBudget(destinationId, expanded);
   const save = useSaveBudget(tripId, destinationId);
+  const [justSaved, setJustSaved] = useState(false);
   const estimate = useEstimateBudget();
   const [form, setForm] = useState<BudgetForm>(EMPTY);
 
@@ -51,6 +52,8 @@ export function useBudgetPanel(
     nights: numOrNull(form.nights),
   });
 
+  // Flash a "Saved ✓" confirmation for 2s — Save is the one discrete action with
+  // no inline payoff (unlike votes turning teal or days going green).
   const submit = () => {
     const fields: BudgetFields = {
       flightPerPerson: numOrNull(form.flightPerPerson),
@@ -58,7 +61,12 @@ export function useBudgetPanel(
       nights: numOrNull(form.nights),
       seasonNote: form.seasonNote.trim() || null,
     };
-    save.mutate(fields);
+    save.mutate(fields, {
+      onSuccess: () => {
+        setJustSaved(true);
+        setTimeout(() => setJustSaved(false), 2000);
+      },
+    });
   };
 
   // AI ballpark → fill the fields (keeping anything the user already typed).
@@ -81,6 +89,7 @@ export function useBudgetPanel(
     runEstimate,
     isEstimating: estimate.isPending,
     isSaving: save.isPending,
+    justSaved,
     isLoading: query.isLoading,
     isError: query.isError,
     refetch: () => query.refetch(),

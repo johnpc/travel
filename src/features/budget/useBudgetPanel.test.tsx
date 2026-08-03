@@ -53,7 +53,20 @@ describe('useBudgetPanel', () => {
         lodgingPerNight: null,
         seasonNote: null,
       }),
+      expect.objectContaining({ onSuccess: expect.any(Function) }),
     );
+  });
+
+  it('flips justSaved after a successful save, then clears it', async () => {
+    vi.useFakeTimers();
+    // mutate invokes its onSuccess callback (react-query style)
+    h.save.mockImplementation((_fields, opts) => opts?.onSuccess?.());
+    const { result } = renderHook(() => useBudgetPanel('t1', 'd1', true));
+    act(() => result.current.submit());
+    expect(result.current.justSaved).toBe(true);
+    act(() => vi.advanceTimersByTime(2000));
+    expect(result.current.justSaved).toBe(false);
+    vi.useRealTimers();
   });
 
   it('runEstimate fills empty fields with the AI ballpark, keeping typed values', async () => {
