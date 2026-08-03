@@ -77,6 +77,10 @@
   :root:not([data-theme='light']) {
     --tv-accent: #2bb3a3;
     --tv-accent-strong: #4cc9ba;
+    /* Dark mode's accent is a LIGHT teal, so white text on it fails contrast
+       (~2.6:1). Flip the on-accent text to dark ink (~7:1) — fixes every
+       accent-filled control at once (nav chip, chat bubble, selected vote/chip). */
+    --tv-accent-contrast: #16130f;
     --ion-color-primary-rgb: 43, 179, 163;
     --tv-accent-soft: #10302e;
     --tv-warm-soft: #3a201a;
@@ -95,6 +99,7 @@
 :root[data-theme='dark'] {
   --tv-accent: #2bb3a3;
   --tv-accent-strong: #4cc9ba;
+  --tv-accent-contrast: #16130f;
   --ion-color-primary-rgb: 43, 179, 163;
   --tv-accent-soft: #10302e;
   --tv-warm-soft: #3a201a;

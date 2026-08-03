@@ -23,7 +23,8 @@ export function ChatComposer({ onSend, isSending }: ChatComposerProps) {
     >
       <IonInput
         className="chat__field"
-        aria-label="Write a message"
+        label="Write a message"
+        labelPlacement="stacked"
         placeholder="Say something to the crew…"
         value={body}
         data-testid="chat-input"

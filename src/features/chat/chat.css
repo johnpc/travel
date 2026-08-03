@@ -108,9 +108,10 @@
   margin-top: 0.6rem;
 }
 
-/* No visible label here (aria-label only), so Ionic's fill="outline" notch draws
-   no border and the composer looked like floating placeholder text. Give the host
-   a real border + surface fill so it obviously reads as a tappable input. */
+/* The label is present for screen readers (an aria-label on the roleless host is
+   a prohibited-attr a11y violation, so we use a real `label` prop) but visually
+   hidden — the placeholder carries the visible cue. Give the host a real border +
+   surface fill so it obviously reads as a tappable input. */
 .chat__field {
   flex: 1;
   min-width: 0;
@@ -124,6 +125,20 @@
   --padding-end: 0.7rem;
   --padding-top: 0.55rem;
   --padding-bottom: 0.55rem;
+}
+
+/* Visually hide the label text (keep it for assistive tech / the a11y tree).
+   Ionic renders the label in `.label-text-wrapper`; collapsing it keeps the
+   composer placeholder-only while the accessible name stays on the input. */
+.chat__field .label-text-wrapper {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
 }
 
 .chat__field.ion-focused {
