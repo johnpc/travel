@@ -4,7 +4,7 @@ import { useAvailability } from '../availability/availabilityApi';
 import { useBudget } from '../budget/budgetApi';
 import { tallyByDestination } from '../interest/tally';
 import { computeBudget, type BudgetTotals } from '../budget/computeBudget';
-import { pickFrontRunner } from './frontRunner';
+import { pickFrontRunner, frontRunnerVotes } from './frontRunner';
 import { bestDateWindow, type DateWindow } from './bestWindow';
 import { crewFor } from './planCrew';
 import { isReadyToBook } from './planReady';
@@ -38,24 +38,22 @@ export function useTripPlan(tripId: string | undefined): TripPlan {
   const frontRunner = pickFrontRunner(destinations.data ?? [], tallies);
   const budgetRow = useBudget(frontRunner?.id, !!frontRunner);
 
-  const t = frontRunner ? tallies[frontRunner.id] : null;
+  // The front-runner's vote split (null when there's no front-runner yet) —
+  // shared by the displayed tally and the readiness check.
+  const votes = frontRunnerVotes(frontRunner, tallies);
   const bestWindow = bestDateWindow(availability.data ?? [], 1);
   const budget = budgetRow.data ? computeBudget(budgetRow.data) : null;
   const crew = frontRunner ? crewFor(interests.data ?? [], frontRunner.id) : [];
+  const sources = [destinations, interests, availability];
 
   return {
-    isLoading: destinations.isLoading || interests.isLoading || availability.isLoading,
-    isError: destinations.isError || interests.isError || availability.isError,
+    isLoading: sources.some((s) => s.isLoading),
+    isError: sources.some((s) => s.isError),
     frontRunner,
-    frontRunnerVotes: t ? { yes: t.yes, maybe: t.maybe, no: t.no } : null,
+    frontRunnerVotes: votes,
     crew,
     bestWindow,
     budget,
-    readyToBook: isReadyToBook({
-      hasFrontRunner: !!frontRunner,
-      yesVotes: t?.yes ?? 0,
-      bestWindow,
-      budget,
-    }),
+    readyToBook: isReadyToBook({ votes, bestWindow, budget }),
   };
 }

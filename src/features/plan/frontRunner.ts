@@ -22,3 +22,20 @@ export function pickFrontRunner(
     return a.name.localeCompare(b.name);
   })[0];
 }
+
+export interface VoteSplit {
+  yes: number;
+  maybe: number;
+  no: number;
+}
+
+/** The front-runner's yes/maybe/no split, or null when there's no front-runner —
+ * so callers get one value they can pass straight through (no null-juggling). */
+export function frontRunnerVotes(
+  frontRunner: DestinationRecord | null,
+  tallies: Record<string, Tally>,
+): VoteSplit | null {
+  if (!frontRunner) return null;
+  const t = tallies[frontRunner.id] ?? EMPTY;
+  return { yes: t.yes, maybe: t.maybe, no: t.no };
+}

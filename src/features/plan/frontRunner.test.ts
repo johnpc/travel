@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { pickFrontRunner } from './frontRunner';
+import { pickFrontRunner, frontRunnerVotes } from './frontRunner';
 import type { DestinationRecord } from '../../lib/dataClient';
 import type { Tally } from '../interest/tally';
 
@@ -27,5 +27,17 @@ describe('pickFrontRunner', () => {
     const dests = [d('a', 'Athens'), d('b', 'Bali')];
     const winner = pickFrontRunner(dests, { a: t(-2) }); // b has no votes → 0 > -2
     expect(winner?.id).toBe('b');
+  });
+});
+
+describe('frontRunnerVotes', () => {
+  it('returns the front-runner split', () => {
+    const fr = d('a', 'Athens');
+    expect(frontRunnerVotes(fr, { a: { yes: 2, maybe: 1, no: 0, score: 2 } })).toEqual({ yes: 2, maybe: 1, no: 0 }); // prettier-ignore
+  });
+
+  it('is null when there is no front-runner, zeros when it has no tally yet', () => {
+    expect(frontRunnerVotes(null, {})).toBeNull();
+    expect(frontRunnerVotes(d('a', 'Athens'), {})).toEqual({ yes: 0, maybe: 0, no: 0 });
   });
 });
