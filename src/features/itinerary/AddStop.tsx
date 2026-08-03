@@ -3,10 +3,11 @@ import { IonButton, IonInput } from '@ionic/react';
 
 interface AddStopProps {
   onAdd: (place: string, nights?: number | null) => void;
+  isAdding: boolean;
 }
 
 /** Add a stop by hand: a place + optional nights. Clears on submit. */
-export function AddStop({ onAdd }: AddStopProps) {
+export function AddStop({ onAdd, isAdding }: AddStopProps) {
   const [place, setPlace] = useState('');
   const [nights, setNights] = useState('');
   return (
@@ -41,8 +42,13 @@ export function AddStop({ onAdd }: AddStopProps) {
         data-testid="stop-nights"
         onIonInput={(e) => setNights(e.detail.value ?? '')}
       />
-      <IonButton type="submit" size="small" disabled={!place.trim()} data-testid="stop-add">
-        Add
+      <IonButton
+        type="submit"
+        size="small"
+        disabled={!place.trim() || isAdding}
+        data-testid="stop-add"
+      >
+        {isAdding ? 'Adding…' : 'Add'}
       </IonButton>
     </form>
   );

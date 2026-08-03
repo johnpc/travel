@@ -52,7 +52,7 @@ export function ItineraryBody({ panel: p }: { panel: Panel }) {
           ))}
         </ol>
       </LoadState>
-      <AddStop onAdd={p.addManual} />
+      <AddStop onAdd={p.addManual} isAdding={p.isAdding} />
     </>
   );
 }
