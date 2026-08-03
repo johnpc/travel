@@ -29,7 +29,7 @@ export function AvailabilityPanel({ tripId, me, start, memberCount }: Availabili
   const [rangeMode, setRangeMode] = useState(true);
   return (
     <section className="availability" id="trip-dates" data-testid="availability">
-      <p className="tv-kicker">When can we go?</p>
+      <h2 className="tv-kicker tv-section-title">When can we go?</h2>
       {!me && <p className="tv-muted avail__hint">Pick your name above to mark your dates.</p>}
       <LoadState isLoading={p.isLoading} isError={p.isError} onRetry={p.refetch}>
         <CandidateWindowList windows={p.windows} onJump={p.jumpTo} memberCount={memberCount} />

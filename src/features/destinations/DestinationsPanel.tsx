@@ -21,7 +21,7 @@ export function DestinationsPanel({ tripId, tripTitle, me, memberCount }: Destin
   const p = useDestinationsPanel(tripId, tripTitle, me);
   return (
     <section className="destinations" id="trip-destinations" data-testid="destinations">
-      <p className="tv-kicker">Destinations</p>
+      <h2 className="tv-kicker tv-section-title">Destinations</h2>
       {!me && p.destinations.length > 0 && (
         <p className="tv-muted destinations__hint" data-testid="vote-hint">
           Pick your name above to vote on these.

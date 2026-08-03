@@ -178,6 +178,13 @@ ion-header ion-toolbar:first-of-type {
   color: var(--tv-accent-strong);
 }
 
+/* Section titles are real <h2>s (so screen-reader users can navigate the trip's
+   sections by heading) styled as kickers. Pin the margin to what the old <p>
+   kicker had (1em of its own font) so the h2's UA margin doesn't shift layout. */
+.tv-section-title {
+  margin: 1em 0;
+}
+
 .tv-muted {
   color: var(--tv-text-muted);
 }
