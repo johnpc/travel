@@ -45,6 +45,19 @@ describe('TripPlan', () => {
     expect(screen.getByTestId('plan-hero')).toHaveAttribute('src', 'https://s3.example/b.webp');
   });
 
+  it("frames the plan as the crew's, not 'yours', for a visitor who hasn't joined", () => {
+    // ready-to-book: joined member sees "Your trip"; a newcomer sees the crew's pick
+    // (no false "they decided without me" ownership).
+    h.useTripPlan.mockReturnValue(plan({ readyToBook: true }));
+    const { rerender } = render(<TripPlan tripId="t1" hasJoined={false} />);
+    const plan1 = screen.getByTestId('trip-plan');
+    expect(plan1).toHaveTextContent("The crew's pick");
+    expect(plan1).not.toHaveTextContent('Your trip');
+
+    rerender(<TripPlan tripId="t1" hasJoined />);
+    expect(screen.getByTestId('trip-plan')).toHaveTextContent('Your trip');
+  });
+
   it('shows the vote tally with an "N of M voted" denominator when the roster size is known', () => {
     h.useTripPlan.mockReturnValue(plan());
     render(<TripPlan tripId="t1" memberCount={4} />);

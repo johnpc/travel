@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { bestWindowLabel, votedSuffix } from './planLabels';
+import { bestWindowLabel, votedSuffix, planKicker } from './planLabels';
 
 describe('bestWindowLabel', () => {
   it('nudges to mark dates when there is no window', () => {
@@ -32,5 +32,17 @@ describe('votedSuffix', () => {
 
   it('is empty when the count exceeds the roster (implausible denominator)', () => {
     expect(votedSuffix({ yes: 3, maybe: 2, no: 1 }, 4)).toBe('');
+  });
+});
+
+describe('planKicker', () => {
+  it('claims the trip for a joined member', () => {
+    expect(planKicker(false, true)).toBe('The plan so far');
+    expect(planKicker(true, true)).toBe('Your trip');
+  });
+
+  it("frames it as the crew's (an invitation) for a visitor who hasn't joined", () => {
+    expect(planKicker(false, false)).toBe('Where the crew is leaning');
+    expect(planKicker(true, false)).toBe("The crew's pick");
   });
 });

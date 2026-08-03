@@ -26,3 +26,11 @@ export function votedSuffix(
   const voted = votes.yes + votes.maybe + votes.no;
   return memberCount && memberCount >= voted ? ` · ${voted} of ${memberCount} voted` : '';
 }
+
+/** The plan-hero kicker. For someone who's joined the trip it's "theirs"; for a
+ * newcomer who hasn't picked a name it's the CREW's plan — an invitation, not a
+ * done deal (avoids "did they decide without me?" on a trip you haven't joined). */
+export function planKicker(readyToBook: boolean, hasJoined: boolean): string {
+  if (hasJoined) return readyToBook ? 'Your trip' : 'The plan so far';
+  return readyToBook ? "The crew's pick" : 'Where the crew is leaning';
+}

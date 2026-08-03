@@ -1,7 +1,7 @@
 import { IonIcon } from '@ionic/react';
 import { calendarOutline, walletOutline, peopleOutline } from 'ionicons/icons';
 import { useTripPlan } from './useTripPlan';
-import { bestWindowLabel, votedSuffix } from './planLabels';
+import { bestWindowLabel, votedSuffix, planKicker } from './planLabels';
 import { joinNames } from './planCrew';
 import { PlanBookCta } from './PlanBookCta';
 import { PlanHero } from './PlanHero';
@@ -16,13 +16,15 @@ interface TripPlanProps {
   tripId: string | undefined;
   /** Roster size, so the tally can show "N of M voted" (is everyone in yet?). */
   memberCount?: number;
+  /** Whether this visitor has picked a name — drives the kicker (see planKicker). */
+  hasJoined?: boolean;
 }
 
 /** "The Plan" hero — synthesizes where the group leans into an invitation:
  * {Destination} with {crew}, the best dates, the cost, and (once it all aligns)
  * a "lock it in — book flights & hotels" CTA. Hidden until a front-runner
  * exists. Reads votes/availability/budget already collected. */
-export function TripPlan({ tripId, memberCount }: TripPlanProps) {
+export function TripPlan({ tripId, memberCount, hasJoined = false }: TripPlanProps) {
   const plan = useTripPlan(tripId);
   const generated = useMediaUrl(plan.frontRunner?.imagePath);
   const wiki = useWikiPhoto(plan.frontRunner?.name);
@@ -37,7 +39,7 @@ export function TripPlan({ tripId, memberCount }: TripPlanProps) {
     <section className={cls} data-testid="trip-plan">
       <PlanHero src={img} alt={plan.frontRunner.name} />
       <div className="plan__body">
-        <p className="tv-kicker">{plan.readyToBook ? 'Your trip' : 'The plan so far'}</p>
+        <p className="tv-kicker">{planKicker(plan.readyToBook, hasJoined)}</p>
         <h2 className="plan__headline tv-serif" data-testid="plan-frontrunner">
           {plan.frontRunner.name}
           {crew ? <span className="plan__crew"> with {crew}</span> : null}

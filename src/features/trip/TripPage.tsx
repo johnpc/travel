@@ -63,7 +63,7 @@ export function TripPage() {
               onJoin={join.join}
               isJoining={join.isJoining}
             />
-            <TripPlan tripId={trip?.id} memberCount={members.length} />
+            <TripPlan tripId={trip?.id} memberCount={members.length} hasJoined={!!join.me} />
             <SectionNav />
             <TripColumns trip={trip} members={members} join={join} start={START_MONTH} />
           </div>
