@@ -1,7 +1,7 @@
 import { IonIcon } from '@ionic/react';
 import { calendarOutline, walletOutline, peopleOutline } from 'ionicons/icons';
 import { useTripPlan } from './useTripPlan';
-import { bestWindowLabel } from './planLabels';
+import { bestWindowLabel, votedSuffix } from './planLabels';
 import { joinNames } from './planCrew';
 import { PlanBookCta } from './PlanBookCta';
 import { PlanHero } from './PlanHero';
@@ -12,6 +12,8 @@ import './plan.css';
 
 interface TripPlanProps {
   tripId: string | undefined;
+  /** Roster size, so the tally can show "N of M voted" (is everyone in yet?). */
+  memberCount?: number;
 }
 
 /** Jump to the availability calendar — the plan card's date nudge is a shortcut
@@ -24,7 +26,7 @@ function scrollToDates() {
  * {Destination} with {crew}, the best dates, the cost, and (once it all aligns)
  * a "lock it in — book flights & hotels" CTA. Hidden until a front-runner
  * exists. Reads votes/availability/budget already collected. */
-export function TripPlan({ tripId }: TripPlanProps) {
+export function TripPlan({ tripId, memberCount }: TripPlanProps) {
   const plan = useTripPlan(tripId);
   const generated = useMediaUrl(plan.frontRunner?.imagePath);
   const wiki = useWikiPhoto(plan.frontRunner?.name);
@@ -76,6 +78,7 @@ export function TripPlan({ tripId }: TripPlanProps) {
             <span className="tv-muted">
               {plan.frontRunnerVotes.yes} in · {plan.frontRunnerVotes.maybe} maybe ·{' '}
               {plan.frontRunnerVotes.no} pass
+              {votedSuffix(plan.frontRunnerVotes, memberCount)}
             </span>
           </div>
         )}

@@ -45,6 +45,21 @@ describe('TripPlan', () => {
     expect(screen.getByTestId('plan-hero')).toHaveAttribute('src', 'https://s3.example/b.webp');
   });
 
+  it('shows the vote tally with an "N of M voted" denominator when the roster size is known', () => {
+    h.useTripPlan.mockReturnValue(plan());
+    render(<TripPlan tripId="t1" memberCount={4} />);
+    // 2 + 1 + 0 = 3 of the 4-person crew have weighed in on the front-runner
+    expect(screen.getByTestId('plan-votes')).toHaveTextContent('2 in · 1 maybe · 0 pass · 3 of 4 voted'); // prettier-ignore
+  });
+
+  it('omits the denominator when the roster size is unknown', () => {
+    h.useTripPlan.mockReturnValue(plan());
+    render(<TripPlan tripId="t1" />);
+    const votes = screen.getByTestId('plan-votes');
+    expect(votes).toHaveTextContent('2 in · 1 maybe · 0 pass');
+    expect(votes).not.toHaveTextContent('voted');
+  });
+
   it('reserves the hero height with a placeholder until a photo resolves', () => {
     h.useMediaUrl.mockReturnValue(null);
     h.useWikiPhoto.mockReturnValue(null);
