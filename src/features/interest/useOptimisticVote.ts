@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { InterestLevel } from '../../lib/dataClient';
+import { tapLight } from '../../lib/haptics';
 
 /**
  * Make a vote feel instant. Casting a vote round-trips to the server and only
@@ -22,6 +23,7 @@ export function useOptimisticVote(
   return {
     shownLevel: pending ?? myLevel,
     cast: (level: InterestLevel) => {
+      tapLight();
       setPending(level);
       onVote(level);
     },
