@@ -3,6 +3,7 @@ import { closeOutline } from 'ionicons/icons';
 import type { MessageRecord } from '../../lib/dataClient';
 import { useConfirmRemove } from '../shell/useConfirmRemove';
 import { relativeTime } from './relativeTime';
+import { linkifySegments } from './linkify';
 
 interface MessageBubbleProps {
   message: MessageRecord;
@@ -37,7 +38,23 @@ export function MessageBubble({
             </time>
           )}
         </span>
-        <span className="chat__body">{m.body}</span>
+        <span className="chat__body">
+          {linkifySegments(m.body).map((s, i) =>
+            s.type === 'link' ? (
+              <a
+                key={i}
+                className="chat__link"
+                href={s.value}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {s.value}
+              </a>
+            ) : (
+              <span key={i}>{s.value}</span>
+            ),
+          )}
+        </span>
       </div>
       {mine && onRemove && (
         <button

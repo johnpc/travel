@@ -82,6 +82,18 @@
   white-space: pre-wrap;
 }
 
+/* Pasted http(s) links are tappable (a group shares Airbnb/flight links here).
+   Underlined so they read as links against both bubble backgrounds; on the
+   accent (own) bubble the text is already light, so just inherit + underline. */
+.chat__link {
+  color: var(--tv-accent-strong);
+  text-decoration: underline;
+}
+
+.chat__msg--mine .chat__link {
+  color: inherit;
+}
+
 .chat__remove {
   display: inline-flex;
   align-items: center;
