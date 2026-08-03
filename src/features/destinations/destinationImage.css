@@ -70,3 +70,14 @@
   opacity: 0.7;
   cursor: default;
 }
+
+/* Friendly retryable message when AI image generation fails — the "Imagine"
+   button stays live to re-run, so a failed generation isn't a silent dead end.
+   Right padding keeps the text clear of the button, which floats bottom-right
+   over the image when a photo is present. */
+.destimg__error {
+  margin: 0.4rem 0 0;
+  padding-right: 10rem;
+  font-size: 0.82rem;
+  color: var(--tv-negative);
+}

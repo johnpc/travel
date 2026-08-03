@@ -74,4 +74,15 @@ describe('DestinationImage', () => {
     render(<DestinationImage tripId="t1" destination={dest} />);
     expect(screen.getByTestId('dest-image-loading')).toBeInTheDocument();
   });
+
+  it('surfaces a retryable message when generation fails (no silent failure)', () => {
+    h.useMediaUrl.mockReturnValue(null);
+    h.useWikiPhotosState.mockReturnValue(wiki(['https://wiki/1.jpg']));
+    h.useDestinationImage.mockReturnValue({ mutate: h.mutate, isPending: false, isError: true });
+    render(<DestinationImage tripId="t1" destination={dest} />);
+    expect(screen.getByTestId('dest-image-error')).toHaveTextContent(/try again/i);
+    // the button stays live to re-run
+    fireEvent.click(screen.getByTestId('dest-image-gen'));
+    expect(h.mutate).toHaveBeenCalled();
+  });
 });
