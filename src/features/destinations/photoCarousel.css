@@ -28,21 +28,37 @@
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 8px;
+  bottom: 2px;
   display: flex;
   justify-content: center;
-  gap: 5px;
+  gap: 1px;
 }
 
+/* Each dot is a real button (clickable + keyboard-focusable) so a mouse/keyboard
+   user can jump photos, not just swipe. A 6px dot drawn via a thick transparent
+   border keeps a comfortable ~22px tap area while the visible dot stays small. */
 .carousel__dot {
+  appearance: none;
+  box-sizing: content-box;
   width: 6px;
   height: 6px;
+  padding: 8px;
+  border: none;
   border-radius: 50%;
+  cursor: pointer;
   background: rgba(255, 255, 255, 0.6);
-  box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
+  background-clip: content-box;
+  /* shadow drawn on the clipped 6px dot (not the padded hit box) for legibility
+     over photos, without a halo around the transparent tap area. */
+  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
 }
 
 .carousel__dot--on {
   background: #fff;
-  transform: scale(1.25);
+  background-clip: content-box;
+}
+
+.carousel__dot:focus-visible {
+  outline: var(--tv-focus-ring);
+  outline-offset: -4px;
 }
