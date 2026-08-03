@@ -8,6 +8,13 @@
   gap: 0.35rem;
 }
 
+/* Friendly retryable message when the AI route suggest fails. */
+.itin__error {
+  margin: 0.5rem 0 0;
+  font-size: 0.85rem;
+  color: var(--tv-negative);
+}
+
 /* Collapsed opt-in teaser: one quiet, tappable line so a single-destination trip
    isn't dominated by an empty multi-city editor. Expands to the full route UI. */
 .itin__teaser {

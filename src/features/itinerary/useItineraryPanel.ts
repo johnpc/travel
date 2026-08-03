@@ -23,9 +23,15 @@ export function useItineraryPanel(tripId: string | undefined, tripTitle: string)
     if (place.trim()) addStop.mutate({ place, nights, order: nextOrder(), source: 'MANUAL' });
   };
 
+  // Catch failures so the AI call never rejects unhandled and the view can show a
+  // retryable message instead of silently doing nothing.
   const runSuggest = async () => {
     const exclude = stops.map((s) => s.place);
-    setSuggestions(await suggest.mutateAsync({ theme: tripTitle, exclude }));
+    try {
+      setSuggestions(await suggest.mutateAsync({ theme: tripTitle, exclude }));
+    } catch {
+      /* suggest.isError drives the retry message */
+    }
   };
 
   const accept = (s: RouteStop) => {
@@ -56,6 +62,7 @@ export function useItineraryPanel(tripId: string | undefined, tripTitle: string)
     move,
     suggestions,
     isSuggesting: suggest.isPending,
+    suggestError: suggest.isError,
     runSuggest,
     accept,
   };

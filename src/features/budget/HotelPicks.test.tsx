@@ -34,6 +34,12 @@ describe('HotelPicks', () => {
     expect(screen.getByTestId('hotels-suggest')).toHaveTextContent('Finding stays…');
   });
 
+  it('shows a retryable message when the AI hotel search fails', () => {
+    h.useSuggestHotels.mockReturnValue({ mutate: h.mutate, isPending: false, isError: true, data: undefined }); // prettier-ignore
+    render(<HotelPicks destinationName="X" />);
+    expect(screen.getByTestId('hotels-error')).toHaveTextContent(/try again/i);
+  });
+
   it('renders the picks and the median Airbnb line once loaded', () => {
     h.useSuggestHotels.mockReturnValue({
       mutate: h.mutate,

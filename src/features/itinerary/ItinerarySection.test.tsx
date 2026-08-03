@@ -16,6 +16,7 @@ const base = {
   move: vi.fn(),
   suggestions: [],
   isSuggesting: false,
+  suggestError: false,
   runSuggest: vi.fn(),
   accept: vi.fn(),
 };
@@ -61,5 +62,16 @@ describe('ItinerarySection', () => {
     fireEvent.click(screen.getByTestId('itinerary-open'));
     fireEvent.click(screen.getByTestId('route-suggest'));
     expect(runSuggest).toHaveBeenCalled();
+  });
+
+  it('shows a retryable message when the AI route suggest fails', () => {
+    // stops present so the editor renders without needing to open the teaser
+    h.useItineraryPanel.mockReturnValue({
+      ...base,
+      stops: [{ id: 'a', place: 'Tokyo', order: 0 }],
+      suggestError: true,
+    });
+    render(<ItinerarySection tripId="t1" tripTitle="Asia" />);
+    expect(screen.getByTestId('route-suggest-error')).toHaveTextContent(/try again/i);
   });
 });

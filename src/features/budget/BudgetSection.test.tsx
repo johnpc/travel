@@ -15,6 +15,7 @@ const base = {
   totals: { perPerson: 900, perCouple: 1800, hasEstimate: true },
   runEstimate: vi.fn(),
   isEstimating: false,
+  estimateError: false,
   isSaving: false,
   justSaved: false,
   isLoading: false,
@@ -62,6 +63,12 @@ describe('BudgetSection', () => {
     render(<BudgetSection tripId="t1" destinationId="d1" destinationName="Lisbon, Portugal" />);
     fireEvent.click(screen.getByTestId('budget-estimate'));
     expect(runEstimate).toHaveBeenCalled();
+  });
+
+  it('shows a retryable message when the AI estimate fails', () => {
+    h.useBudgetPanel.mockReturnValue({ ...base, estimateError: true });
+    render(<BudgetSection tripId="t1" destinationId="d1" destinationName="Lisbon, Portugal" />);
+    expect(screen.getByTestId('budget-estimate-error')).toHaveTextContent(/try again/i);
   });
 
   it('confirms a successful save on the button', () => {

@@ -95,4 +95,14 @@ describe('useBudgetPanel', () => {
     });
     expect(h.estimate).not.toHaveBeenCalled();
   });
+
+  it('swallows a failed AI estimate (no unhandled reject) and surfaces the error flag', async () => {
+    h.estimate.mockRejectedValue(new Error('AI down'));
+    h.useEstimateBudget.mockReturnValue({ mutateAsync: h.estimate, isPending: false, isError: true }); // prettier-ignore
+    const { result } = renderHook(() => useBudgetPanel('t1', 'd1', true, 'Santorini, Greece'));
+    await act(async () => {
+      await result.current.runEstimate();
+    });
+    expect(result.current.estimateError).toBe(true);
+  });
 });
