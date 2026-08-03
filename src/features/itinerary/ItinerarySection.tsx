@@ -21,9 +21,9 @@ export function ItinerarySection({ tripId, tripTitle }: ItinerarySectionProps) {
   return (
     <section className="itin" data-testid="itinerary">
       {expanded ? (
-        <p className="tv-kicker itin__kicker">
+        <h2 className="tv-kicker itin__kicker tv-section-title">
           <IonIcon icon={mapOutline} aria-hidden="true" /> Multi-city route
-        </p>
+        </h2>
       ) : (
         <button
           type="button"

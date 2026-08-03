@@ -18,9 +18,9 @@ export function ChatSection({ tripId, me }: ChatSectionProps) {
   const p = useChatPanel(tripId, me);
   return (
     <section className="chat" id="trip-chat" data-testid="chat">
-      <p className="tv-kicker chat__kicker">
+      <h2 className="tv-kicker chat__kicker tv-section-title">
         <IonIcon icon={chatbubblesOutline} aria-hidden="true" /> Discussion
-      </p>
+      </h2>
       <LoadState
         isLoading={p.isLoading}
         isError={p.isError}
