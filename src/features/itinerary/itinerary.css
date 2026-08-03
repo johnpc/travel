@@ -196,13 +196,18 @@
 .itin__add {
   display: flex;
   align-items: flex-end;
+  /* Wrap so Nights + Add drop below the place field instead of starving it to a
+     sliver when text is enlarged (WCAG 1.4.4). */
+  flex-wrap: wrap;
   gap: 0.5rem;
   margin-top: 0.6rem;
 }
 
 .itin__field {
   flex: 1;
-  min-width: 0;
+  /* Keep a usable place field: don't shrink below a readable width — force the
+     Nights + Add controls to wrap instead. */
+  min-width: 9rem;
   --background: var(--tv-bg);
   --color: var(--tv-text);
   --placeholder-color: var(--tv-text-muted);
@@ -219,4 +224,6 @@
    extra width and stays comfortably usable. */
 .itin__field--nights {
   flex: 0 0 5.5rem;
+  /* reset the place field's min-width — Nights stays compact */
+  min-width: 5.5rem;
 }
