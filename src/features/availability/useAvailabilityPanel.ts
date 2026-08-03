@@ -6,6 +6,7 @@ import { candidateWindows, busiestMonth, type CandidateWindow } from './candidat
 import { enumerateDays } from './dateRange';
 import { schoolBreaks, type SchoolBreak } from './schoolBreaks';
 import { useRangeSelect } from './useRangeSelect';
+import { useOptimisticMarks } from './useOptimisticMarks';
 import type { AvailabilityStatus } from '../../lib/dataClient';
 
 interface Month {
@@ -31,12 +32,19 @@ export function useAvailabilityPanel(tripId: string | undefined, me: string | nu
   const [override, setOverride] = useState<Month | null>(null);
   const view = override ?? busiestMonth(marks, today);
 
+  // Optimistic single-day marks — the tapped cell recolors instantly instead of
+  // waiting ~0.3s for the server round-trip (matters when marking several days).
+  const optimistic = useOptimisticMarks((date) => myStatus(marks, date, me));
+
   const range = useRangeSelect((dates) => {
     if (me) markRange.mutate({ dates, memberName: me, status: 'FREE' });
   });
 
   const toggle = (date: string) => {
-    if (me) markDay.mutate({ date, memberName: me, status: nextStatus(myStatus(marks, date, me)) });
+    if (!me) return;
+    const next = nextStatus(optimistic.shownStatus(date));
+    optimistic.remember(date, next);
+    markDay.mutate({ date, memberName: me, status: next });
   };
 
   const jumpTo = (start: string) =>
@@ -54,7 +62,7 @@ export function useAvailabilityPanel(tripId: string | undefined, me: string | nu
     tallies: tallyByDay(marks),
     windows: candidateWindows(marks).slice(0, 5) as CandidateWindow[],
     breaks: schoolBreaks(today).slice(0, 4) as SchoolBreak[],
-    statusFor: (date: string): AvailabilityStatus | null => myStatus(marks, date, me),
+    statusFor: (date: string): AvailabilityStatus | null => optimistic.shownStatus(date),
     inRange: range.inRange,
     rangeStart: range.start,
     pickRange: range.pick,
