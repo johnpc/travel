@@ -20,6 +20,7 @@
 
 .vote__buttons {
   display: inline-flex;
+  flex-wrap: wrap;
   gap: 0.35rem;
 }
 
@@ -75,5 +76,7 @@
 
 .vote__tally {
   font-size: 0.8rem;
-  white-space: nowrap;
+  /* Let the tally wrap instead of running off-screen when text is enlarged
+     (WCAG 1.4.4 — 200% text must reflow without horizontal scroll). */
+  min-width: 0;
 }
