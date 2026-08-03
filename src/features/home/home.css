@@ -143,6 +143,9 @@
 .home-recents__item {
   flex: 1;
   min-width: 0;
+  /* min-height 44 so the row (and the stretched forget button) clears the 44px
+     tap-target minimum on a phone. */
+  min-height: 44px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -163,7 +166,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 40px;
+  min-width: 44px;
   border: 1px solid var(--tv-border);
   border-radius: var(--tv-radius-sm);
   background: none;
