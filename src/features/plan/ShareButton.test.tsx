@@ -11,11 +11,15 @@ describe('ShareButton', () => {
     vi.clearAllMocks();
   });
 
-  it('shares the trip URL on click (icon-only by default)', () => {
+  it('shares the trip URL with a title + inviting text on click (icon-only)', () => {
     const share = vi.fn();
     h.useShare.mockReturnValue({ share, copied: false });
-    render(<ShareButton slug="greece-2027" />);
-    expect(h.useShare).toHaveBeenCalledWith('https://travel.jpc.io/greece-2027');
+    render(<ShareButton slug="greece-2027" title="Greece 2027" />);
+    expect(h.useShare).toHaveBeenCalledWith({
+      title: 'Greece 2027',
+      text: expect.stringContaining('Help plan Greece 2027'),
+      url: 'https://travel.jpc.io/greece-2027',
+    });
     const btn = screen.getByTestId('share-trip');
     expect(btn).toHaveAccessibleName('Share trip link');
     expect(btn).not.toHaveTextContent('Share');
@@ -25,7 +29,7 @@ describe('ShareButton', () => {
 
   it('shows Copied! after copying', () => {
     h.useShare.mockReturnValue({ share: vi.fn(), copied: true });
-    render(<ShareButton slug="greece-2027" />);
+    render(<ShareButton slug="greece-2027" title="Greece 2027" />);
     expect(screen.getByTestId('share-trip')).toHaveTextContent('Copied!');
   });
 });
