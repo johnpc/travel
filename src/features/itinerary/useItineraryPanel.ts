@@ -58,6 +58,7 @@ export function useItineraryPanel(tripId: string | undefined, tripTitle: string)
     isError: listQuery.isError,
     refetch: () => listQuery.refetch(),
     addManual,
+    isAdding: addStop.isPending,
     remove: (id: string) => removeStop.mutate(id),
     move,
     suggestions,

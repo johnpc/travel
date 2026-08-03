@@ -11,7 +11,7 @@ function setInput(testid: string, value: string) {
 describe('AddStop', () => {
   it('adds a stop with place + numeric nights, then clears', () => {
     const onAdd = vi.fn();
-    render(<AddStop onAdd={onAdd} />);
+    render(<AddStop onAdd={onAdd} isAdding={false} />);
     setInput('stop-place', 'Phuket');
     setInput('stop-nights', '4');
     fireEvent.submit(screen.getByTestId('stop-add-form'));
@@ -20,9 +20,14 @@ describe('AddStop', () => {
 
   it('passes null nights when left blank', () => {
     const onAdd = vi.fn();
-    render(<AddStop onAdd={onAdd} />);
+    render(<AddStop onAdd={onAdd} isAdding={false} />);
     setInput('stop-place', 'Hanoi');
     fireEvent.submit(screen.getByTestId('stop-add-form'));
     expect(onAdd).toHaveBeenCalledWith('Hanoi', null);
+  });
+
+  it('shows an "Adding…" in-progress label so the tap is acknowledged', () => {
+    render(<AddStop onAdd={vi.fn()} isAdding />);
+    expect(screen.getByTestId('stop-add')).toHaveTextContent('Adding…');
   });
 });
