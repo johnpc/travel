@@ -20,6 +20,22 @@ describe('Suggestions', () => {
     expect(screen.getByTestId('suggest-btn')).toHaveTextContent('Thinking…');
   });
 
+  it('shows a friendly retryable message when the AI call failed', () => {
+    render(
+      <Suggestions suggestions={[]} isLoading={false} isError onSuggest={vi.fn()} onAccept={vi.fn()} />, // prettier-ignore
+    );
+    expect(screen.getByTestId('suggest-error')).toHaveTextContent(/try again/i);
+    // the button is still enabled so the tap re-runs the suggest
+    expect(screen.getByTestId('suggest-btn')).toBeEnabled();
+  });
+
+  it('hides the error while a retry is loading', () => {
+    render(
+      <Suggestions suggestions={[]} isLoading isError onSuggest={vi.fn()} onAccept={vi.fn()} />,
+    );
+    expect(screen.queryByTestId('suggest-error')).not.toBeInTheDocument();
+  });
+
   it('renders suggestions and accepts one', () => {
     const onAccept = vi.fn();
     render(

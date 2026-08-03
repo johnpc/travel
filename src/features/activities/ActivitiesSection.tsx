@@ -33,6 +33,11 @@ export function ActivitiesSection({
         <IonIcon icon={sparklesOutline} slot="start" aria-hidden="true" />
         {p.isSuggesting ? 'Thinking…' : 'Suggest activities'}
       </IonButton>
+      {p.suggestError && !p.isSuggesting && (
+        <p className="acts__error tv-muted" data-testid="act-suggest-error">
+          The AI couldn’t suggest right now — tap to try again.
+        </p>
+      )}
       {p.isSuggesting && p.suggestions.length === 0 && <ActivitySkeleton />}
       {p.suggestions.length > 0 && (
         <ul className="acts__suggestions" data-testid="act-suggestions">

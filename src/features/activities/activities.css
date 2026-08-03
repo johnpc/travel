@@ -4,6 +4,13 @@
   border-top: 1px dashed var(--tv-border);
 }
 
+/* Friendly retryable message when the AI activity suggest fails. */
+.acts__error {
+  margin: 0.5rem 0 0;
+  font-size: 0.85rem;
+  color: var(--tv-negative);
+}
+
 /* AI suggest + accept buttons meet the 44px tap-target minimum in BOTH
    dimensions — the icon-only accept (+) was only ~28px wide, too small to
    reliably tap on a phone (reads as "can't add the suggestion"). The host

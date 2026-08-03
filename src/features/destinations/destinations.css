@@ -29,6 +29,13 @@
   margin-bottom: 1.25rem;
 }
 
+/* Friendly retryable message when the AI suggest call fails (the button re-runs). */
+.suggest__error {
+  margin: 0.5rem 0 0;
+  font-size: 0.85rem;
+  color: var(--tv-negative);
+}
+
 /* Ensure the AI suggest + accept buttons meet the 44px tap-target minimum. */
 .suggest ion-button::part(native) {
   min-height: 44px;

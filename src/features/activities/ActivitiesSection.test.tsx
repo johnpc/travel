@@ -14,6 +14,7 @@ const base = {
   refetch: vi.fn(),
   suggestions: [],
   isSuggesting: false,
+  suggestError: false,
   runSuggest: vi.fn(),
   accept: vi.fn(),
   remove: vi.fn(),
@@ -46,6 +47,12 @@ describe('ActivitiesSection', () => {
     expect(screen.getByTestId('act-loading')).toBeInTheDocument();
     expect(screen.queryByTestId('load-empty')).not.toBeInTheDocument();
     expect(screen.getByTestId('act-suggest')).toHaveTextContent('Thinking…');
+  });
+
+  it('shows a retryable message when the AI activity suggest fails', () => {
+    h.useActivitiesPanel.mockReturnValue({ ...base, suggestError: true });
+    render(<ActivitiesSection tripId="t1" destinationId="d1" destinationName="Santorini" />);
+    expect(screen.getByTestId('act-suggest-error')).toHaveTextContent(/try again/i);
   });
 
   it('accepts an AI suggestion', () => {
