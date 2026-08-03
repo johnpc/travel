@@ -14,6 +14,13 @@
   margin-bottom: 0.5rem;
 }
 
+/* The month prev/next are icon-only size="small" buttons — 28px native by
+   default, well under the 44px tap-target minimum for a core calendar action. */
+.cal__nav ion-button::part(native) {
+  min-width: 44px;
+  min-height: 44px;
+}
+
 .cal__title {
   font-size: 1.1rem;
 }
