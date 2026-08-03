@@ -53,7 +53,6 @@ export function DestinationsPanel({ tripId, tripTitle, me, memberCount }: Destin
               tally={p.interest.tallies[d.id] ?? { yes: 0, maybe: 0, no: 0, score: 0 }}
               myLevel={p.interest.levelFor(d.id)}
               canVote={p.interest.canVote}
-              isVoting={p.interest.isVoting}
               onVote={(level) => p.interest.cast(d.id, level)}
               memberCount={memberCount}
             />

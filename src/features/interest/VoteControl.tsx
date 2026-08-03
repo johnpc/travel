@@ -1,12 +1,12 @@
 import type { InterestLevel } from '../../lib/dataClient';
 import { consensusBar, type Tally } from './tally';
+import { useOptimisticVote } from './useOptimisticVote';
 import './interest.css';
 
 interface VoteControlProps {
   tally: Tally;
   myLevel: InterestLevel | null;
   canVote: boolean;
-  isVoting: boolean;
   onVote: (level: InterestLevel) => void;
   /** Roster size, so the tally can show "N of M voted" (is everyone in yet?). */
   memberCount?: number;
@@ -20,19 +20,16 @@ const OPTIONS: { level: InterestLevel; label: string; emoji: string }[] = [
 
 /** Per-destination vote row: a Yes/Maybe/No control (highlighting this member's
  * pick) plus the group tally. Disabled until the visitor picks a name. */
-export function VoteControl({
-  tally,
-  myLevel,
-  canVote,
-  isVoting,
-  onVote,
-  memberCount,
-}: VoteControlProps) {
+export function VoteControl({ tally, myLevel, canVote, onVote, memberCount }: VoteControlProps) {
   const bar = consensusBar(tally);
   const voted = tally.yes + tally.maybe + tally.no;
   // "N of M voted" tells the crew whether everyone has weighed in yet — only when
   // we know the roster size and it's a plausible denominator.
   const progress = memberCount && memberCount >= voted ? ` · ${voted} of ${memberCount} voted` : '';
+  // Optimistic: light the tapped button up instantly instead of waiting ~0.5s for
+  // the server round-trip to echo back. Upsert makes re-taps idempotent, so the
+  // button stays interactive (not disabled) mid-cast — no double-submit risk.
+  const { shownLevel, cast } = useOptimisticVote(myLevel, onVote);
   return (
     <div className="vote" data-testid="vote-control">
       <div className="vote__top">
@@ -41,11 +38,11 @@ export function VoteControl({
             <button
               key={o.level}
               type="button"
-              className={myLevel === o.level ? 'vote__btn vote__btn--on' : 'vote__btn'}
-              aria-pressed={myLevel === o.level}
-              disabled={!canVote || isVoting}
+              className={shownLevel === o.level ? 'vote__btn vote__btn--on' : 'vote__btn'}
+              aria-pressed={shownLevel === o.level}
+              disabled={!canVote}
               data-testid={`vote-${o.level}`}
-              onClick={() => onVote(o.level)}
+              onClick={() => cast(o.level)}
             >
               <span aria-hidden="true">{o.emoji}</span> {o.label}
             </button>
