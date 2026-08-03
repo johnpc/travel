@@ -31,7 +31,7 @@ export function WelcomeJoin({ onJoin, isJoining }: WelcomeJoinProps) {
         onIonInput={(e) => setName(e.detail.value ?? '')}
       />
       <IonButton type="submit" disabled={!name.trim() || isJoining} data-testid="welcome-join-btn">
-        Join
+        {isJoining ? 'Joining…' : 'Join'}
       </IonButton>
     </form>
   );

@@ -53,7 +53,7 @@ export function Roster({ members, me, onJoin, onPick, isJoining }: RosterProps) 
             onIonInput={(e) => setName(e.detail.value ?? '')}
           />
           <IonButton type="submit" disabled={!name.trim() || isJoining} data-testid="join-trip">
-            Join
+            {isJoining ? 'Joining…' : 'Join'}
           </IonButton>
         </form>
       )}

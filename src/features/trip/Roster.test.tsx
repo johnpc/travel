@@ -34,4 +34,9 @@ describe('Roster', () => {
     fireEvent.click(screen.getAllByTestId('roster-member')[0]);
     expect(onPick).toHaveBeenCalledWith('Alex');
   });
+
+  it('shows a "Joining…" in-progress label on the join button', () => {
+    render(<Roster members={members} me={null} onJoin={vi.fn()} onPick={vi.fn()} isJoining />);
+    expect(screen.getByTestId('join-trip')).toHaveTextContent('Joining…');
+  });
 });
