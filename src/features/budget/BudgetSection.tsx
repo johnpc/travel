@@ -1,9 +1,9 @@
 import { IonButton, IonInput } from '@ionic/react';
 import { LoadState } from '../shell/LoadState';
 import { useBudgetPanel } from './useBudgetPanel';
-import { formatMoney } from './computeBudget';
 import { BudgetLinks } from './BudgetLinks';
 import { BudgetHeader } from './BudgetHeader';
+import { BudgetTotalsRow } from './BudgetTotalsRow';
 import { HotelPicks } from './HotelPicks';
 import './budget.css';
 
@@ -26,6 +26,11 @@ export function BudgetSection({ tripId, destinationId, destinationName }: Budget
   return (
     <div className="budget" data-testid="budget">
       <BudgetHeader onEstimate={p.runEstimate} isEstimating={p.isEstimating} />
+      {p.estimateError && !p.isEstimating && (
+        <p className="budget__error tv-muted" data-testid="budget-estimate-error">
+          The AI couldn’t estimate right now — tap to try again.
+        </p>
+      )}
       <BudgetLinks destinationName={destinationName} />
       <LoadState isLoading={p.isLoading} isError={p.isError} onRetry={p.refetch}>
         <form
@@ -68,16 +73,7 @@ export function BudgetSection({ tripId, destinationId, destinationName }: Budget
             data-testid="budget-season"
             onIonInput={(e) => p.set('seasonNote', e.detail.value ?? '')}
           />
-          <div className="budget__totals" data-testid="budget-totals">
-            <span>
-              <strong data-testid="budget-per-person">{formatMoney(p.totals.perPerson)}</strong> /
-              person
-            </span>
-            <span>
-              <strong data-testid="budget-per-couple">{formatMoney(p.totals.perCouple)}</strong> /
-              couple
-            </span>
-          </div>
+          <BudgetTotalsRow totals={p.totals} />
           <IonButton
             type="submit"
             size="small"

@@ -25,6 +25,11 @@ export function ItineraryBody({ panel: p }: { panel: Panel }) {
         <IonIcon icon={sparklesOutline} slot="start" aria-hidden="true" />
         {p.isSuggesting ? 'Planning…' : 'Suggest a route with AI'}
       </IonButton>
+      {p.suggestError && !p.isSuggesting && (
+        <p className="itin__error tv-muted" data-testid="route-suggest-error">
+          The AI couldn’t suggest a route right now — tap to try again.
+        </p>
+      )}
       <RouteSuggestions suggestions={p.suggestions} onAccept={p.accept} />
       <LoadState
         isLoading={p.isLoading}

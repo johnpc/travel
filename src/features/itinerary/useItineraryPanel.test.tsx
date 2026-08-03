@@ -55,6 +55,17 @@ describe('useItineraryPanel', () => {
     expect(result.current.suggestions[0].place).toBe('Bali');
   });
 
+  it('swallows a failed route suggest (no unhandled reject) and surfaces the error flag', async () => {
+    h.suggestAsync.mockRejectedValue(new Error('AI down'));
+    h.useSuggestRoute.mockReturnValue({ mutateAsync: h.suggestAsync, isPending: false, isError: true }); // prettier-ignore
+    const { result } = renderHook(() => useItineraryPanel('t1', 'Asia'));
+    await act(async () => {
+      await result.current.runSuggest();
+    });
+    expect(result.current.suggestions).toEqual([]);
+    expect(result.current.suggestError).toBe(true);
+  });
+
   it('accepts a suggestion as an AI stop and drops it from the list', async () => {
     h.suggestAsync.mockResolvedValue([{ place: 'Bali', nights: 5, note: 'n' }]);
     const { result } = renderHook(() => useItineraryPanel('t1', 'Asia'));

@@ -4,6 +4,13 @@
   border-top: 1px dashed var(--tv-border);
 }
 
+/* Friendly retryable message when an AI call (estimate / hotels) fails. */
+.budget__error {
+  margin: 0.4rem 0 0;
+  font-size: 0.85rem;
+  color: var(--tv-negative);
+}
+
 /* Label on the left, "Estimate with AI" on the right — wraps on a narrow phone. */
 .budget__head {
   display: flex;

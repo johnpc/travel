@@ -23,6 +23,11 @@ export function HotelPicks({ destinationName }: { destinationName: string }) {
         <IonIcon icon={sparklesOutline} aria-hidden="true" />
         {suggest.isPending ? 'Finding stays…' : 'Where to stay'}
       </button>
+      {suggest.isError && !suggest.isPending && (
+        <p className="budget__error tv-muted" data-testid="hotels-error">
+          The AI couldn’t find stays right now — tap to try again.
+        </p>
+      )}
       {data && (
         <>
           <ul className="hotels__list" data-testid="hotels-list">
