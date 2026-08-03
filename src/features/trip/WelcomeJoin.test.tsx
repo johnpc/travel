@@ -19,4 +19,9 @@ describe('WelcomeJoin', () => {
     expect(screen.getByTestId('welcome-join-name')).toBeInTheDocument();
     expect(screen.getByTestId('welcome-join-btn')).toHaveTextContent('Join');
   });
+
+  it('shows a "Joining…" in-progress label so the tap is acknowledged', () => {
+    render(<WelcomeJoin onJoin={vi.fn()} isJoining />);
+    expect(screen.getByTestId('welcome-join-btn')).toHaveTextContent('Joining…');
+  });
 });
