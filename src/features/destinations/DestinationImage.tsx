@@ -18,9 +18,13 @@ interface DestinationImageProps {
  * stock photo matches (a freeform name like "Zambia safari"), show an inviting
  * "no photo yet — imagine it" prompt rather than an empty box that reads broken. */
 export function DestinationImage({ tripId, destination }: DestinationImageProps) {
-  const generated = useMediaUrl(destination.imagePath);
-  const { photos, settled } = useWikiPhotosState(destination.name);
   const gen = useDestinationImage(tripId, destination);
+  // Prefer the path the mutation just returned so a freshly generated image
+  // shows INSTANTLY — the live query doesn't pick up the Lambda's out-of-band
+  // DynamoDB write, so relying on destination.imagePath alone left the new image
+  // invisible until a manual reload.
+  const generated = useMediaUrl(gen.data ?? destination.imagePath);
+  const { photos, settled } = useWikiPhotosState(destination.name);
   const hasVisual = !!generated || photos.length > 0;
   const noPhoto = settled && photos.length === 0;
   return (
