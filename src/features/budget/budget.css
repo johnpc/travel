@@ -53,10 +53,20 @@
 
 .budget__inputs {
   display: grid;
-  /* minmax(0,…) so the three numeric fields can shrink on a narrow phone
-     instead of pushing the card wider than the screen. */
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  /* Two columns, not three: at three the stacked labels "Flight / person" and
+     "Lodging / night" clipped to "Flight / p…" on a phone, hiding the per-person
+     vs per-night distinction that's the whole point. Two columns give each field
+     room for its full label; Nights takes the next cell. minmax(0,…) still lets
+     them shrink instead of pushing the card past the screen. */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.6rem;
+}
+
+/* From ~460px up (roomier phones / the desktop rail) all three fit on one row. */
+@media (min-width: 460px) {
+  .budget__inputs {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 /* Real-price lookup links (flights from DTW, hotels, Airbnb) — a wrapping row of
