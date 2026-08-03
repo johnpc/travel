@@ -76,6 +76,7 @@ export function useBudgetPanel(
     runEstimate: estimate.run,
     isEstimating: estimate.isEstimating,
     estimateError: estimate.estimateError,
+    justEstimated: estimate.justEstimated,
     isSaving: save.isPending,
     justSaved,
     isLoading: query.isLoading,

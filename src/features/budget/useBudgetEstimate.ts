@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useEstimateBudget } from './estimateBudgetApi';
 import type { BudgetForm } from './useBudgetPanel';
 
@@ -14,6 +15,9 @@ export function useBudgetEstimate(
   setForm: (updater: (f: BudgetForm) => BudgetForm) => void,
 ) {
   const estimate = useEstimateBudget();
+  // Brief "Estimated ✓" flash after a fill — confirms the tap landed (the fields
+  // changing is subtle) and reinforces these are editable AI ballparks.
+  const [justEstimated, setJustEstimated] = useState(false);
 
   const run = async () => {
     if (!destinationName) return;
@@ -25,10 +29,17 @@ export function useBudgetEstimate(
         nights: f.nights || str(e.nights),
         seasonNote: f.seasonNote || (e.seasonNote ?? ''),
       }));
+      setJustEstimated(true);
+      setTimeout(() => setJustEstimated(false), 2500);
     } catch {
       /* error flag drives the retry message */
     }
   };
 
-  return { run, isEstimating: estimate.isPending, estimateError: estimate.isError };
+  return {
+    run,
+    isEstimating: estimate.isPending,
+    estimateError: estimate.isError,
+    justEstimated,
+  };
 }
