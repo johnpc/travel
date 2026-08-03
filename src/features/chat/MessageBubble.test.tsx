@@ -7,28 +7,36 @@ vi.mock('@ionic/react', () => ({ IonIcon: () => null, useIonAlert: () => [presen
 import { MessageBubble } from './MessageBubble';
 import type { MessageRecord } from '../../lib/dataClient';
 
-const msg = { id: 'm1', authorName: 'Priya', body: 'In for Santorini!' } as MessageRecord;
+const now = Date.parse('2027-06-01T12:00:00Z');
+const msg = {
+  id: 'm1',
+  authorName: 'Priya',
+  body: 'In for Santorini!',
+  createdAt: new Date(now - 5 * 60_000).toISOString(),
+} as MessageRecord;
 
 describe('MessageBubble', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("shows another person's author name + body, no remove", () => {
-    render(<MessageBubble message={msg} mine={false} onRemove={vi.fn()} />);
+  it("shows another person's author name, when, + body, no remove", () => {
+    render(<MessageBubble message={msg} mine={false} onRemove={vi.fn()} now={now} />);
     expect(screen.getByText('Priya')).toBeInTheDocument();
+    expect(screen.getByText('5m')).toBeInTheDocument();
     expect(screen.getByText('In for Santorini!')).toBeInTheDocument();
     expect(screen.queryByTestId('chat-remove')).not.toBeInTheDocument();
   });
 
-  it('hides the author on your own message and offers a remove', () => {
-    render(<MessageBubble message={msg} mine={true} onRemove={vi.fn()} />);
+  it('hides the author on your own message (keeps the time) and offers a remove', () => {
+    render(<MessageBubble message={msg} mine={true} onRemove={vi.fn()} now={now} />);
     expect(screen.queryByText('Priya')).not.toBeInTheDocument();
+    expect(screen.getByText('5m')).toBeInTheDocument();
     expect(screen.getByTestId('chat-remove')).toBeInTheDocument();
   });
 
   it('confirms before removing your own message', () => {
-    render(<MessageBubble message={msg} mine={true} onRemove={vi.fn()} />);
+    render(<MessageBubble message={msg} mine={true} onRemove={vi.fn()} now={now} />);
     fireEvent.click(screen.getByTestId('chat-remove'));
     expect(present).toHaveBeenCalled();
     expect(present.mock.calls.at(-1)?.[0].header).toBe('Remove this message?');
