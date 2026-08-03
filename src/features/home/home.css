@@ -13,6 +13,30 @@
     var(--tv-bg);
 }
 
+/* Landscape phones (short viewport): vertically centering the headline + lede +
+   form overflows a ~390px-tall screen, pushing the "Start planning" button below
+   the fold with no scroll cue. Top-align and compress the vertical rhythm so the
+   whole form — button included — fits without hunting for an off-screen CTA. */
+@media (max-height: 520px) {
+  .home-hero {
+    align-items: flex-start;
+    padding-top: max(1rem, env(safe-area-inset-top));
+    padding-bottom: 1rem;
+  }
+  .home-hero__brand {
+    margin-bottom: 0.5rem;
+  }
+  .home-hero__title {
+    font-size: 1.6rem;
+    margin-bottom: 0.4rem;
+  }
+  .home-hero__lede {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin-bottom: 0.75rem;
+  }
+}
+
 /* Warm scrim so the text is legible over any part of the photo. Darker toward
    the bottom where the form sits. */
 .home-hero__scrim {
