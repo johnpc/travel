@@ -25,7 +25,11 @@ export function BudgetSection({ tripId, destinationId, destinationName }: Budget
   const p = useBudgetPanel(tripId, destinationId, true, destinationName);
   return (
     <div className="budget" data-testid="budget">
-      <BudgetHeader onEstimate={p.runEstimate} isEstimating={p.isEstimating} />
+      <BudgetHeader
+        onEstimate={p.runEstimate}
+        isEstimating={p.isEstimating}
+        justEstimated={p.justEstimated}
+      />
       {p.estimateError && !p.isEstimating && (
         <p className="budget__error tv-muted" data-testid="budget-estimate-error">
           The AI couldn’t estimate right now — tap to try again.

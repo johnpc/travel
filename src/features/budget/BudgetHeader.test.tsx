@@ -16,4 +16,11 @@ describe('BudgetHeader', () => {
     expect(btn).toBeDisabled();
     expect(btn).toHaveTextContent('Estimating…');
   });
+
+  it('flashes an "Estimated" confirmation after the AI fills the fields', () => {
+    render(<BudgetHeader onEstimate={vi.fn()} isEstimating={false} justEstimated />);
+    const btn = screen.getByTestId('budget-estimate');
+    expect(btn).toHaveTextContent('Estimated');
+    expect(btn).not.toBeDisabled(); // stays tappable to re-estimate
+  });
 });
