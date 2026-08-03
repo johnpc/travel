@@ -6,10 +6,12 @@ describe('bestWindowLabel', () => {
     expect(bestWindowLabel(null)).toMatch(/Mark your dates/);
   });
 
-  it('labels a multi-day window with the count', () => {
-    expect(bestWindowLabel({ start: '2027-06-12', end: '2027-06-18', days: 7 })).toBe(
-      "Jun 12–18, 2027 — 7 days everyone's free",
-    );
+  it('labels a multi-day window without overclaiming everyone is free', () => {
+    // A window only means someone's free + nobody's blocked, so it must NOT say
+    // "everyone's free" — the per-window "N of M free" carries the real count.
+    const label = bestWindowLabel({ start: '2027-06-12', end: '2027-06-18', days: 7 });
+    expect(label).toBe('Jun 12–18, 2027 — 7 days that work so far');
+    expect(label).not.toMatch(/everyone/i);
   });
 
   it('labels a single-day window', () => {
