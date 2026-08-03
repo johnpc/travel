@@ -2,6 +2,7 @@ import { IonIcon } from '@ionic/react';
 import { closeOutline } from 'ionicons/icons';
 import type { MessageRecord } from '../../lib/dataClient';
 import { useConfirmRemove } from '../shell/useConfirmRemove';
+import { relativeTime } from './relativeTime';
 
 interface MessageBubbleProps {
   message: MessageRecord;
@@ -9,16 +10,33 @@ interface MessageBubbleProps {
   mine: boolean;
   /** Remove — only wired for your own messages. */
   onRemove?: () => void;
+  /** Current time (ms) for the relative "when"; injected so it stays testable. */
+  now?: number;
 }
 
-/** One chat message: author + body, own messages aligned right in accent, with a
- * quiet remove for your own. Name-only identity, so the author is just a name. */
-export function MessageBubble({ message: m, mine, onRemove }: MessageBubbleProps) {
+/** One chat message: author + when + body, own messages aligned right in accent,
+ * with a quiet remove for your own. Name-only identity, so the author is just a
+ * name; the timestamp anchors async consensus ("was this said today or a month
+ * ago?"). */
+export function MessageBubble({
+  message: m,
+  mine,
+  onRemove,
+  now = Date.now(),
+}: MessageBubbleProps) {
   const confirmRemove = useConfirmRemove('message', m.body, onRemove);
+  const when = relativeTime(m.createdAt, now);
   return (
     <li className={mine ? 'chat__msg chat__msg--mine' : 'chat__msg'} data-testid="chat-message">
       <div className="chat__bubble">
-        {!mine && <span className="chat__author tv-kicker">{m.authorName}</span>}
+        <span className="chat__meta tv-kicker">
+          {!mine && <span className="chat__author">{m.authorName}</span>}
+          {when && (
+            <time className="chat__time" dateTime={m.createdAt ?? undefined}>
+              {when}
+            </time>
+          )}
+        </span>
         <span className="chat__body">{m.body}</span>
       </div>
       {mine && onRemove && (

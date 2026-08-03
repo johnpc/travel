@@ -47,9 +47,32 @@
   color: var(--tv-accent-contrast);
 }
 
-.chat__author {
+/* Author + timestamp share one meta line above the body. On your own (accent)
+   bubbles there's no author, so the time sits alone, right-aligned. */
+.chat__meta {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
   font-size: 0.62rem;
+}
+
+.chat__msg--mine .chat__meta {
+  justify-content: flex-end;
+}
+
+.chat__author {
   color: var(--tv-accent-strong);
+}
+
+/* Muted, one notch quieter than the author — a glanceable "when", not a focus. */
+.chat__time {
+  color: var(--tv-text-muted);
+  font-weight: 500;
+}
+
+.chat__msg--mine .chat__time {
+  color: var(--tv-accent-contrast);
+  opacity: 0.75;
 }
 
 .chat__body {
