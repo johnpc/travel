@@ -31,6 +31,10 @@
     <base href="/" />
 
     <meta name="color-scheme" content="light dark" />
+    <!-- Tint the mobile browser chrome to match the app's warm bg (light) and
+         charcoal bg (dark) instead of a jarring default-white bar. -->
+    <meta name="theme-color" content="#f7f4ee" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#16130f" media="(prefers-color-scheme: dark)" />
     <!-- Allow pinch-zoom for accessibility (WCAG 1.4.4); keep viewport-fit=cover
          so safe-area insets still work under the notch. -->
     <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0" />
