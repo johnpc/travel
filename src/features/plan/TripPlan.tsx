@@ -9,6 +9,7 @@ import { useMediaUrl } from '../../lib/useMediaUrl';
 import { useWikiPhoto } from '../destinations/useWikiPhoto';
 import { formatMoney } from '../budget/computeBudget';
 import { scrollToId } from '../../lib/scrollToId';
+import { useAlignedHaptic } from './useAlignedHaptic';
 import './plan.css';
 
 interface TripPlanProps {
@@ -25,6 +26,7 @@ export function TripPlan({ tripId, memberCount }: TripPlanProps) {
   const plan = useTripPlan(tripId);
   const generated = useMediaUrl(plan.frontRunner?.imagePath);
   const wiki = useWikiPhoto(plan.frontRunner?.name);
+  useAlignedHaptic(plan.readyToBook);
   if (plan.isLoading || plan.isError || !plan.frontRunner) return null;
   const crew = joinNames(plan.crew);
   const img = generated ?? wiki;

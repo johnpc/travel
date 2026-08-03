@@ -7,6 +7,7 @@ import { enumerateDays } from './dateRange';
 import { schoolBreaks, type SchoolBreak } from './schoolBreaks';
 import { useRangeSelect } from './useRangeSelect';
 import { useOptimisticMarks } from './useOptimisticMarks';
+import { tapLight } from '../../lib/haptics';
 import type { AvailabilityStatus } from '../../lib/dataClient';
 
 interface Month {
@@ -44,6 +45,7 @@ export function useAvailabilityPanel(tripId: string | undefined, me: string | nu
 
   const toggle = (date: string) => {
     if (!me) return;
+    tapLight();
     const next = nextStatus(optimistic.shownStatus(date));
     optimistic.remember(date, next);
     markDay.mutate({ date, memberName: me, status: next });
@@ -55,9 +57,15 @@ export function useAvailabilityPanel(tripId: string | undefined, me: string | nu
   const pickBreak = (b: SchoolBreak) => {
     jumpTo(b.start);
     if (!me) return;
+    tapLight();
     const dates = enumerateDays(b.start, b.end);
     optimistic.rememberMany(dates, 'FREE');
     markRange.mutate({ dates, memberName: me, status: 'FREE' });
+  };
+
+  const pickRange = (date: string) => {
+    if (me) tapLight();
+    range.pick(date);
   };
 
   return {
@@ -70,7 +78,7 @@ export function useAvailabilityPanel(tripId: string | undefined, me: string | nu
     statusFor: (date: string): AvailabilityStatus | null => optimistic.shownStatus(date),
     inRange: range.inRange,
     rangeStart: range.start,
-    pickRange: range.pick,
+    pickRange,
     toggle,
     pickBreak,
     jumpTo: (w: CandidateWindow) => jumpTo(w.start),
