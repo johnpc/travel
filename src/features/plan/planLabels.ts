@@ -11,3 +11,15 @@ export function bestWindowLabel(window: DateWindow | null): string {
   if (window.days === 1) return `${range} works so far`;
   return `${range} — ${window.days} days everyone's free`;
 }
+
+/** "· N of M voted" suffix for the plan hero's tally — tells the crew whether
+ * everyone has weighed in on the front-runner yet, so "you're aligned" is read
+ * against the whole group. Empty unless the roster size is a plausible
+ * denominator (mirrors the per-destination vote row). */
+export function votedSuffix(
+  votes: { yes: number; maybe: number; no: number },
+  memberCount?: number,
+): string {
+  const voted = votes.yes + votes.maybe + votes.no;
+  return memberCount && memberCount >= voted ? ` · ${voted} of ${memberCount} voted` : '';
+}
