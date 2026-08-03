@@ -26,7 +26,7 @@ describe('SectionNav', () => {
     expect(screen.getByTestId('secnav-trip-chat')).toHaveTextContent('Discussion');
   });
 
-  it('smooth-scrolls to the target section on tap', () => {
+  it('scrolls to the target section on tap', () => {
     render(
       <>
         <SectionNav />
@@ -37,6 +37,8 @@ describe('SectionNav', () => {
     const spy = vi.fn();
     target.scrollIntoView = spy;
     fireEvent.click(screen.getByTestId('secnav-trip-dates'));
-    expect(spy).toHaveBeenCalledWith({ behavior: 'smooth', block: 'start' });
+    // behavior depends on prefers-reduced-motion (see scrollToId); assert the jump
+    // happened and landed at the section top, not the exact motion.
+    expect(spy).toHaveBeenCalledWith(expect.objectContaining({ block: 'start' }));
   });
 });

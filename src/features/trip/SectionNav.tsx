@@ -1,4 +1,5 @@
 import { useActiveSection } from './useActiveSection';
+import { scrollToId } from '../../lib/scrollToId';
 import './sectionNav.css';
 
 const SECTIONS = [
@@ -18,9 +19,6 @@ const IDS = SECTIONS.map((s) => s.id);
  * the anchor (which bubbles to that scroller) is the reliable jump. */
 export function SectionNav() {
   const active = useActiveSection(IDS);
-  const jump = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
   return (
     <nav className="secnav" data-testid="section-nav" aria-label="Jump to section">
       {SECTIONS.map((s) => {
@@ -32,7 +30,7 @@ export function SectionNav() {
             className={on ? 'secnav__chip secnav__chip--on' : 'secnav__chip'}
             data-testid={`secnav-${s.id}`}
             aria-current={on ? 'true' : undefined}
-            onClick={() => jump(s.id)}
+            onClick={() => scrollToId(s.id)}
           >
             {s.label}
           </button>

@@ -8,18 +8,13 @@ import { PlanHero } from './PlanHero';
 import { useMediaUrl } from '../../lib/useMediaUrl';
 import { useWikiPhoto } from '../destinations/useWikiPhoto';
 import { formatMoney } from '../budget/computeBudget';
+import { scrollToId } from '../../lib/scrollToId';
 import './plan.css';
 
 interface TripPlanProps {
   tripId: string | undefined;
   /** Roster size, so the tally can show "N of M voted" (is everyone in yet?). */
   memberCount?: number;
-}
-
-/** Jump to the availability calendar — the plan card's date nudge is a shortcut
- * to the section that resolves it, so "what's missing" is one tap from fixed. */
-function scrollToDates() {
-  document.getElementById('trip-dates')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 /** "The Plan" hero — synthesizes where the group leans into an invitation:
@@ -53,7 +48,7 @@ export function TripPlan({ tripId, memberCount }: TripPlanProps) {
             type="button"
             className="plan__row plan__row--action"
             data-testid="plan-dates"
-            onClick={scrollToDates}
+            onClick={() => scrollToId('trip-dates')}
           >
             <IonIcon icon={calendarOutline} className="plan__icon" aria-hidden="true" />
             <span>{bestWindowLabel(plan.bestWindow)}</span>
