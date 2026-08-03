@@ -41,4 +41,13 @@ describe('MessageBubble', () => {
     expect(present).toHaveBeenCalled();
     expect(present.mock.calls.at(-1)?.[0].header).toBe('Remove this message?');
   });
+
+  it('renders a pasted URL as a safe new-tab link', () => {
+    const linkMsg = { ...msg, body: 'check https://airbnb.com/x' } as MessageRecord;
+    render(<MessageBubble message={linkMsg} mine={false} now={now} />);
+    const link = screen.getByRole('link', { name: 'https://airbnb.com/x' });
+    expect(link).toHaveAttribute('href', 'https://airbnb.com/x');
+    expect(link).toHaveAttribute('target', '_blank');
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+  });
 });
