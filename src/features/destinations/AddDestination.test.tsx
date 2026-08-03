@@ -13,4 +13,9 @@ describe('AddDestination', () => {
     fireEvent.submit(screen.getByTestId('dest-add-form'));
     expect(onAdd).toHaveBeenCalledWith('Lisbon');
   });
+
+  it('shows an "Adding…" in-progress label so the tap is acknowledged', () => {
+    render(<AddDestination onAdd={vi.fn()} isAdding />);
+    expect(screen.getByTestId('dest-add')).toHaveTextContent('Adding…');
+  });
 });
