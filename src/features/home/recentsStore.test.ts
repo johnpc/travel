@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { readRecents, recordRecent } from './recentsStore';
+import { readRecents, recordRecent, removeRecent } from './recentsStore';
 
 /** Minimal in-memory Storage stand-in for the pure store. */
 function memStorage(initial: Record<string, string> = {}) {
@@ -50,5 +50,13 @@ describe('recentsStore', () => {
       'tv-recents': JSON.stringify([{ slug: 'ok', title: 'OK' }, { slug: 5 }]),
     });
     expect(readRecents(s)).toEqual([{ slug: 'ok', title: 'OK' }]);
+  });
+
+  it('removeRecent drops one trip and persists the rest', () => {
+    const s = memStorage();
+    recordRecent({ slug: 'a', title: 'A' }, s);
+    recordRecent({ slug: 'b', title: 'B' }, s);
+    expect(removeRecent('a', s).map((r) => r.slug)).toEqual(['b']);
+    expect(readRecents(s).map((r) => r.slug)).toEqual(['b']); // persisted
   });
 });

@@ -10,7 +10,7 @@ import './home.css';
  * account; the URL is the whole identity of a trip. */
 export function HomePage() {
   const { name, setName, slug, canStart, start } = useStartTrip();
-  const recents = useRecents();
+  const { recents, remove } = useRecents();
   return (
     <IonPage>
       <IonContent fullscreen>
@@ -53,7 +53,7 @@ export function HomePage() {
                 </IonText>
               )}
             </form>
-            <RecentTrips recents={recents} />
+            <RecentTrips recents={recents} onRemove={remove} />
           </div>
         </div>
       </IonContent>

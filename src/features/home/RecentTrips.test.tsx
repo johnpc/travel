@@ -1,12 +1,12 @@
-import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { RecentTrips } from './RecentTrips';
 
-const renderWith = (recents: { slug: string; title: string }[]) =>
+const renderWith = (recents: { slug: string; title: string }[], onRemove = vi.fn()) =>
   render(
     <MemoryRouter>
-      <RecentTrips recents={recents} />
+      <RecentTrips recents={recents} onRemove={onRemove} />
     </MemoryRouter>,
   );
 
@@ -25,5 +25,12 @@ describe('RecentTrips', () => {
   it('renders nothing when there are no recents', () => {
     const { container } = renderWith([]);
     expect(container).toBeEmptyDOMElement();
+  });
+
+  it('forgets a trip via its × without following the link', () => {
+    const onRemove = vi.fn();
+    renderWith([{ slug: 'oops-typo', title: 'Oops Typo' }], onRemove);
+    fireEvent.click(screen.getByTestId('recent-forget'));
+    expect(onRemove).toHaveBeenCalledWith('oops-typo');
   });
 });

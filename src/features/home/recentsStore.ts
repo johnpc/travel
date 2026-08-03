@@ -40,3 +40,14 @@ export function recordRecent(
   storage.setItem(KEY, JSON.stringify(next));
   return next;
 }
+
+/** Drop one trip from the list (a mistyped/one-off slug), returning the new list.
+ * Device-local only — the trip itself lives server-side and is untouched. */
+export function removeRecent(
+  slug: string,
+  storage: Pick<Storage, 'getItem' | 'setItem'>,
+): RecentTrip[] {
+  const next = readRecents(storage).filter((r) => r.slug !== slug);
+  storage.setItem(KEY, JSON.stringify(next));
+  return next;
+}
