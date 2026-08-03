@@ -3,6 +3,7 @@ import { sparklesOutline, homeOutline, openOutline } from 'ionicons/icons';
 import { useSuggestHotels } from './hotelsApi';
 import { airbnbUrl } from './bookingLinks';
 import { HotelCard } from './HotelCard';
+import { HotelSkeleton } from './HotelSkeleton';
 import './budget.css';
 
 /** AI "where to stay" for a destination: a tap fetches real hotel picks across
@@ -23,12 +24,13 @@ export function HotelPicks({ destinationName }: { destinationName: string }) {
         <IonIcon icon={sparklesOutline} aria-hidden="true" />
         {suggest.isPending ? 'Finding stays…' : 'Where to stay'}
       </button>
+      {suggest.isPending && <HotelSkeleton />}
       {suggest.isError && !suggest.isPending && (
         <p className="budget__error tv-muted" data-testid="hotels-error">
           The AI couldn’t find stays right now — tap to try again.
         </p>
       )}
-      {data && (
+      {data && !suggest.isPending && (
         <>
           <ul className="hotels__list" data-testid="hotels-list">
             {data.hotels.map((h) => (

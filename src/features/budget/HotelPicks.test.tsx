@@ -28,10 +28,12 @@ describe('HotelPicks', () => {
     expect(h.mutate).toHaveBeenCalledWith({ destinationName: 'Santorini, Greece' });
   });
 
-  it('shows a working state while finding', () => {
+  it('shows a working state + skeleton preview while finding', () => {
     h.useSuggestHotels.mockReturnValue({ mutate: h.mutate, isPending: true, data: undefined });
     render(<HotelPicks destinationName="X" />);
     expect(screen.getByTestId('hotels-suggest')).toHaveTextContent('Finding stays…');
+    // placeholder cards preview the layout instead of an empty gap
+    expect(screen.getByTestId('hotels-loading')).toBeInTheDocument();
   });
 
   it('shows a retryable message when the AI hotel search fails', () => {
