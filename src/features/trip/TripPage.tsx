@@ -10,17 +10,13 @@ import {
 import { LoadState } from '../shell/LoadState';
 import { useTripPage } from './useTripPage';
 import { useJoinTrip } from './useJoinTrip';
-import { Roster } from './Roster';
-import { DestinationsPanel } from '../destinations/DestinationsPanel';
-import { ItinerarySection } from '../itinerary/ItinerarySection';
-import { ChatSection } from '../chat/ChatSection';
-import { AvailabilityPanel } from '../availability/AvailabilityPanel';
 import { TripPlan } from '../plan/TripPlan';
 import { ShareButton } from '../plan/ShareButton';
 import { ThemeToggle } from '../theme/ThemeToggle';
 import { TripLoading } from './TripLoading';
 import { TripIntro } from './TripIntro';
 import { SectionNav } from './SectionNav';
+import { TripColumns } from './TripColumns';
 import './trip.css';
 
 // Open the calendar on the current month. Computed here (not in tested logic) so
@@ -65,28 +61,7 @@ export function TripPage() {
             />
             <TripPlan tripId={trip?.id} />
             <SectionNav />
-            <div className="trip__cols">
-              <div className="trip__main">
-                <DestinationsPanel
-                  tripId={trip?.id}
-                  tripTitle={trip?.title ?? ''}
-                  me={join.me}
-                  memberCount={members.length}
-                />
-                <ItinerarySection tripId={trip?.id} tripTitle={trip?.title ?? ''} />
-                <ChatSection tripId={trip?.id} me={join.me} />
-              </div>
-              <aside className="trip__rail">
-                <Roster
-                  members={members}
-                  me={join.me}
-                  onJoin={join.join}
-                  onPick={join.pick}
-                  isJoining={join.isJoining}
-                />
-                <AvailabilityPanel tripId={trip?.id} me={join.me} start={START_MONTH} />
-              </aside>
-            </div>
+            <TripColumns trip={trip} members={members} join={join} start={START_MONTH} />
           </div>
         </LoadState>
       </IonContent>

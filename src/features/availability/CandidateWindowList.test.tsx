@@ -23,4 +23,15 @@ describe('CandidateWindowList', () => {
     fireEvent.click(items[0]);
     expect(onJump).toHaveBeenCalledWith(windows[0]);
   });
+
+  it('shows the roster size as denominator when known ("N of M free")', () => {
+    const windows = [
+      { start: '2027-06-12', end: '2027-06-15', days: 4, minFree: 3, maxFree: 3 },
+      { start: '2027-07-01', end: '2027-07-02', days: 2, minFree: 2, maxFree: 4 },
+    ];
+    render(<CandidateWindowList windows={windows} onJump={vi.fn()} memberCount={4} />);
+    const items = screen.getAllByTestId('candidate-window');
+    expect(items[0]).toHaveTextContent('3 of 4 free');
+    expect(items[1]).toHaveTextContent('2–4 of 4 free');
+  });
 });

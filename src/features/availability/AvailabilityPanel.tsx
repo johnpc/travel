@@ -14,6 +14,8 @@ const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 
 interface AvailabilityPanelProps {
   tripId: string | undefined;
   me: string | null;
+  /** Roster size, so candidate windows can show "N of M free". */
+  memberCount?: number;
   /** Today (injected for determinism); the panel opens on the busiest month with
    * marks (falling back to this) and dates school-break quick-picks from it. */
   start: { year: number; month: number; day: number };
@@ -22,7 +24,7 @@ interface AvailabilityPanelProps {
 /** The date-availability section: candidate windows up top (tap to jump), then a
  * month calendar. Marking a range (tap start → tap end) sets you FREE across the
  * span; a single-day mode cycles free/busy/maybe for fine control. */
-export function AvailabilityPanel({ tripId, me, start }: AvailabilityPanelProps) {
+export function AvailabilityPanel({ tripId, me, start, memberCount }: AvailabilityPanelProps) {
   const p = useAvailabilityPanel(tripId, me, start);
   const [rangeMode, setRangeMode] = useState(true);
   return (
@@ -30,7 +32,7 @@ export function AvailabilityPanel({ tripId, me, start }: AvailabilityPanelProps)
       <p className="tv-kicker">When can we go?</p>
       {!me && <p className="tv-muted avail__hint">Pick your name above to mark your dates.</p>}
       <LoadState isLoading={p.isLoading} isError={p.isError} onRetry={p.refetch}>
-        <CandidateWindowList windows={p.windows} onJump={p.jumpTo} />
+        <CandidateWindowList windows={p.windows} onJump={p.jumpTo} memberCount={memberCount} />
         <SchoolBreakChips breaks={p.breaks} onPick={p.pickBreak} />
         {me && (
           <div className="avail__modes" role="group" aria-label="How tapping a day works">
