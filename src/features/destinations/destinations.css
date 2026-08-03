@@ -36,9 +36,16 @@
   color: var(--tv-negative);
 }
 
-/* Ensure the AI suggest + accept buttons meet the 44px tap-target minimum. */
+/* Ensure the AI suggest + accept buttons meet the 44px tap-target minimum. The
+   icon-only accept "+" is sized by the host, so it needs min-WIDTH too — without
+   it the button is only ~28px wide and hard to tap (same fix as the activity
+   accept button). The full-width "Suggest" button keeps its natural width. */
 .suggest ion-button::part(native) {
   min-height: 44px;
+}
+
+.suggest ion-button[data-testid='suggest-accept']::part(native) {
+  min-width: 44px;
 }
 
 /* Loading placeholder cards mimic the real suggestion items so the AI wait
