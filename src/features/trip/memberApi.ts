@@ -3,7 +3,7 @@
  * scoped to a trip (see CLAUDE.md). Guest CRUD, so anyone with the URL can add
  * themselves or others.
  */
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { dataClient, unwrap, type MemberRecord } from '../../lib/dataClient';
 import { useLiveQuery } from '../../lib/useLiveQuery';
 
@@ -25,18 +25,15 @@ export function useMembers(tripId: string | undefined) {
   return useLiveQuery(dataClient.models.Member, { tripId: { eq: tripId } }, byName, !!tripId);
 }
 
-/** Add a named member to a trip's roster, then refresh the roster query. */
+/** Add a named member to a trip's roster. The live query streams the new member
+ * back to everyone, so no manual refresh is needed. */
 export function useAddMember(tripId: string | undefined) {
-  const qc = useQueryClient();
   return useMutation({
     mutationFn: async (name: string): Promise<MemberRecord> => {
       if (!tripId) throw new Error('No trip to add a member to');
       const created = unwrap(await dataClient.models.Member.create({ tripId, name: name.trim() }));
       if (!created) throw new Error('Member creation returned no record');
       return created;
-    },
-    onSuccess: () => {
-      if (tripId) qc.invalidateQueries({ queryKey: memberKeys.byTrip(tripId) });
     },
   });
 }

@@ -4,7 +4,7 @@
  * so casting again UPSERTS instead of duplicating. Read all of a trip's votes in
  * one query and aggregate client-side (see tally.ts). Guest CRUD.
  */
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { dataClient, unwrap, type InterestLevel, type InterestRecord } from '../../lib/dataClient';
 import { useLiveQuery } from '../../lib/useLiveQuery';
 
@@ -40,9 +40,9 @@ interface CastArgs {
   level: InterestLevel;
 }
 
-/** Upsert this member's vote on a destination, then refresh the trip's votes. */
+/** Upsert this member's vote on a destination. The live query (observeQuery)
+ * streams the change back to every collaborator, so no manual refresh is needed. */
 export function useCastVote(tripId: string | undefined) {
-  const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ destinationId, memberName, level }: CastArgs): Promise<void> => {
       if (!tripId) throw new Error('No trip to vote in');
@@ -58,9 +58,6 @@ export function useCastVote(tripId: string | undefined) {
       if (created.errors?.length) {
         unwrap(await dataClient.models.Interest.update({ id, level }));
       }
-    },
-    onSuccess: () => {
-      if (tripId) qc.invalidateQueries({ queryKey: interestKeys.byTrip(tripId) });
     },
   });
 }

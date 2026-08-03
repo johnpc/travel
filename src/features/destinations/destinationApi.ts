@@ -3,7 +3,7 @@
  * Destinations are candidate places on a trip's brainstorm — added manually or
  * accepted from an AI suggestion. Guest CRUD, read by tripId.
  */
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { dataClient, unwrap, type DestinationRecord } from '../../lib/dataClient';
 import { useLiveQuery } from '../../lib/useLiveQuery';
 
@@ -40,9 +40,9 @@ export function useDestinations(tripId: string | undefined) {
   );
 }
 
-/** Add a destination to a trip, then refresh the list. */
+/** Add a destination to a trip. The live query streams it to the board — no
+ * manual refresh needed. */
 export function useAddDestination(tripId: string | undefined) {
-  const qc = useQueryClient();
   return useMutation({
     mutationFn: async (dest: NewDestination): Promise<DestinationRecord> => {
       if (!tripId) throw new Error('No trip to add a destination to');
@@ -58,22 +58,15 @@ export function useAddDestination(tripId: string | undefined) {
       if (!created) throw new Error('Destination creation returned no record');
       return created;
     },
-    onSuccess: () => {
-      if (tripId) qc.invalidateQueries({ queryKey: destinationKeys.byTrip(tripId) });
-    },
   });
 }
 
 /** Remove a destination from the board (guest delete) — undo a mistaken, duplicate
  * or unwanted place so it stops skewing the votes. The live query drops it. */
-export function useRemoveDestination(tripId: string | undefined) {
-  const qc = useQueryClient();
+export function useRemoveDestination(_tripId: string | undefined) {
   return useMutation({
     mutationFn: async (id: string): Promise<void> => {
       await dataClient.models.Destination.delete({ id });
-    },
-    onSuccess: () => {
-      if (tripId) qc.invalidateQueries({ queryKey: destinationKeys.byTrip(tripId) });
     },
   });
 }

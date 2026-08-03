@@ -2,7 +2,7 @@
  * Activity server state via react-query. Activities are things to do at a
  * destination — AI-suggested or hand-added. Read by destinationId; guest CRUD.
  */
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { dataClient, unwrap, type ActivityRecord } from '../../lib/dataClient';
 import { useLiveQuery } from '../../lib/useLiveQuery';
 
@@ -39,9 +39,8 @@ export function useActivities(destinationId: string | undefined, enabled = true)
   );
 }
 
-/** Add an activity to a destination, then refresh its list. */
+/** Add an activity to a destination. The live query streams it into the list. */
 export function useAddActivity(tripId: string | undefined, destinationId: string | undefined) {
-  const qc = useQueryClient();
   return useMutation({
     mutationFn: async (act: NewActivity): Promise<ActivityRecord> => {
       if (!tripId || !destinationId) throw new Error('No destination to add an activity to');
@@ -58,24 +57,15 @@ export function useAddActivity(tripId: string | undefined, destinationId: string
       if (!created) throw new Error('Activity creation returned no record');
       return created;
     },
-    onSuccess: () => {
-      if (destinationId)
-        qc.invalidateQueries({ queryKey: activityKeys.byDestination(destinationId) });
-    },
   });
 }
 
 /** Remove an activity from a destination (guest delete) — drop a stray or
  * unwanted idea. The live query removes it for everyone. */
-export function useRemoveActivity(destinationId: string | undefined) {
-  const qc = useQueryClient();
+export function useRemoveActivity(_destinationId: string | undefined) {
   return useMutation({
     mutationFn: async (id: string): Promise<void> => {
       await dataClient.models.Activity.delete({ id });
-    },
-    onSuccess: () => {
-      if (destinationId)
-        qc.invalidateQueries({ queryKey: activityKeys.byDestination(destinationId) });
     },
   });
 }
