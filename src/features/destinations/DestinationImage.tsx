@@ -64,6 +64,11 @@ export function DestinationImage({ tripId, destination }: DestinationImageProps)
         )}
         {gen.isPending ? 'Imagining…' : generated ? 'Reimagine with AI' : 'Imagine it with AI'}
       </button>
+      {gen.isError && !gen.isPending && (
+        <p className="destimg__error tv-muted" data-testid="dest-image-error">
+          Couldn’t imagine an image right now — tap to try again.
+        </p>
+      )}
     </div>
   );
 }
