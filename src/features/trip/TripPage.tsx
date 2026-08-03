@@ -44,7 +44,7 @@ export function TripPage() {
           <IonTitle>{trip?.title ?? (slug ? titleFromSlug(slug) : 'Trip')}</IonTitle>
           <IonButtons slot="end">
             <ThemeToggle />
-            {trip && <ShareButton slug={slug} />}
+            {trip && <ShareButton slug={slug} title={trip.title ?? titleFromSlug(slug)} />}
           </IonButtons>
         </IonToolbar>
       </IonHeader>

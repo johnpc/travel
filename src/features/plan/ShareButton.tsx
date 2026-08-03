@@ -5,13 +5,20 @@ import { useShare } from './useShare';
 interface ShareButtonProps {
   /** The trip slug; the shared URL is the trip's public address. */
   slug: string;
+  /** The trip's name — shared as the sheet title so recipients see context. */
+  title: string;
 }
 
-/** Share the trip link — native share sheet on mobile, copy-to-clipboard on
- * desktop with a brief "Copied!" confirmation. */
-export function ShareButton({ slug }: ShareButtonProps) {
+/** Share the trip link — native share sheet on mobile (with the trip name + an
+ * inviting message so it's not a bare URL), copy-to-clipboard on desktop with a
+ * brief "Copied!" confirmation. */
+export function ShareButton({ slug, title }: ShareButtonProps) {
   const url = `https://travel.jpc.io/${slug}`;
-  const { share, copied } = useShare(url);
+  const { share, copied } = useShare({
+    title,
+    text: `Help plan ${title} — add your name, vote on where to go, and mark when you're free.`,
+    url,
+  });
   // Icon-only by default (matches the back + theme buttons and keeps the header
   // title room on narrow phones); the copy confirmation briefly shows a label.
   return (
