@@ -17,6 +17,7 @@ import { TripLoading } from './TripLoading';
 import { TripIntro } from './TripIntro';
 import { SectionNav } from './SectionNav';
 import { TripColumns } from './TripColumns';
+import { titleFromSlug } from './slug';
 import './trip.css';
 
 // Open the calendar on the current month. Computed here (not in tested logic) so
@@ -37,7 +38,10 @@ export function TripPage() {
           <IonButtons slot="start">
             <IonBackButton defaultHref="/" text="" />
           </IonButtons>
-          <IonTitle>{trip?.title ?? 'Trip'}</IonTitle>
+          {/* Fall back to the slug-derived name (available from the URL before any
+              fetch) so the header reads "Greece 2027", not a generic "Trip",
+              during loading and error states. */}
+          <IonTitle>{trip?.title ?? (slug ? titleFromSlug(slug) : 'Trip')}</IonTitle>
           <IonButtons slot="end">
             <ThemeToggle />
             {trip && <ShareButton slug={slug} />}
