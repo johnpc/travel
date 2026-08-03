@@ -28,7 +28,6 @@ export function VoteControl({
   onVote,
   memberCount,
 }: VoteControlProps) {
-  // prettier-ignore
   const bar = consensusBar(tally);
   const voted = tally.yes + tally.maybe + tally.no;
   // "N of M voted" tells the crew whether everyone has weighed in yet — only when
