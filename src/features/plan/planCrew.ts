@@ -16,10 +16,20 @@ export function crewFor(
     .sort((a, b) => a.localeCompare(b));
 }
 
-/** "Alex", "Alex & Sam", "Alex, Priya & Sam" — an Oxford-free natural list. */
-export function joinNames(names: string[]): string {
+/**
+ * "Alex", "Alex & Sam", "Alex, Priya & Sam" — an Oxford-free natural list.
+ * When a crew is bigger than `max`, the tail is summarized ("Alex, Priya & 5
+ * others") so the plan headline stays punchy and the destination isn't buried
+ * under a wrapping wall of names.
+ */
+export function joinNames(names: string[], max = Infinity): string {
   if (names.length === 0) return '';
   if (names.length === 1) return names[0];
+  if (names.length > max) {
+    const shown = names.slice(0, max).join(', ');
+    const rest = names.length - max;
+    return `${shown} & ${rest} other${rest === 1 ? '' : 's'}`;
+  }
   return `${names.slice(0, -1).join(', ')} & ${names[names.length - 1]}`;
 }
 

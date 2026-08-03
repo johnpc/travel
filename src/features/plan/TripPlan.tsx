@@ -28,7 +28,9 @@ export function TripPlan({ tripId, memberCount }: TripPlanProps) {
   const wiki = useWikiPhoto(plan.frontRunner?.name);
   useAlignedHaptic(plan.readyToBook);
   if (plan.isLoading || plan.isError || !plan.frontRunner) return null;
-  const crew = joinNames(plan.crew);
+  // Cap the crew list so the headline stays punchy — "with A, B, C & 4 others"
+  // rather than a wrapping wall of names that buries the destination.
+  const crew = joinNames(plan.crew, 3);
   const img = generated ?? wiki;
   const cls = plan.readyToBook ? 'plan plan--ready' : 'plan';
   return (
