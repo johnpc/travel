@@ -67,7 +67,12 @@ export function TripPage() {
             <SectionNav />
             <div className="trip__cols">
               <div className="trip__main">
-                <DestinationsPanel tripId={trip?.id} tripTitle={trip?.title ?? ''} me={join.me} />
+                <DestinationsPanel
+                  tripId={trip?.id}
+                  tripTitle={trip?.title ?? ''}
+                  me={join.me}
+                  memberCount={members.length}
+                />
                 <ItinerarySection tripId={trip?.id} tripTitle={trip?.title ?? ''} />
                 <ChatSection tripId={trip?.id} me={join.me} />
               </div>
