@@ -28,7 +28,7 @@ export function AddDestination({ onAdd, isAdding }: AddDestinationProps) {
         onIonInput={(e) => setName(e.detail.value ?? '')}
       />
       <IonButton type="submit" disabled={!name.trim() || isAdding} data-testid="dest-add">
-        Add
+        {isAdding ? 'Adding…' : 'Add'}
       </IonButton>
     </form>
   );
