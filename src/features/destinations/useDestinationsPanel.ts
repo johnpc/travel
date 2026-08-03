@@ -34,9 +34,15 @@ export function useDestinationsPanel(
     if (name.trim()) addDestination.mutate({ name, source: 'MANUAL' });
   };
 
+  // Catch failures so the AI call never rejects unhandled and the view can show a
+  // retryable message instead of silently doing nothing.
   const runSuggest = async () => {
     const exclude = destinations.map((d) => d.name);
-    setSuggestions(await suggest.mutateAsync({ tripTitle, exclude }));
+    try {
+      setSuggestions(await suggest.mutateAsync({ tripTitle, exclude }));
+    } catch {
+      /* suggest.isError drives the retry message; nothing else to do here */
+    }
   };
 
   const accept = (s: Suggestion) => {
@@ -59,6 +65,7 @@ export function useDestinationsPanel(
     addManual,
     suggestions,
     isSuggesting: suggest.isPending,
+    suggestError: suggest.isError,
     runSuggest,
     accept,
     remove,

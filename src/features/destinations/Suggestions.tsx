@@ -6,13 +6,22 @@ import type { Suggestion } from './suggestApi';
 interface SuggestionsProps {
   suggestions: Suggestion[];
   isLoading: boolean;
+  isError?: boolean;
   onSuggest: () => void;
   onAccept: (s: Suggestion) => void;
 }
 
 /** The AI panel: a button to fetch destination ideas, then each suggestion with
- * its blurb + why and an "Add to trip" action that accepts it into the board. */
-export function Suggestions({ suggestions, isLoading, onSuggest, onAccept }: SuggestionsProps) {
+ * its blurb + why and an "Add to trip" action that accepts it into the board.
+ * On a failed AI call, shows a friendly retryable message (the button re-runs). */
+export function Suggestions({
+  suggestions,
+  isLoading,
+  isError,
+  onSuggest,
+  onAccept,
+}: SuggestionsProps) {
+  // prettier-ignore
   return (
     <section className="suggest" data-testid="suggest">
       <IonButton
@@ -25,6 +34,11 @@ export function Suggestions({ suggestions, isLoading, onSuggest, onAccept }: Sug
         <IonIcon icon={sparklesOutline} slot="start" aria-hidden="true" />
         {isLoading ? 'Thinking…' : 'Suggest destinations with AI'}
       </IonButton>
+      {isError && !isLoading && (
+        <p className="suggest__error tv-muted" data-testid="suggest-error">
+          The AI couldn’t suggest right now — tap to try again.
+        </p>
+      )}
       {isLoading && <SuggestionSkeleton />}
       {suggestions.length > 0 && (
         <ul className="suggest__list" data-testid="suggest-list">

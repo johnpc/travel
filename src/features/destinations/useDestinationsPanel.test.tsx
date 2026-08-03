@@ -72,6 +72,22 @@ describe('useDestinationsPanel', () => {
     await waitFor(() => expect(result.current.suggestions).toHaveLength(1));
   });
 
+  it('swallows a failed AI suggest (no unhandled reject) and surfaces the error flag', async () => {
+    h.suggestMutateAsync.mockRejectedValue(new Error('AI down'));
+    h.useSuggestDestinations.mockReturnValue({
+      mutateAsync: h.suggestMutateAsync,
+      isPending: false,
+      isError: true,
+    });
+    const { result } = renderHook(() => useDestinationsPanel('t1', 'Trip', 'Alex'));
+    // must not throw despite the rejected mutation
+    await act(async () => {
+      await result.current.runSuggest();
+    });
+    expect(result.current.suggestions).toEqual([]);
+    expect(result.current.suggestError).toBe(true);
+  });
+
   it('accepting a suggestion adds it as AI and drops it from the list', async () => {
     h.suggestMutateAsync.mockResolvedValue([
       { name: 'Oslo', blurb: 'b', why: 'w' },

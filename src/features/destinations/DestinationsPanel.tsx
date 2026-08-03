@@ -29,6 +29,7 @@ export function DestinationsPanel({ tripId, tripTitle, me }: DestinationsPanelPr
       <Suggestions
         suggestions={p.suggestions}
         isLoading={p.isSuggesting}
+        isError={p.suggestError}
         onSuggest={p.runSuggest}
         onAccept={p.accept}
       />

@@ -22,9 +22,15 @@ export function useActivitiesPanel(
   const suggest = useSuggestActivities();
   const [suggestions, setSuggestions] = useState<ActivitySuggestion[]>([]);
 
+  // Catch failures so the AI call never rejects unhandled and the view can show a
+  // retryable message instead of silently doing nothing.
   const runSuggest = async () => {
     const exclude = activities.map((a) => a.title);
-    setSuggestions(await suggest.mutateAsync({ destinationName, exclude }));
+    try {
+      setSuggestions(await suggest.mutateAsync({ destinationName, exclude }));
+    } catch {
+      /* suggest.isError drives the retry message */
+    }
   };
 
   const accept = (s: ActivitySuggestion) => {
@@ -41,6 +47,7 @@ export function useActivitiesPanel(
     refetch: () => listQuery.refetch(),
     suggestions,
     isSuggesting: suggest.isPending,
+    suggestError: suggest.isError,
     runSuggest,
     accept,
     remove,
