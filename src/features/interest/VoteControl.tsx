@@ -8,6 +8,8 @@ interface VoteControlProps {
   canVote: boolean;
   isVoting: boolean;
   onVote: (level: InterestLevel) => void;
+  /** Roster size, so the tally can show "N of M voted" (is everyone in yet?). */
+  memberCount?: number;
 }
 
 const OPTIONS: { level: InterestLevel; label: string; emoji: string }[] = [
@@ -18,8 +20,20 @@ const OPTIONS: { level: InterestLevel; label: string; emoji: string }[] = [
 
 /** Per-destination vote row: a Yes/Maybe/No control (highlighting this member's
  * pick) plus the group tally. Disabled until the visitor picks a name. */
-export function VoteControl({ tally, myLevel, canVote, isVoting, onVote }: VoteControlProps) {
+export function VoteControl({
+  tally,
+  myLevel,
+  canVote,
+  isVoting,
+  onVote,
+  memberCount,
+}: VoteControlProps) {
+  // prettier-ignore
   const bar = consensusBar(tally);
+  const voted = tally.yes + tally.maybe + tally.no;
+  // "N of M voted" tells the crew whether everyone has weighed in yet — only when
+  // we know the roster size and it's a plausible denominator.
+  const progress = memberCount && memberCount >= voted ? ` · ${voted} of ${memberCount} voted` : '';
   return (
     <div className="vote" data-testid="vote-control">
       <div className="vote__top">
@@ -39,7 +53,7 @@ export function VoteControl({ tally, myLevel, canVote, isVoting, onVote }: VoteC
           ))}
         </div>
         <span className="vote__tally tv-muted" data-testid="vote-tally">
-          {tally.yes} in · {tally.maybe} maybe · {tally.no} pass
+          {tally.yes} in · {tally.maybe} maybe · {tally.no} pass{progress}
         </span>
       </div>
       {bar.total > 0 && (

@@ -27,6 +27,19 @@ describe('VoteControl', () => {
     expect(screen.queryByTestId('vote-bar')).not.toBeInTheDocument();
   });
 
+  it('shows "N of M voted" when the roster size is known', () => {
+    // 2 in + 1 maybe + 0 pass = 3 of 4 voted
+    render(
+      <VoteControl tally={tally} myLevel={null} canVote isVoting={false} onVote={vi.fn()} memberCount={4} />, // prettier-ignore
+    );
+    expect(screen.getByTestId('vote-tally')).toHaveTextContent('3 of 4 voted');
+  });
+
+  it('omits the "N of M voted" when the roster size is unknown', () => {
+    render(<VoteControl tally={tally} myLevel={null} canVote isVoting={false} onVote={vi.fn()} />);
+    expect(screen.getByTestId('vote-tally')).not.toHaveTextContent('voted');
+  });
+
   it('marks my current pick as pressed', () => {
     render(<VoteControl tally={tally} myLevel="MAYBE" canVote isVoting={false} onVote={vi.fn()} />);
     expect(screen.getByTestId('vote-MAYBE')).toHaveAttribute('aria-pressed', 'true');

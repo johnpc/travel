@@ -11,11 +11,13 @@ interface DestinationsPanelProps {
   tripTitle: string;
   /** The current member (name-only identity); enables voting when set. */
   me: string | null;
+  /** Roster size, so each vote row can show "N of M voted". */
+  memberCount?: number;
 }
 
 /** The destinations brainstorm section of a trip: add places by hand, get AI
  * suggestions, see the shared board (sorted by group interest), and vote. */
-export function DestinationsPanel({ tripId, tripTitle, me }: DestinationsPanelProps) {
+export function DestinationsPanel({ tripId, tripTitle, me, memberCount }: DestinationsPanelProps) {
   const p = useDestinationsPanel(tripId, tripTitle, me);
   return (
     <section className="destinations" id="trip-destinations" data-testid="destinations">
@@ -53,6 +55,7 @@ export function DestinationsPanel({ tripId, tripTitle, me }: DestinationsPanelPr
               canVote={p.interest.canVote}
               isVoting={p.interest.isVoting}
               onVote={(level) => p.interest.cast(d.id, level)}
+              memberCount={memberCount}
             />
           )}
         />
