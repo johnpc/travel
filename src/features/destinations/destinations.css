@@ -12,6 +12,9 @@
 .dest-add {
   display: flex;
   align-items: flex-end;
+  /* wrap so the Add button drops below the field instead of overflowing when
+     text is enlarged (WCAG 1.4.4); the field grows to fill and can shrink. */
+  flex-wrap: wrap;
   gap: 0.75rem;
   background: var(--tv-surface);
   border: 1px solid var(--tv-border);
@@ -22,6 +25,7 @@
 
 .dest-add ion-input {
   flex: 1;
+  min-width: 0;
 }
 
 /* AI suggestions */
