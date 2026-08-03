@@ -58,6 +58,7 @@ stay useful for this trip and the next.
 | AI budget pre-fill + Flights/Hotels/Airbnb price links     |   ✅   |
 | AI hotel picks across tiers (Book/Map links + Airbnb med.) |   ✅   |
 | Multi-city itinerary (ordered stops, reorder, AI route)    |   ✅   |
+| Discussion chat to converge (live, timestamped messages)   |   ✅   |
 
 ## How it works
 
