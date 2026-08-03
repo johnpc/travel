@@ -24,6 +24,15 @@ describe('joinNames', () => {
     expect(joinNames(['Alex', 'Sam'])).toBe('Alex & Sam');
     expect(joinNames(['Alex', 'Priya', 'Sam'])).toBe('Alex, Priya & Sam');
   });
+
+  it('summarizes the tail past max so a big crew stays a punchy headline', () => {
+    const crew = ['Alex', 'Priya', 'Sam', 'Jordan', 'Casey', 'Riley', 'Robin'];
+    expect(joinNames(crew, 3)).toBe('Alex, Priya, Sam & 4 others');
+    // one over the cap → "& 1 other" (singular)
+    expect(joinNames(['Alex', 'Priya', 'Sam', 'Jordan'], 3)).toBe('Alex, Priya, Sam & 1 other');
+    // at or under the cap → the plain natural list, no summary
+    expect(joinNames(['Alex', 'Priya', 'Sam'], 3)).toBe('Alex, Priya & Sam');
+  });
 });
 
 describe('booking links', () => {
