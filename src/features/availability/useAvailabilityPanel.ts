@@ -37,7 +37,9 @@ export function useAvailabilityPanel(tripId: string | undefined, me: string | nu
   const optimistic = useOptimisticMarks((date) => myStatus(marks, date, me));
 
   const range = useRangeSelect((dates) => {
-    if (me) markRange.mutate({ dates, memberName: me, status: 'FREE' });
+    if (!me) return;
+    optimistic.rememberMany(dates, 'FREE');
+    markRange.mutate({ dates, memberName: me, status: 'FREE' });
   });
 
   const toggle = (date: string) => {
@@ -52,7 +54,10 @@ export function useAvailabilityPanel(tripId: string | undefined, me: string | nu
 
   const pickBreak = (b: SchoolBreak) => {
     jumpTo(b.start);
-    if (me) markRange.mutate({ dates: enumerateDays(b.start, b.end), memberName: me, status: 'FREE' }); // prettier-ignore
+    if (!me) return;
+    const dates = enumerateDays(b.start, b.end);
+    optimistic.rememberMany(dates, 'FREE');
+    markRange.mutate({ dates, memberName: me, status: 'FREE' });
   };
 
   return {

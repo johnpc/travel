@@ -30,4 +30,13 @@ describe('useOptimisticMarks', () => {
     act(() => result.current.remember('2027-06-12', null));
     expect(result.current.shownStatus('2027-06-12')).toBeNull();
   });
+
+  it('rememberMany marks a whole span at once (range-select / school-break)', () => {
+    const { result } = renderHook(() => useOptimisticMarks(() => null));
+    act(() => result.current.rememberMany(['2027-06-12', '2027-06-13', '2027-06-14'], 'FREE'));
+    expect(result.current.shownStatus('2027-06-12')).toBe('FREE');
+    expect(result.current.shownStatus('2027-06-13')).toBe('FREE');
+    expect(result.current.shownStatus('2027-06-14')).toBe('FREE');
+    expect(result.current.shownStatus('2027-06-15')).toBeNull(); // outside the span
+  });
 });

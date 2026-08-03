@@ -37,5 +37,13 @@ export function useOptimisticMarks(serverStatusFor: (date: string) => Availabili
       date in pending ? pending[date] : serverStatusFor(date),
     remember: (date: string, status: AvailabilityStatus | null) =>
       setPending((prev) => ({ ...prev, [date]: status })),
+    // Mark a whole span at once (range-select / school-break) — same instant feel
+    // as a single tap, so a full week doesn't wait ~1s for the round-trip.
+    rememberMany: (dates: string[], status: AvailabilityStatus | null) =>
+      setPending((prev) => {
+        const next = { ...prev };
+        for (const d of dates) next[d] = status;
+        return next;
+      }),
   };
 }
