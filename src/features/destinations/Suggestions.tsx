@@ -21,7 +21,6 @@ export function Suggestions({
   onSuggest,
   onAccept,
 }: SuggestionsProps) {
-  // prettier-ignore
   return (
     <section className="suggest" data-testid="suggest">
       <IonButton
