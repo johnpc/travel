@@ -8,8 +8,11 @@ import type { DateWindow } from './bestWindow';
 export function bestWindowLabel(window: DateWindow | null): string {
   if (!window) return 'Mark your dates to find a window that works for everyone';
   const range = formatRange(window.start, window.end);
+  // A window is the longest run where SOMEONE's free and NOBODY's blocked — not
+  // a guarantee the whole crew is free (the per-window "N of M free" carries
+  // that). So say "works so far", never "everyone's free", to avoid overclaiming.
   if (window.days === 1) return `${range} works so far`;
-  return `${range} — ${window.days} days everyone's free`;
+  return `${range} — ${window.days} days that work so far`;
 }
 
 /** "· N of M voted" suffix for the plan hero's tally — tells the crew whether

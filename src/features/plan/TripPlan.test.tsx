@@ -40,7 +40,7 @@ describe('TripPlan', () => {
     h.useTripPlan.mockReturnValue(plan());
     render(<TripPlan tripId="t1" />);
     expect(screen.getByTestId('plan-frontrunner')).toHaveTextContent('Bali with Alex & Sam');
-    expect(screen.getByTestId('plan-dates')).toHaveTextContent("7 days everyone's free");
+    expect(screen.getByTestId('plan-dates')).toHaveTextContent('7 days that work so far');
     expect(screen.getByTestId('plan-budget')).toHaveTextContent('$900');
     expect(screen.getByTestId('plan-hero')).toHaveAttribute('src', 'https://s3.example/b.webp');
   });
