@@ -82,6 +82,11 @@
        accent-filled control at once (nav chip, chat bubble, selected vote/chip). */
     --tv-accent-contrast: #16130f;
     --ion-color-primary-rgb: 43, 179, 163;
+    /* Filled ion-buttons (Book flights, Join, Save) use this for their text — it
+       must flip to dark ink too, or white-on-light-teal fails contrast (~2.6:1),
+       exactly like --tv-accent-contrast above. */
+    --ion-color-primary-contrast: #16130f;
+    --ion-color-primary-contrast-rgb: 22, 19, 15;
     --tv-accent-soft: #10302e;
     --tv-warm-soft: #3a201a;
     --tv-bg: #16130f;
@@ -101,6 +106,8 @@
   --tv-accent-strong: #4cc9ba;
   --tv-accent-contrast: #16130f;
   --ion-color-primary-rgb: 43, 179, 163;
+  --ion-color-primary-contrast: #16130f;
+  --ion-color-primary-contrast-rgb: 22, 19, 15;
   --tv-accent-soft: #10302e;
   --tv-warm-soft: #3a201a;
   --tv-bg: #16130f;
