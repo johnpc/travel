@@ -74,12 +74,13 @@
   border-top: 1px solid var(--tv-border);
 }
 
-/* On desktop the roster's own join form is already visible in the side rail, so
-   this inline copy (welcome banner + join bar both use .welcome__join) is
-   redundant — two identical "Add yourself / Join" forms side by side. It only
-   earns its place on mobile, where the rail form is ~a screen down. */
+/* On desktop the EMPTY-trip welcome banner sits right above the roster rail, so
+   its inline join is a redundant second "Add yourself / Join" form — hide it
+   there. Scope to `.welcome` only: the JoinBar (`.joinbar`) copy must stay,
+   because on a POPULATED trip the payoff hero pushes the rail form below the
+   fold, leaving the JoinBar as the only join field a nameless visitor can see. */
 @media (min-width: 900px) {
-  .welcome__join {
+  .welcome .welcome__join {
     display: none;
   }
 }
