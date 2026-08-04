@@ -4,6 +4,7 @@ import { LoadState } from '../shell/LoadState';
 import { StopRow } from './StopRow';
 import { AddStop } from './AddStop';
 import { RouteSuggestions } from './RouteSuggestions';
+import { RouteSkeleton } from './RouteSkeleton';
 import type { useItineraryPanel } from './useItineraryPanel';
 
 type Panel = ReturnType<typeof useItineraryPanel>;
@@ -30,7 +31,11 @@ export function ItineraryBody({ panel: p }: { panel: Panel }) {
           The AI couldn’t suggest a route right now — tap to try again.
         </p>
       )}
-      <RouteSuggestions suggestions={p.suggestions} onAccept={p.accept} />
+      {p.isSuggesting ? (
+        <RouteSkeleton />
+      ) : (
+        <RouteSuggestions suggestions={p.suggestions} onAccept={p.accept} />
+      )}
       <LoadState
         isLoading={p.isLoading}
         isError={p.isError}
