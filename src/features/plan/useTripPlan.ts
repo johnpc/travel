@@ -35,7 +35,12 @@ export function useTripPlan(tripId: string | undefined): TripPlan {
   const availability = useAvailability(tripId);
 
   const tallies = tallyByDestination(interests.data ?? []);
-  const frontRunner = pickFrontRunner(destinations.data ?? [], tallies);
+  // Only call something the front-runner once it has GENUINE support (score > 0),
+  // matching the board's 🏆 badge — otherwise an unvoted trip would proclaim "the
+  // plan so far" for whichever destination happens to sort first (alphabetical),
+  // an overclaim before anyone has actually weighed in.
+  const top = pickFrontRunner(destinations.data ?? [], tallies);
+  const frontRunner = top && (tallies[top.id]?.score ?? 0) > 0 ? top : null;
   const budgetRow = useBudget(frontRunner?.id, !!frontRunner);
 
   // The front-runner's vote split (null when there's no front-runner yet) —
