@@ -64,6 +64,17 @@ describe('ItinerarySection', () => {
     expect(runSuggest).toHaveBeenCalled();
   });
 
+  it('previews a route skeleton while the AI is planning', () => {
+    h.useItineraryPanel.mockReturnValue({
+      ...base,
+      stops: [{ id: 'a', place: 'Tokyo', order: 0 }],
+      isSuggesting: true,
+    });
+    render(<ItinerarySection tripId="t1" tripTitle="Asia" />);
+    expect(screen.getByTestId('route-loading')).toBeInTheDocument();
+    expect(screen.getByTestId('route-suggest')).toHaveTextContent(/planning/i);
+  });
+
   it('shows a retryable message when the AI route suggest fails', () => {
     // stops present so the editor renders without needing to open the teaser
     h.useItineraryPanel.mockReturnValue({
