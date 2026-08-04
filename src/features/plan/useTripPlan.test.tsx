@@ -60,4 +60,15 @@ describe('useTripPlan', () => {
     const { result } = renderHook(() => useTripPlan('t1'));
     expect(result.current.frontRunner).toBeNull();
   });
+
+  it('has no front-runner when destinations exist but nobody has voted', () => {
+    // An unvoted trip must NOT proclaim "the plan so far" for the alphabetically
+    // first destination — the hero only appears once there's genuine support.
+    h.useInterests.mockReturnValue(ok([] as InterestRecord[]));
+    h.useBudget.mockReturnValue(ok(null));
+    const { result } = renderHook(() => useTripPlan('t1'));
+    expect(result.current.frontRunner).toBeNull();
+    expect(result.current.frontRunnerVotes).toBeNull();
+    expect(result.current.readyToBook).toBe(false);
+  });
 });
