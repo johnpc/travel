@@ -4,7 +4,8 @@
  * tripId, sorted by the `order` index. Reordering updates two rows' order values.
  */
 import { useMutation } from '@tanstack/react-query';
-import { dataClient, unwrap, type ItineraryStopRecord } from '../../lib/dataClient';
+import { dataClient, type ItineraryStopRecord } from '../../lib/dataClient';
+import { deleteLive, writeLive } from '../../lib/liveWrites';
 import { useLiveQuery } from '../../lib/useLiveQuery';
 
 const byOrder = (a: ItineraryStopRecord, b: ItineraryStopRecord) => (a.order ?? 0) - (b.order ?? 0);
@@ -37,8 +38,8 @@ export function useAddStop(tripId: string | undefined) {
   return useMutation({
     mutationFn: async (stop: NewStop): Promise<void> => {
       if (!tripId) throw new Error('No trip to add a stop to');
-      unwrap(
-        await dataClient.models.ItineraryStop.create({
+      await writeLive(dataClient.models.ItineraryStop, () =>
+        dataClient.models.ItineraryStop.create({
           tripId,
           place: stop.place.trim(),
           nights: stop.nights ?? null,
@@ -55,7 +56,9 @@ export function useAddStop(tripId: string | undefined) {
 export function useRemoveStop(_tripId: string | undefined) {
   return useMutation({
     mutationFn: async (id: string): Promise<void> => {
-      await dataClient.models.ItineraryStop.delete({ id });
+      await deleteLive(dataClient.models.ItineraryStop, id, () =>
+        dataClient.models.ItineraryStop.delete({ id }),
+      );
     },
   });
 }
@@ -64,9 +67,10 @@ export function useRemoveStop(_tripId: string | undefined) {
 export function useReorderStops(_tripId: string | undefined) {
   return useMutation({
     mutationFn: async (pair: { a: ItineraryStopRecord; b: ItineraryStopRecord }): Promise<void> => {
+      const stops = dataClient.models.ItineraryStop;
       await Promise.all([
-        dataClient.models.ItineraryStop.update({ id: pair.a.id, order: pair.b.order ?? 0 }),
-        dataClient.models.ItineraryStop.update({ id: pair.b.id, order: pair.a.order ?? 0 }),
+        writeLive(stops, () => stops.update({ id: pair.a.id, order: pair.b.order ?? 0 })),
+        writeLive(stops, () => stops.update({ id: pair.b.id, order: pair.a.order ?? 0 })),
       ]);
     },
   });

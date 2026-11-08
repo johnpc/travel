@@ -5,7 +5,8 @@
  * in live so the thread updates as the crew talks.
  */
 import { useMutation } from '@tanstack/react-query';
-import { dataClient, unwrap, type MessageRecord } from '../../lib/dataClient';
+import { dataClient, type MessageRecord } from '../../lib/dataClient';
+import { deleteLive, writeLive } from '../../lib/liveWrites';
 import { useLiveQuery } from '../../lib/useLiveQuery';
 
 const byOldest = (a: MessageRecord, b: MessageRecord) =>
@@ -28,7 +29,10 @@ export function usePostMessage(tripId: string | undefined) {
       if (!tripId) throw new Error('No trip to post to');
       const body = msg.body.trim();
       if (!body) return;
-      unwrap(await dataClient.models.Message.create({ tripId, authorName: msg.authorName, body }));
+      const messages = dataClient.models.Message;
+      await writeLive(messages, () =>
+        messages.create({ tripId, authorName: msg.authorName, body }),
+      );
     },
   });
 }
@@ -37,7 +41,9 @@ export function usePostMessage(tripId: string | undefined) {
 export function useRemoveMessage(_tripId: string | undefined) {
   return useMutation({
     mutationFn: async (id: string): Promise<void> => {
-      await dataClient.models.Message.delete({ id });
+      await deleteLive(dataClient.models.Message, id, () =>
+        dataClient.models.Message.delete({ id }),
+      );
     },
   });
 }

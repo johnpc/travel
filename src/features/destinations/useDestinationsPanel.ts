@@ -39,7 +39,11 @@ export function useDestinationsPanel(
   const runSuggest = async () => {
     const exclude = destinations.map((d) => d.name);
     try {
-      setSuggestions(await suggest.mutateAsync({ tripTitle, exclude }));
+      // The model is asked to skip these but sometimes repeats one anyway; never
+      // offer (and so never duplicate) a place already on the board.
+      const onBoard = new Set(exclude.map((n) => n.trim().toLowerCase()));
+      const fresh = await suggest.mutateAsync({ tripTitle, exclude });
+      setSuggestions(fresh.filter((s) => !onBoard.has(s.name.trim().toLowerCase())));
     } catch {
       /* suggest.isError drives the retry message; nothing else to do here */
     }
@@ -55,7 +59,10 @@ export function useDestinationsPanel(
   return {
     destinations,
     frontRunnerId,
-    isLoading: listQuery.isLoading,
+    // Hold the board until the votes are in too: it is sorted by them, so
+    // rendering early made cards jump under the user's finger (a vote or an
+    // expand could land on a different destination than the one tapped).
+    isLoading: listQuery.isLoading || interest.isLoading,
     isError: listQuery.isError || interest.isError,
     refetch: () => {
       listQuery.refetch();
