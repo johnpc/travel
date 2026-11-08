@@ -211,7 +211,11 @@ the backlog straight into the design loop.
 
 - **Repo:** `johnpc/travel`. Web: `travel.jpc.io/<trip-slug>`.
 - **iOS/Android bundle id:** `com.johncorser.travel`. Region `us-west-2`, AWS profile `personal`.
-- **Sandbox stack:** `amplify-travel-xss-sandbox-d4c65224d6` (wired into `package.json` `e2e-config`).
+- **Sandbox:** local dev uses your personal sandbox (`npx ampx sandbox`; `npm run e2e-config`
+  resolves it from `SANDBOX_IDENTIFIER` or your username — `xss` → `amplify-travel-xss-sandbox-d4c65224d6`).
+  **CI never uses it:** every CI run deploys its own `ci-<run_id>` sandbox, creates the test user
+  in its fresh Cognito pool, seeds, tests, and an `if: always()` `teardown` job deletes it
+  (`scripts/sandbox.mjs`). `sandbox-cleanup.yml` sweeps leaked `ci<digits>` stacks older than 6h.
 - **Prod Amplify app:** `d2kfuntlyvy3iy` (serves travel.jpc.io; wired into `scripts/prod-config.mjs`).
 - **CI:** `.github/workflows/ci.yml` (quality + seed + Gherkin acceptance matrix) blocks PRs.
   `ios-deploy.yml` / `android-deploy.yml` publish after CI on `main`. Secrets: `AWS_ACCESS_KEY_ID`,

@@ -6,19 +6,54 @@ on:
   pull_request:
     branches: [main]
 
-# Acceptance tests seed + read ONE shared sandbox backend (clearAll + reseed
-# each run). Two CI runs overlapping there race: one run's clearAll wipes rows
-# mid-read in the other's test, or two seeds interleave and leave duplicates.
-# A SINGLE global group serializes every CI run so only one owns the sandbox at
-# a time. Don't cancel in progress: a running suite must finish its
-# clear→seed→read cycle uncorrupted before the next run starts.
+# Every run deploys its OWN ephemeral sandbox (`ci-<run_id>`), seeds it, tests
+# against it, and the final `teardown` job deletes it whatever happened — so CI
+# never depends on a developer sandbox and leaves no standing AWS cost. Runs no
+# longer share a backend, so the old single global group is gone; we group per
+# PR/ref only so a burst of pushes queues instead of stacking sandboxes. Never
+# cancel in progress: a cancelled run would still tear down, but the next push
+# would redeploy from scratch for nothing.
 concurrency:
-  group: ci-shared-sandbox
+  group: ci-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: false
 
+# Every job resolves the SAME sandbox from this (scripts/sandbox.mjs sanitizes it
+# to `ci<run_id>` and derives the deterministic stack name). The scheduled sweep
+# in sandbox-cleanup.yml only ever deletes stacks matching this `ci<digits>` shape.
+env:
+  SANDBOX_IDENTIFIER: ci-${{ github.run_id }}
+
 jobs:
+  sandbox:
+    # Deploy THIS run's own sandbox. Every other job reads it, and `teardown`
+    # deletes it. The script fails on a rolled-back stack even when ampx exits 0.
+    name: Deploy ephemeral sandbox
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Configure AWS "personal" profile
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          mkdir -p ~/.aws
+          printf '[personal]\naws_access_key_id=%s\naws_secret_access_key=%s\n' \
+            "$AWS_ACCESS_KEY_ID" "$AWS_SECRET_ACCESS_KEY" > ~/.aws/credentials
+          printf '[profile personal]\nregion=us-west-2\n' > ~/.aws/config
+      - name: Deploy the per-run sandbox
+        run: npm run sandbox:deploy
+
   quality:
     name: Lint, Test, Coverage, CRAP & Build
+    needs: sandbox
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -75,10 +110,10 @@ jobs:
           retention-days: 7
 
   seed:
-    # Acceptance tests run against the shared sandbox backend, seeded fresh here
-    # so every run starts from an identical, bounded state — the root fix for
-    # e2e flakiness/drift.
+    # Acceptance tests run against this run's own sandbox, seeded fresh here so
+    # every run starts from an identical, bounded state.
     name: Seed sandbox
+    needs: sandbox
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -100,6 +135,13 @@ jobs:
           printf '[profile personal]\nregion=us-west-2\n' > ~/.aws/config
       - name: Generate amplify_outputs.json (sandbox)
         run: npm run e2e-config
+      # A fresh sandbox has a brand-new, EMPTY Cognito pool: create the seed's
+      # test account and put it in `editors` before the seed signs in as it.
+      - name: Create the test user in the fresh Cognito pool
+        env:
+          TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
+          TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+        run: npm run sandbox:ensure-user -- --group editors
       - name: Seed the sandbox to a known state
         env:
           TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
@@ -177,3 +219,37 @@ jobs:
           name: playwright-report-${{ matrix.area.name }}
           path: playwright-report/
           retention-days: 7
+
+  teardown:
+    # ALWAYS delete this run's sandbox — after success, failure, or cancellation,
+    # on PRs and on main alike. `needs` makes it wait for every job that uses the
+    # sandbox; `if: always()` makes it run even when they failed or were skipped
+    # (including when the deploy itself failed half-way). The delete waits out
+    # an in-flight deploy, treats "no stack" as success, and fails this job (and
+    # so the run) if the stack is still there afterwards. Anything that slips
+    # through is reaped by the scheduled sweep in sandbox-cleanup.yml.
+    name: Tear down ephemeral sandbox
+    needs: [sandbox, quality, seed, acceptance]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Configure AWS "personal" profile
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          mkdir -p ~/.aws
+          printf '[personal]\naws_access_key_id=%s\naws_secret_access_key=%s\n' \
+            "$AWS_ACCESS_KEY_ID" "$AWS_SECRET_ACCESS_KEY" > ~/.aws/credentials
+          printf '[profile personal]\nregion=us-west-2\n' > ~/.aws/config
+      - name: Delete the per-run sandbox
+        run: npm run sandbox:delete
