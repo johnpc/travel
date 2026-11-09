@@ -6,6 +6,7 @@
  */
 import { useMutation } from '@tanstack/react-query';
 import { dataClient, unwrap, type InterestLevel, type InterestRecord } from '../../lib/dataClient';
+import { announceWrite } from '../../lib/liveWrites';
 import { useLiveQuery } from '../../lib/useLiveQuery';
 
 /** Stable row id for one member's vote on one destination. */
@@ -55,9 +56,10 @@ export function useCastVote(tripId: string | undefined) {
         memberName,
         level,
       });
-      if (created.errors?.length) {
-        unwrap(await dataClient.models.Interest.update({ id, level }));
-      }
+      const saved = created.errors?.length
+        ? unwrap(await dataClient.models.Interest.update({ id, level }))
+        : created.data;
+      announceWrite(dataClient.models.Interest, saved);
     },
   });
 }

@@ -5,6 +5,7 @@
  */
 import { useMutation } from '@tanstack/react-query';
 import { dataClient, unwrap, type DestinationRecord } from '../../lib/dataClient';
+import { deleteLive, writeLive } from '../../lib/liveWrites';
 import { useLiveQuery } from '../../lib/useLiveQuery';
 
 const byNewest = (a: DestinationRecord, b: DestinationRecord) =>
@@ -40,14 +41,14 @@ export function useDestinations(tripId: string | undefined) {
   );
 }
 
-/** Add a destination to a trip. The live query streams it to the board — no
- * manual refresh needed. */
+/** Add a destination to a trip. It shows on every live board in this tab as
+ * soon as it is saved (writeLive), and streams to collaborators. */
 export function useAddDestination(tripId: string | undefined) {
   return useMutation({
     mutationFn: async (dest: NewDestination): Promise<DestinationRecord> => {
       if (!tripId) throw new Error('No trip to add a destination to');
-      const created = unwrap(
-        await dataClient.models.Destination.create({
+      return writeLive(dataClient.models.Destination, () =>
+        dataClient.models.Destination.create({
           tripId,
           name: dest.name.trim(),
           blurb: dest.blurb,
@@ -55,8 +56,6 @@ export function useAddDestination(tripId: string | undefined) {
           source: dest.source,
         }),
       );
-      if (!created) throw new Error('Destination creation returned no record');
-      return created;
     },
   });
 }
@@ -66,7 +65,9 @@ export function useAddDestination(tripId: string | undefined) {
 export function useRemoveDestination(_tripId: string | undefined) {
   return useMutation({
     mutationFn: async (id: string): Promise<void> => {
-      await dataClient.models.Destination.delete({ id });
+      await deleteLive(dataClient.models.Destination, id, () =>
+        dataClient.models.Destination.delete({ id }),
+      );
     },
   });
 }

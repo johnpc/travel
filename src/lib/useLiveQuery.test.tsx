@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { useLiveQuery, type Observable } from './useLiveQuery';
+import { publishWrite } from './liveStore';
 
 /** A fake observeQuery-able model whose subscription we drive by hand. */
 function fakeModel<T>() {
@@ -67,5 +68,30 @@ describe('useLiveQuery', () => {
     const { unmount } = renderHook(() => useLiveQuery(f.model, {}, sort));
     unmount();
     expect(f.unsubscribe).toHaveBeenCalled();
+  });
+
+  it("shows this tab's own writes even when the subscription never delivers them", async () => {
+    const f = fakeModel<{ id: string; tripId?: string }>();
+    const { result } = renderHook(() => useLiveQuery(f.model, { tripId: { eq: 't1' } }, sort));
+    act(() => f.emit([{ id: 'a', tripId: 't1' }]));
+    await waitFor(() => expect(result.current.data).toHaveLength(1));
+    act(() => publishWrite(f.model, { kind: 'upsert', item: { id: 'b', tripId: 't1' } as never }));
+    act(() => publishWrite(f.model, { kind: 'upsert', item: { id: 'z', tripId: 't2' } as never }));
+    expect(result.current.data.map((x) => x.id)).toEqual(['a', 'b']);
+    act(() => publishWrite(f.model, { kind: 'delete', id: 'a' }));
+    expect(result.current.data.map((x) => x.id)).toEqual(['b']);
+    act(() => publishWrite(f.model, { kind: 'restore', id: 'a' }));
+    expect(result.current.data.map((x) => x.id)).toEqual(['a', 'b']);
+  });
+
+  it('lets the server view win again once it has caught up', async () => {
+    const f = fakeModel<{ id: string; tripId?: string }>();
+    const { result } = renderHook(() => useLiveQuery(f.model, { tripId: { eq: 't1' } }, sort));
+    act(() => f.emit([]));
+    act(() => publishWrite(f.model, { kind: 'upsert', item: { id: 'b', tripId: 't1' } as never }));
+    act(() => f.emit([{ id: 'b', tripId: 't1' }]));
+    // A collaborator then deletes it: the caught-up overlay must not resurrect it.
+    act(() => f.emit([]));
+    await waitFor(() => expect(result.current.data).toEqual([]));
   });
 });

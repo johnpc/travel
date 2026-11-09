@@ -102,6 +102,22 @@ describe('useDestinationsPanel', () => {
     expect(result.current.suggestions.map((s) => s.name)).toEqual(['Cairo']);
   });
 
+  it('never offers a suggestion that is already on the board', async () => {
+    h.suggestMutateAsync.mockResolvedValue([
+      { name: ' rome ', blurb: 'dup', why: 'dup' },
+      { name: 'Bali', blurb: 'b', why: 'w' },
+    ]);
+    const { result } = renderHook(() => useDestinationsPanel('t1', 'Trip', 'Alex'));
+    await act(() => result.current.runSuggest());
+    expect(result.current.suggestions.map((s) => s.name)).toEqual(['Bali']);
+  });
+
+  it('stays loading until the votes it sorts by have arrived', () => {
+    h.useInterest.mockReturnValue({ ...emptyInterest, isLoading: true });
+    const { result } = renderHook(() => useDestinationsPanel('t1', 'Trip', 'Alex'));
+    expect(result.current.isLoading).toBe(true);
+  });
+
   it('removes a destination by id', () => {
     const { result } = renderHook(() => useDestinationsPanel('t1', 'Trip', 'Alex'));
     act(() => result.current.remove('1'));

@@ -30,3 +30,12 @@ Feature: Brainstorm destinations on a trip
   Scenario: A failed destinations read shows a retry
     When a visitor opens the trip "greece-2027" with destination reads failing
     Then the destinations section shows a retry
+
+  # A place added the moment the trip appears must not be lost while the live
+  # list is still connecting (it used to vanish until a reload). Its own fresh
+  # trip, so it never shares a board with the scenarios running beside it.
+  Scenario: A destination added right as the trip loads stays on the board
+    Given real-time updates are slow to connect
+    When a visitor opens a fresh trip with a random slug
+    And the visitor adds the destination "Lisbon, Portugal"
+    Then "Lisbon, Portugal" appears on the destination board

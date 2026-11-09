@@ -4,6 +4,7 @@
  */
 import { useMutation } from '@tanstack/react-query';
 import { dataClient, unwrap, type ActivityRecord } from '../../lib/dataClient';
+import { deleteLive, writeLive } from '../../lib/liveWrites';
 import { useLiveQuery } from '../../lib/useLiveQuery';
 
 const byNewest = (a: ActivityRecord, b: ActivityRecord) =>
@@ -44,8 +45,8 @@ export function useAddActivity(tripId: string | undefined, destinationId: string
   return useMutation({
     mutationFn: async (act: NewActivity): Promise<ActivityRecord> => {
       if (!tripId || !destinationId) throw new Error('No destination to add an activity to');
-      const created = unwrap(
-        await dataClient.models.Activity.create({
+      return writeLive(dataClient.models.Activity, () =>
+        dataClient.models.Activity.create({
           tripId,
           destinationId,
           title: act.title.trim(),
@@ -54,8 +55,6 @@ export function useAddActivity(tripId: string | undefined, destinationId: string
           source: act.source,
         }),
       );
-      if (!created) throw new Error('Activity creation returned no record');
-      return created;
     },
   });
 }
@@ -65,7 +64,9 @@ export function useAddActivity(tripId: string | undefined, destinationId: string
 export function useRemoveActivity(_destinationId: string | undefined) {
   return useMutation({
     mutationFn: async (id: string): Promise<void> => {
-      await dataClient.models.Activity.delete({ id });
+      await deleteLive(dataClient.models.Activity, id, () =>
+        dataClient.models.Activity.delete({ id }),
+      );
     },
   });
 }

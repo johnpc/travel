@@ -5,6 +5,7 @@
  */
 import { useMutation } from '@tanstack/react-query';
 import { dataClient, unwrap, type MemberRecord } from '../../lib/dataClient';
+import { writeLive } from '../../lib/liveWrites';
 import { useLiveQuery } from '../../lib/useLiveQuery';
 
 const byName = (a: MemberRecord, b: MemberRecord) => a.name.localeCompare(b.name);
@@ -31,9 +32,8 @@ export function useAddMember(tripId: string | undefined) {
   return useMutation({
     mutationFn: async (name: string): Promise<MemberRecord> => {
       if (!tripId) throw new Error('No trip to add a member to');
-      const created = unwrap(await dataClient.models.Member.create({ tripId, name: name.trim() }));
-      if (!created) throw new Error('Member creation returned no record');
-      return created;
+      const members = dataClient.models.Member;
+      return writeLive(members, () => members.create({ tripId, name: name.trim() }));
     },
   });
 }
