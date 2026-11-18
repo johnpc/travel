@@ -55,3 +55,6 @@ tmp/
 # — generated artifacts, regenerated from dist/, never source.
 ios/App/App/public
 android/app/src/main/assets/public
+
+# iOS launch smoke output (scripts/ios-launch-smoke.sh)
+ios-smoke-output/
