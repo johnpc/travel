@@ -9,6 +9,10 @@
 
 # Travel
 
+> **Platform status: web only (for now).** The web app at [travel.jpc.io](https://travel.jpc.io) is the
+> supported platform. The iOS and Android projects stay in the repo but are not published or deployed,
+> and the iOS Deploy and Android Deploy workflows are disabled (re-enable with `gh workflow enable`).
+
 **Plan a group trip together — without the group chat chaos.** Name a trip, share the link, and
 everyone brainstorms destinations, weighs in on activities, and sorts out dates and budget in one
 place. **No sign-up, no accounts** — a trip lives at its own URL (`travel.jpc.io/<trip-name>`), and
