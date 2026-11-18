@@ -111,5 +111,12 @@
     "@opentelemetry/resources": "2.10.0",
     "@opentelemetry/sdk-trace-base": "2.10.0"
   },
-  "description": "Travel — brainstorm destinations, align on activities, dates & budget, and plan group trips together"
+  "description": "Travel — brainstorm destinations, align on activities, dates & budget, and plan group trips together",
+  "allowScripts": {
+    "esbuild": true,
+    "sharp": true,
+    "@parcel/watcher": true,
+    "fsevents": true,
+    "core-js": false
+  }
 }
